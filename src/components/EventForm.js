@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { EVENT_IMAGES } from '../constants';
 
-function EventForm({ open, onClose, onSubmit }) {
+function EventForm({ open, onClose, onSubmit, initialData = null }) {
   const [formData, setFormData] = useState({
     title: '',
     date: '',
-    location: '',
     description: '',
-    imageUrl: '',
+    imageUrl: EVENT_IMAGES[0].url,
   });
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,13 +26,14 @@ function EventForm({ open, onClose, onSubmit }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
-    setFormData({
-      title: '',
-      date: '',
-      location: '',
-      description: '',
-      imageUrl: '',
-    });
+    if (!initialData) {
+      setFormData({
+        title: '',
+        date: '',
+        description: '',
+        imageUrl: EVENT_IMAGES[0].url,
+      });
+    }
   };
 
   if (!open) return null;
@@ -35,7 +42,9 @@ function EventForm({ open, onClose, onSubmit }) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all animate-fade-in">
         <form onSubmit={handleSubmit} className="p-6">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Create New Event</h2>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+            {initialData ? 'Edit Event' : 'Create New Event'}
+          </h2>
           
           <div className="space-y-4">
             <div>
@@ -69,18 +78,29 @@ function EventForm({ open, onClose, onSubmit }) {
             </div>
 
             <div>
-              <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">
-                Image URL
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Select Image
               </label>
-              <input
-                type="url"
-                id="imageUrl"
-                name="imageUrl"
-                value={formData.imageUrl}
-                onChange={handleChange}
-                className="input-field"
-                placeholder="https://example.com/image.jpg"
-              />
+              <div className="grid grid-cols-5 gap-2">
+                {EVENT_IMAGES.map((image) => (
+                  <button
+                    key={image.id}
+                    type="button"
+                    className={`relative aspect-square overflow-hidden rounded-lg border-2 ${
+                      formData.imageUrl === image.url
+                        ? 'border-blue-500'
+                        : 'border-transparent'
+                    }`}
+                    onClick={() => handleChange({ target: { name: 'imageUrl', value: image.url } })}
+                  >
+                    <img
+                      src={image.url}
+                      alt={image.alt}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div>
@@ -111,7 +131,7 @@ function EventForm({ open, onClose, onSubmit }) {
               type="submit"
               className="btn-primary"
             >
-              Create Event
+              {initialData ? 'Save Changes' : 'Create Event'}
             </button>
           </div>
         </form>
