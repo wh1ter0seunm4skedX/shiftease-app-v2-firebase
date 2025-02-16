@@ -1,21 +1,6 @@
 import React, { useState } from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { Container, Box, AppBar, Toolbar, Typography, Button } from '@mui/material';
 import EventDashboard from './components/EventDashboard';
 import EventForm from './components/EventForm';
-
-const theme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#2196f3',
-    },
-    secondary: {
-      main: '#f50057',
-    },
-  },
-});
 
 function App() {
   const [events, setEvents] = useState([]);
@@ -31,25 +16,26 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Event Dashboard
-            </Typography>
-            <Button color="inherit" onClick={() => setIsFormOpen(true)}>
+    <div className="min-h-screen bg-gray-50">
+      <nav className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <h1 className="text-xl font-semibold text-gray-800">Event Dashboard</h1>
+            <button
+              onClick={() => setIsFormOpen(true)}
+              className="btn-primary"
+            >
               Add Event
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <Container maxWidth="lg" sx={{ mt: 4 }}>
-          <EventDashboard events={events} onDeleteEvent={handleDeleteEvent} />
-          <EventForm open={isFormOpen} onClose={() => setIsFormOpen(false)} onSubmit={handleAddEvent} />
-        </Container>
-      </Box>
-    </ThemeProvider>
+            </button>
+          </div>
+        </div>
+      </nav>
+      
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <EventDashboard events={events} onDeleteEvent={handleDeleteEvent} />
+        <EventForm open={isFormOpen} onClose={() => setIsFormOpen(false)} onSubmit={handleAddEvent} />
+      </main>
+    </div>
   );
 }
 

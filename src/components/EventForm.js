@@ -1,13 +1,4 @@
 import React, { useState } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  Stack,
-} from '@mui/material';
 
 function EventForm({ open, onClose, onSubmit }) {
   const [formData, setFormData] = useState({
@@ -15,6 +6,7 @@ function EventForm({ open, onClose, onSubmit }) {
     date: '',
     location: '',
     description: '',
+    imageUrl: '',
   });
 
   const handleChange = (e) => {
@@ -33,63 +25,113 @@ function EventForm({ open, onClose, onSubmit }) {
       date: '',
       location: '',
       description: '',
+      imageUrl: '',
     });
   };
 
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <form onSubmit={handleSubmit}>
-        <DialogTitle>Create New Event</DialogTitle>
-        <DialogContent>
-          <Stack spacing={2} sx={{ mt: 1 }}>
-            <TextField
-              name="title"
-              label="Event Title"
-              value={formData.title}
-              onChange={handleChange}
-              fullWidth
-              required
-            />
-            <TextField
-              name="date"
-              label="Date"
-              type="date"
-              value={formData.date}
-              onChange={handleChange}
-              fullWidth
-              required
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-            <TextField
-              name="location"
-              label="Location"
-              value={formData.location}
-              onChange={handleChange}
-              fullWidth
-              required
-            />
-            <TextField
-              name="description"
-              label="Description"
-              value={formData.description}
-              onChange={handleChange}
-              fullWidth
-              multiline
-              rows={4}
-              required
-            />
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button type="submit" variant="contained" color="primary">
-            Create Event
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all animate-fade-in">
+        <form onSubmit={handleSubmit} className="p-6">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Create New Event</h2>
+          
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+                Event Title
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                className="input-field"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">
+                Date
+              </label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                value={formData.date}
+                onChange={handleChange}
+                className="input-field"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+                Location
+              </label>
+              <input
+                type="text"
+                id="location"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                className="input-field"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                Image URL
+              </label>
+              <input
+                type="url"
+                id="imageUrl"
+                name="imageUrl"
+                value={formData.imageUrl}
+                onChange={handleChange}
+                className="input-field"
+                placeholder="https://example.com/image.jpg"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                Description
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                rows="4"
+                className="input-field"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 flex justify-end space-x-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn-secondary"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn-primary"
+            >
+              Create Event
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }
 
