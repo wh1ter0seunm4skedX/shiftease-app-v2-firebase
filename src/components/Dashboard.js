@@ -15,6 +15,8 @@ function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!user?.uid) return;
+
     const q = query(
       collection(db, 'events'),
       where('userId', '==', user.uid),
@@ -30,7 +32,7 @@ function Dashboard() {
     });
 
     return () => unsubscribe();
-  }, [user.uid]);
+  }, [user?.uid]);
 
   const handleAddEvent = async (newEvent) => {
     try {
@@ -95,9 +97,12 @@ function Dashboard() {
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <h1 className="text-xl font-semibold text-gray-800">Event Dashboard</h1>
+            <div className="flex items-center space-x-2">
+              <h1 className="text-xl font-semibold text-gray-800">Event Dashboard</h1>
+              <span className="text-sm text-gray-500">|</span>
+              <span className="text-sm text-gray-600">Welcome, {user.displayName || 'User'}</span>
+            </div>
             <div className="flex items-center space-x-4">
-              <span className="text-gray-600">Welcome, {user.displayName}</span>
               <button
                 onClick={handleCreateTestEvent}
                 className="btn-secondary"
@@ -112,8 +117,21 @@ function Dashboard() {
               </button>
               <button
                 onClick={handleLogout}
-                className="text-gray-600 hover:text-gray-800"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-600 bg-gray-50 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
               >
+                <svg 
+                  className="w-4 h-4 mr-2" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth="2" 
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" 
+                  />
+                </svg>
                 Sign Out
               </button>
             </div>
