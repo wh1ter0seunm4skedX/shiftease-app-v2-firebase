@@ -4,43 +4,52 @@ import { EVENT_IMAGES } from '../constants';
 function EventForm({ open, onClose, onSubmit, initialData = null }) {
   const [formData, setFormData] = useState({
     title: '',
-    date: '',
+    date: new Date().toISOString().split('T')[0],
     description: '',
-    imageUrl: EVENT_IMAGES[0].url,
+    imageUrl: EVENT_IMAGES[0].url
   });
 
   useEffect(() => {
     if (initialData) {
-      setFormData(initialData);
+      setFormData({
+        title: initialData.title || '',
+        date: initialData.date || new Date().toISOString().split('T')[0],
+        description: initialData.description || '',
+        imageUrl: initialData.imageUrl || EVENT_IMAGES[0].url
+      });
+    } else {
+      setFormData({
+        title: '',
+        date: new Date().toISOString().split('T')[0],
+        description: '',
+        imageUrl: EVENT_IMAGES[0].url
+      });
     }
   }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
-      [name]: value,
+      [name]: value
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
-    if (!initialData) {
-      setFormData({
-        title: '',
-        date: '',
-        description: '',
-        imageUrl: EVENT_IMAGES[0].url,
-      });
+    if (initialData) {
+      onSubmit({ ...formData, id: initialData.id });
+    } else {
+      onSubmit(formData);
     }
+    onClose();
   };
 
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all animate-fade-in">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all">
         <form onSubmit={handleSubmit} className="p-6">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">
             {initialData ? 'Edit Event' : 'Create New Event'}
