@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { db } from './firebase';
 import EventDashboard from './components/EventDashboard';
 import EventForm from './components/EventForm';
 
@@ -6,13 +8,43 @@ function App() {
   const [events, setEvents] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  const handleAddEvent = (newEvent) => {
-    setEvents([...events, { ...newEvent, id: Date.now() }]);
-    setIsFormOpen(false);
+  useEffect(() => {
+    // Create a query to get events ordered by date
+    const q = query(collection(db, 'events'), orderBy('date', 'desc'));
+    
+    // Set up real-time listener
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const eventsList = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setEvents(eventsList);
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
+  const handleAddEvent = async (newEvent) => {
+    try {
+      await addDoc(collection(db, 'events'), {
+        ...newEvent,
+        createdAt: new Date().toISOString()
+      });
+      setIsFormOpen(false);
+    } catch (error) {
+      console.error('Error adding event: ', error);
+      alert('Error adding event. Please try again.');
+    }
   };
 
-  const handleDeleteEvent = (eventId) => {
-    setEvents(events.filter(event => event.id !== eventId));
+  const handleDeleteEvent = async (eventId) => {
+    try {
+      await deleteDoc(doc(db, 'events', eventId));
+    } catch (error) {
+      console.error('Error deleting event: ', error);
+      alert('Error deleting event. Please try again.');
+    }
   };
 
   return (
