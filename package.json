@@ -2,7 +2,7 @@
   "name": "my-github-pages-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://michaelspeed.github.io/event-dashboard",
+  "homepage": "https://michaelashe.github.io/my-github-pages-app",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
