@@ -69,21 +69,6 @@ function EventForm({ open, onClose, onSubmit }) {
             </div>
 
             <div>
-              <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-                Location
-              </label>
-              <input
-                type="text"
-                id="location"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                className="input-field"
-                required
-              />
-            </div>
-
-            <div>
               <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">
                 Image URL
               </label>
