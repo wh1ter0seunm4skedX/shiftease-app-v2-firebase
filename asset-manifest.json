@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/event-dashboard/static/css/main.e7153fbf.css",
-    "main.js": "/event-dashboard/static/js/main.ef54e2c5.js",
-    "index.html": "/event-dashboard/index.html",
-    "main.e7153fbf.css.map": "/event-dashboard/static/css/main.e7153fbf.css.map",
-    "main.ef54e2c5.js.map": "/event-dashboard/static/js/main.ef54e2c5.js.map"
+    "main.css": "/my-github-pages-app/static/css/main.e7153fbf.css",
+    "main.js": "/my-github-pages-app/static/js/main.e79a97b2.js",
+    "index.html": "/my-github-pages-app/index.html",
+    "main.e7153fbf.css.map": "/my-github-pages-app/static/css/main.e7153fbf.css.map",
+    "main.e79a97b2.js.map": "/my-github-pages-app/static/js/main.e79a97b2.js.map"
   },
   "entrypoints": [
     "static/css/main.e7153fbf.css",
-    "static/js/main.ef54e2c5.js"
+    "static/js/main.e79a97b2.js"
   ]
 }
