@@ -2,7 +2,7 @@
   "name": "my-github-pages-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://wh1ter0seunm4skedX.github.io/my-github-pages-app",
+  "homepage": "https://whiteroseunmasked.github.io/my-github-pages-app",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
