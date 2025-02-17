@@ -175,34 +175,36 @@ function EventDashboard() {
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
+          <div className="flex flex-col sm:flex-row justify-between items-center py-4 sm:h-16">
+            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 mb-4 sm:mb-0">
               <h1 className="text-xl font-semibold text-gray-800">Event Dashboard</h1>
-              <span className="text-sm text-gray-500">|</span>
-              <span className="text-sm text-gray-600">
-                Welcome, {user.email} ({isAdmin() ? 'Admin' : 'User'})
-              </span>
+              <div className="flex items-center">
+                <span className="text-sm text-gray-500 hidden sm:inline">|</span>
+                <span className="text-sm text-gray-600 ml-2">
+                  Welcome, {user.email} ({isAdmin() ? 'Admin' : 'User'})
+                </span>
+              </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
               {isAdmin() && (
-                <>
+                <div className="flex space-x-2">
                   <button
                     onClick={handleCreateTestEvent}
-                    className="btn-secondary"
+                    className="btn-secondary text-sm px-3 py-2"
                   >
                     Create Test Event
                   </button>
                   <button
                     onClick={() => setIsFormOpen(true)}
-                    className="btn-primary"
+                    className="btn-primary text-sm px-3 py-2"
                   >
                     Add Event
                   </button>
-                </>
+                </div>
               )}
               <button
                 onClick={handleLogout}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-600 bg-gray-50 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
+                className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-gray-600 bg-gray-50 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
               >
                 <svg 
                   className="w-4 h-4 mr-2" 
@@ -224,11 +226,11 @@ function EventDashboard() {
         </div>
       </nav>
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {events.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-[60vh] text-center">
-            <div className="bg-white p-8 rounded-xl shadow-sm">
-              <h2 className="text-2xl font-semibold text-gray-700 mb-2">No events yet</h2>
+          <div className="flex flex-col items-center justify-center min-h-[50vh] sm:h-[60vh] text-center">
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-sm w-full sm:w-auto">
+              <h2 className="text-xl sm:text-2xl font-semibold text-gray-700 mb-2">No events yet</h2>
               {isAdmin() ? (
                 <p className="text-gray-500">Click the "Add Event" button to create your first event!</p>
               ) : (
@@ -237,7 +239,7 @@ function EventDashboard() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {events.map((event) => (
               <div 
                 key={event.id} 
@@ -248,10 +250,10 @@ function EventDashboard() {
                     <img
                       src={event.imageUrl}
                       alt={event.title}
-                      className="w-full h-48 object-cover rounded-t-lg"
+                      className="w-full h-40 sm:h-48 object-cover rounded-t-lg"
                     />
                   ) : (
-                    <div className="w-full h-48 bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center rounded-t-lg">
+                    <div className="w-full h-40 sm:h-48 bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center rounded-t-lg">
                       <span className="text-white text-xl font-semibold">{event.title[0]}</span>
                     </div>
                   )}
@@ -260,26 +262,26 @@ function EventDashboard() {
                   </div>
                 </div>
                 
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">{event.title}</h3>
+                <div className="p-4 sm:p-6">
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">{event.title}</h3>
                   
-                  <div className="flex items-center text-gray-600 mb-4">
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="flex items-center text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <span>{format(new Date(event.date), 'MMMM d, yyyy')}</span>
                   </div>
                   
-                  <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
+                  <p className="text-gray-600 mb-4 line-clamp-2 text-sm sm:text-base">{event.description}</p>
                   
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0">
                     {!isAdmin() && (
                       <button
                         onClick={() => isUserRegistered(event) 
                           ? handleUnregisterFromEvent(event.id)
                           : handleRegisterForEvent(event.id)
                         }
-                        className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md ${
+                        className={`w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md ${
                           isUserRegistered(event)
                             ? 'bg-red-100 text-red-700 hover:bg-red-200'
                             : 'bg-green-600 text-white hover:bg-green-700'
@@ -290,21 +292,21 @@ function EventDashboard() {
                     )}
                     
                     {isAdmin() && (
-                      <div className="flex space-x-3">
+                      <div className="flex space-x-3 w-full sm:w-auto justify-end">
                         <button
                           onClick={() => setEditingEvent(event)}
-                          className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                          className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors duration-200 text-sm sm:text-base"
                         >
-                          <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                           </svg>
                           Edit
                         </button>
                         <button
                           onClick={() => handleDeleteEvent(event.id)}
-                          className="inline-flex items-center text-red-600 hover:text-red-700 transition-colors duration-200"
+                          className="inline-flex items-center text-red-600 hover:text-red-700 transition-colors duration-200 text-sm sm:text-base"
                         >
-                          <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                           Delete

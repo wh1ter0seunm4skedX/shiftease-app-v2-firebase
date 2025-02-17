@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../../firebase';
+import { db } from '../../firebase';
 
-export default function SignUp() {
+function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -17,9 +16,9 @@ export default function SignUp() {
   const { signup } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       return setError('Passwords do not match');
     }
@@ -27,10 +26,7 @@ export default function SignUp() {
     try {
       setError('');
       setLoading(true);
-      
-      // Create the user in Firebase Auth
-      const userCredential = await signup(email, password);
-      const user = userCredential.user;
+      const { user } = await signup(email, password);
 
       // Create a user document in Firestore
       await setDoc(doc(db, 'users', user.uid), {
@@ -41,57 +37,72 @@ export default function SignUp() {
         createdAt: new Date().toISOString()
       });
 
-      navigate('/dashboard');
+      navigate('/');
     } catch (error) {
-      console.error('Error in signup:', error);
       setError('Failed to create an account. ' + error.message);
-    } finally {
-      setLoading(false);
     }
-  };
+    setLoading(false);
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-600 to-blue-500 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-2xl">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Already have an account?{' '}
-            <Link to="/signin" className="font-medium text-blue-600 hover:text-blue-500">
-              Sign in
-            </Link>
-          </p>
-        </div>
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-            {error}
+    <div className="min-h-screen bg-gradient-to-bl from-pink-50 via-white to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Animated background patterns */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Large floating circles */}
+        <div className="absolute -left-10 top-1/4 w-72 h-72 bg-pink-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
+        <div className="absolute right-1/3 top-1/3 w-72 h-72 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float-delay-2"></div>
+        <div className="absolute -right-10 bottom-1/4 w-72 h-72 bg-yellow-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float-delay-4"></div>
+        
+        {/* Small decorative elements */}
+        <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-pink-400 rounded-full animate-pulse"></div>
+        <div className="absolute top-3/4 right-1/4 w-4 h-4 bg-purple-400 rounded-full animate-pulse delay-300"></div>
+        <div className="absolute bottom-1/4 left-1/2 w-4 h-4 bg-yellow-400 rounded-full animate-pulse delay-700"></div>
+        
+        {/* Gradient mesh */}
+        <div className="absolute inset-0 bg-gradient-to-r from-pink-100/20 via-transparent to-purple-100/20 backdrop-blur-[100px]"></div>
+        
+        {/* Animated lines */}
+        <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(90deg, rgba(236, 72, 153, 0.1) 1px, transparent 1px), linear-gradient(rgba(236, 72, 153, 0.1) 1px, transparent 1px)', backgroundSize: '48px 48px' }}></div>
+      </div>
+
+      <div className="max-w-md w-full bg-white/90 rounded-3xl shadow-xl overflow-hidden relative z-10 backdrop-blur-sm">
+        {/* Pink curved shape */}
+        <div className="absolute top-0 right-0 left-0 h-72 bg-gradient-to-br from-pink-400 to-pink-500 transform skew-y-6 origin-top-right"></div>
+        
+        {/* Purple accent */}
+        <div className="absolute bottom-20 left-0 w-32 h-32 bg-purple-600 rounded-full transform -translate-x-16"></div>
+        
+        <div className="relative pt-16 pb-8 px-8">
+          <div className="text-center mb-8">
+            <button onClick={() => navigate(-1)} className="absolute top-4 left-4 text-white hover:text-gray-200">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
           </div>
-        )}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm space-y-4">
-            <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <div className="mt-1">
-                <input
-                  id="fullName"
-                  name="fullName"
-                  type="text"
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="John Doe"
-                />
-              </div>
+
+          {error && (
+            <div className="mb-4 text-center text-sm text-red-600 bg-red-50 rounded-lg py-2">
+              {error}
             </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4 mt-8">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
+              <input
+                id="fullName"
+                name="fullName"
+                type="text"
+                required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
+                placeholder="Full Name"
+              />
+            </div>
+
+            <div>
               <input
                 id="email"
                 name="email"
@@ -99,14 +110,12 @@ export default function SignUp() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="input-field mt-1"
-                placeholder="you@example.com"
+                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
+                placeholder="Email"
               />
             </div>
+
             <div>
-              <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
-                Phone Number
-              </label>
               <input
                 id="phoneNumber"
                 name="phoneNumber"
@@ -114,29 +123,12 @@ export default function SignUp() {
                 required
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                className="input-field mt-1"
-                placeholder="+1234567890"
+                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
+                placeholder="Phone Number"
               />
             </div>
+
             <div>
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-                Role
-              </label>
-              <select
-                id="role"
-                name="role"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="input-field mt-1"
-              >
-                <option value="user">Regular User</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
               <input
                 id="password"
                 name="password"
@@ -144,14 +136,12 @@ export default function SignUp() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="input-field mt-1"
-                placeholder="••••••••"
+                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
               />
             </div>
+
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                Confirm Password
-              </label>
               <input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -159,23 +149,56 @@ export default function SignUp() {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="input-field mt-1"
-                placeholder="••••••••"
+                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
+                placeholder="Confirm Password"
               />
             </div>
-          </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Creating account...' : 'Create account'}
-            </button>
-          </div>
-        </form>
+            <div>
+              <select
+                id="role"
+                name="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
+              >
+                <option value="user">Regular User</option>
+                <option value="admin">Administrator</option>
+              </select>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-pink-500 hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transform transition-transform duration-150 hover:scale-105"
+              >
+                {loading ? (
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <span className="flex items-center">
+                    Sign up
+                    <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                )}
+              </button>
+            </div>
+
+            <div className="text-center text-sm">
+              <Link to="/signin" className="text-pink-600 hover:text-pink-500">
+                Sign in
+              </Link>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
 }
+
+export default SignUp;
