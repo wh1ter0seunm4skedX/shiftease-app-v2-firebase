@@ -14,7 +14,7 @@
 # **ShiftEase** 🚀  
 _A full-stack solution for managing events and youth worker coordination._
 
-![ShiftEase Banner](https://raw.githubusercontent.com/wh1ter0seunm4skedX/my-github-pages-app/refs/heads/main/src/assets/welcome-icon.png)  
+![ShiftEase Banner](https://github.com/wh1ter0seunm4skedX/my-github-pages-app/blob/main/src/assets/ShiftEase_banner.png?raw=true)  
 
 ---
 
