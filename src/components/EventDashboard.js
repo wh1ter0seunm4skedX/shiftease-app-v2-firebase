@@ -139,13 +139,17 @@ function EventDashboard() {
   };
 
   const handleUnregisterFromEvent = async (eventId) => {
+    if (!window.confirm('Are you sure you want to unregister from this event?')) {
+      return;
+    }
+
     try {
       const eventRef = doc(db, 'events', eventId);
+      const event = events.find(e => e.id === eventId);
+      const registration = event.registrations.find(reg => reg.userId === user.uid);
+      
       await updateDoc(eventRef, {
-        registrations: arrayRemove({
-          userId: user.uid,
-          fullName: user.fullName || user.email
-        })
+        registrations: arrayRemove(registration)
       });
     } catch (error) {
       console.error('Error unregistering from event: ', error);
@@ -275,14 +279,13 @@ function EventDashboard() {
                           ? handleUnregisterFromEvent(event.id)
                           : handleRegisterForEvent(event.id)
                         }
-                        disabled={isUserRegistered(event)}
                         className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md ${
                           isUserRegistered(event)
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'bg-blue-600 text-white hover:bg-blue-700'
-                        } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200`}
+                            ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                            : 'bg-green-600 text-white hover:bg-green-700'
+                        } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200`}
                       >
-                        {isUserRegistered(event) ? 'Registered' : 'Register'}
+                        {isUserRegistered(event) ? 'Unregister' : 'Register'}
                       </button>
                     )}
                     
