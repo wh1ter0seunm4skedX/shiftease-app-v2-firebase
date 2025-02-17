@@ -3,10 +3,9 @@ import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, updateD
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { generateRandomEvent } from '../constants';
 import EventForm from './EventForm';
-import { format } from 'date-fns';
 import AdminPanel from './admin/AdminPanel';
+import { format } from 'date-fns';
 
 function EventDashboard() {
   const [events, setEvents] = useState([]);
@@ -96,26 +95,6 @@ function EventDashboard() {
     }
   };
 
-  const handleCreateTestEvent = async () => {
-    if (!isAdmin) {
-      alert('Only administrators can create test events');
-      return;
-    }
-
-    try {
-      const randomEvent = generateRandomEvent();
-      const eventData = {
-        ...randomEvent,
-        createdAt: new Date().toISOString(),
-        registrations: []
-      };
-      await addDoc(collection(db, 'events'), eventData);
-    } catch (error) {
-      console.error('Error creating test event: ', error);
-      alert('Error creating test event. Please try again.');
-    }
-  };
-
   const handleRegisterForEvent = async (eventId) => {
     if (isAdmin) {
       alert('Administrators cannot register for events');
@@ -189,12 +168,6 @@ function EventDashboard() {
               <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
                 {isAdmin && (
                   <div className="flex space-x-2">
-                    <button
-                      onClick={handleCreateTestEvent}
-                      className="btn-secondary text-sm px-3 py-2"
-                    >
-                      Create Test Event
-                    </button>
                     <button
                       onClick={() => setIsFormOpen(true)}
                       className="btn-primary text-sm px-3 py-2"

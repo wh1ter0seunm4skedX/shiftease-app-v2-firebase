@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { db } from '../../firebase';
-import { collection, deleteDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, deleteDoc, getDocs } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
+import { generateRandomEvent } from '../../constants';
 
 function AdminPanel() {
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,28 @@ function AdminPanel() {
   if (!isAdmin) {
     return null;
   }
+
+  // Create test event
+  const handleCreateTestEvent = async () => {
+    try {
+      setLoading(true);
+      setMessage({ text: '', type: '' });
+
+      const testEvent = generateRandomEvent();
+      await addDoc(collection(db, 'events'), {
+        ...testEvent,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        registrations: []
+      });
+
+      setMessage({ text: 'Test event created successfully!', type: 'success' });
+    } catch (error) {
+      setMessage({ text: `Error creating test event: ${error.message}`, type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Delete all events
   const deleteAllEvents = async () => {
@@ -85,6 +108,14 @@ function AdminPanel() {
           )}
 
           <div className="space-y-3">
+            <button
+              onClick={handleCreateTestEvent}
+              disabled={loading}
+              className="w-full px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transform transition-transform duration-150 hover:scale-105"
+            >
+              {loading ? 'Creating...' : 'Create Test Event'}
+            </button>
+
             <button
               onClick={deleteAllEvents}
               disabled={loading}
