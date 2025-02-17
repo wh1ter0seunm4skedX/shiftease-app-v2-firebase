@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, addDoc, deleteDoc, doc, onSnapshot, query, where, orderBy, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { useRole } from '../hooks/useRole';
@@ -28,7 +28,11 @@ function EventDashboard() {
       (querySnapshot) => {
         const eventsData = [];
         querySnapshot.forEach((doc) => {
-          eventsData.push({ id: doc.id, ...doc.data() });
+          eventsData.push({ 
+            id: doc.id, 
+            ...doc.data(),
+            registrations: doc.data().registrations || []
+          });
         });
         setEvents(eventsData);
       },
@@ -49,7 +53,8 @@ function EventDashboard() {
     try {
       const eventData = {
         ...newEvent,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        registrations: []
       };
       await addDoc(collection(db, 'events'), eventData);
       setIsFormOpen(false);
@@ -67,7 +72,7 @@ function EventDashboard() {
 
     try {
       const eventRef = doc(db, 'events', eventData.id);
-      const { id, createdAt, ...updateData } = eventData;
+      const { id, createdAt, registrations, ...updateData } = eventData;
       await updateDoc(eventRef, updateData);
       setEditingEvent(null);
     } catch (error) {
@@ -102,13 +107,54 @@ function EventDashboard() {
       const randomEvent = generateRandomEvent();
       const eventData = {
         ...randomEvent,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        registrations: []
       };
       await addDoc(collection(db, 'events'), eventData);
     } catch (error) {
       console.error('Error creating test event: ', error);
       alert('Error creating test event. Please try again.');
     }
+  };
+
+  const handleRegisterForEvent = async (eventId) => {
+    if (isAdmin()) {
+      alert('Administrators cannot register for events');
+      return;
+    }
+
+    try {
+      const eventRef = doc(db, 'events', eventId);
+      await updateDoc(eventRef, {
+        registrations: arrayUnion({
+          userId: user.uid,
+          fullName: user.fullName || user.email,
+          registeredAt: new Date().toISOString()
+        })
+      });
+    } catch (error) {
+      console.error('Error registering for event: ', error);
+      alert('Error registering for event. Please try again.');
+    }
+  };
+
+  const handleUnregisterFromEvent = async (eventId) => {
+    try {
+      const eventRef = doc(db, 'events', eventId);
+      await updateDoc(eventRef, {
+        registrations: arrayRemove({
+          userId: user.uid,
+          fullName: user.fullName || user.email
+        })
+      });
+    } catch (error) {
+      console.error('Error unregistering from event: ', error);
+      alert('Error unregistering from event. Please try again.');
+    }
+  };
+
+  const isUserRegistered = (event) => {
+    return event.registrations?.some(reg => reg.userId === user.uid) || false;
   };
 
   const handleLogout = async () => {
@@ -205,11 +251,9 @@ function EventDashboard() {
                       <span className="text-white text-xl font-semibold">{event.title[0]}</span>
                     </div>
                   )}
-                  {event.createdAt && (
-                    <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-                      Added {format(new Date(event.createdAt), 'MMM d, yyyy')}
-                    </div>
-                  )}
+                  <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                    {event.registrations?.length || 0} registered
+                  </div>
                 </div>
                 
                 <div className="p-6">
@@ -224,28 +268,47 @@ function EventDashboard() {
                   
                   <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
                   
-                  {isAdmin() && (
-                    <div className="flex justify-end space-x-3">
+                  <div className="flex justify-between items-center">
+                    {!isAdmin() && (
                       <button
-                        onClick={() => setEditingEvent(event)}
-                        className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                        onClick={() => isUserRegistered(event) 
+                          ? handleUnregisterFromEvent(event.id)
+                          : handleRegisterForEvent(event.id)
+                        }
+                        disabled={isUserRegistered(event)}
+                        className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md ${
+                          isUserRegistered(event)
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-blue-600 text-white hover:bg-blue-700'
+                        } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200`}
                       >
-                        <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                        Edit
+                        {isUserRegistered(event) ? 'Registered' : 'Register'}
                       </button>
-                      <button
-                        onClick={() => handleDeleteEvent(event.id)}
-                        className="inline-flex items-center text-red-600 hover:text-red-700 transition-colors duration-200"
-                      >
-                        <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                        Delete
-                      </button>
-                    </div>
-                  )}
+                    )}
+                    
+                    {isAdmin() && (
+                      <div className="flex space-x-3">
+                        <button
+                          onClick={() => setEditingEvent(event)}
+                          className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                        >
+                          <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteEvent(event.id)}
+                          className="inline-flex items-center text-red-600 hover:text-red-700 transition-colors duration-200"
+                        >
+                          <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
