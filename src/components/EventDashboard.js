@@ -21,7 +21,7 @@ function EventDashboard() {
 
     const eventsQuery = query(
       collection(db, 'events'),
-      where('userId', '==', user.uid)
+      orderBy('date', 'desc')
     );
     
     const unsubscribe = onSnapshot(eventsQuery, 
@@ -49,7 +49,6 @@ function EventDashboard() {
     try {
       const eventData = {
         ...newEvent,
-        userId: user.uid,
         createdAt: new Date().toISOString()
       };
       await addDoc(collection(db, 'events'), eventData);
@@ -68,7 +67,7 @@ function EventDashboard() {
 
     try {
       const eventRef = doc(db, 'events', eventData.id);
-      const { id, createdAt, userId, ...updateData } = eventData;
+      const { id, createdAt, ...updateData } = eventData;
       await updateDoc(eventRef, updateData);
       setEditingEvent(null);
     } catch (error) {
@@ -103,7 +102,6 @@ function EventDashboard() {
       const randomEvent = generateRandomEvent();
       const eventData = {
         ...randomEvent,
-        userId: user.uid,
         createdAt: new Date().toISOString()
       };
       await addDoc(collection(db, 'events'), eventData);
@@ -191,7 +189,10 @@ function EventDashboard() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((event) => (
-              <div key={event.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <div 
+                key={event.id} 
+                className="bg-white rounded-lg shadow-sm overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-md"
+              >
                 <div className="aspect-w-16 aspect-h-9 relative">
                   {event.imageUrl ? (
                     <img
