@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/my-github-pages-app/static/css/main.e01d8c9b.css",
-    "main.js": "/my-github-pages-app/static/js/main.b2120ee7.js",
-    "static/media/welcome-icon.png": "/my-github-pages-app/static/media/welcome-icon.76059aff6c8f0f5febd7.png",
-    "index.html": "/my-github-pages-app/index.html",
-    "main.e01d8c9b.css.map": "/my-github-pages-app/static/css/main.e01d8c9b.css.map",
-    "main.b2120ee7.js.map": "/my-github-pages-app/static/js/main.b2120ee7.js.map"
+    "main.css": "/ShiftEase-App/static/css/main.70a578a1.css",
+    "main.js": "/ShiftEase-App/static/js/main.89cd8ae0.js",
+    "static/media/welcome-icon.png": "/ShiftEase-App/static/media/welcome-icon.76059aff6c8f0f5febd7.png",
+    "index.html": "/ShiftEase-App/index.html",
+    "main.70a578a1.css.map": "/ShiftEase-App/static/css/main.70a578a1.css.map",
+    "main.89cd8ae0.js.map": "/ShiftEase-App/static/js/main.89cd8ae0.js.map"
   },
   "entrypoints": [
-    "static/css/main.e01d8c9b.css",
-    "static/js/main.b2120ee7.js"
+    "static/css/main.70a578a1.css",
+    "static/js/main.89cd8ae0.js"
   ]
 }
