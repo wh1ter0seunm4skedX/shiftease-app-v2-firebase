@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, updateDoc, arrayUnion, arrayRemove, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -12,8 +12,21 @@ function EventDashboard() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [userData, setUserData] = useState(null);
   const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user) {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+          setUserData(userDoc.data());
+        }
+      }
+    };
+    fetchUserData();
+  }, [user]);
 
   useEffect(() => {
     if (!user?.uid) return;
@@ -200,11 +213,19 @@ function EventDashboard() {
 
               <div className="flex items-center space-x-3 border-l pl-4 border-gray-200">
                 <div className="flex items-center space-x-2">
-                  <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
-                    <svg className="h-4 w-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
+                  {userData?.profilePicture ? (
+                    <img
+                      src={userData.profilePicture}
+                      alt="Profile"
+                      className="h-8 w-8 rounded-full object-cover ring-2 ring-white"
+                    />
+                  ) : (
+                    <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
+                      <svg className="h-4 w-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                  )}
                   <span className="text-sm font-medium text-gray-700">
                     {user.email}
                     <span className="ml-1 px-2 py-0.5 text-xs rounded-full bg-purple-100 text-purple-800">
@@ -230,11 +251,19 @@ function EventDashboard() {
           <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} sm:hidden border-t border-gray-200 py-2`}>
             <div className="space-y-3 px-2 pb-3 pt-2">
               <div className="flex items-center space-x-2 px-3 py-2">
-                <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
-                  <svg className="h-4 w-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
+                {userData?.profilePicture ? (
+                  <img
+                    src={userData.profilePicture}
+                    alt="Profile"
+                    className="h-8 w-8 rounded-full object-cover ring-2 ring-white"
+                  />
+                ) : (
+                  <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
+                    <svg className="h-4 w-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                )}
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-gray-700">{user.email}</span>
                   <span className="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 w-fit">

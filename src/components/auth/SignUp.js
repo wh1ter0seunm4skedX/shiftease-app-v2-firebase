@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
+import { PROFILE_PICTURES } from '../../constants';
 
 function SignUp() {
   const [email, setEmail] = useState('');
@@ -11,6 +12,7 @@ function SignUp() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [fullName, setFullName] = useState('');
   const [role, setRole] = useState('user');
+  const [selectedPicture, setSelectedPicture] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
@@ -21,6 +23,10 @@ function SignUp() {
 
     if (password !== confirmPassword) {
       return setError('Passwords do not match');
+    }
+
+    if (!selectedPicture) {
+      return setError('Please select a profile picture');
     }
 
     try {
@@ -34,6 +40,7 @@ function SignUp() {
         fullName: fullName,
         role: role,
         phoneNumber: phoneNumber,
+        profilePicture: selectedPicture.url,
         createdAt: new Date().toISOString()
       });
 
@@ -165,6 +172,36 @@ function SignUp() {
                 <option value="user">Regular User</option>
                 <option value="admin">Administrator</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Choose your profile picture
+              </label>
+              <div className="grid grid-cols-3 gap-4">
+                {PROFILE_PICTURES.map((picture) => (
+                  <div
+                    key={picture.id}
+                    className={`relative rounded-lg overflow-hidden cursor-pointer transform transition-transform duration-200 hover:scale-105 ${
+                      selectedPicture?.id === picture.id ? 'ring-2 ring-purple-500 ring-offset-2' : ''
+                    }`}
+                    onClick={() => setSelectedPicture(picture)}
+                  >
+                    <img
+                      src={picture.url}
+                      alt={picture.alt}
+                      className="w-full h-24 object-cover"
+                    />
+                    {selectedPicture?.id === picture.id && (
+                      <div className="absolute inset-0 bg-purple-500 bg-opacity-20 flex items-center justify-center">
+                        <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div>
