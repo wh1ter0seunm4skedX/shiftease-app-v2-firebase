@@ -5,8 +5,11 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
   const [formData, setFormData] = useState({
     title: '',
     date: new Date().toISOString().split('T')[0],
+    startTime: '',
+    endTime: '',
     description: '',
-    imageUrl: EVENT_IMAGES[0].url
+    imageUrl: EVENT_IMAGES[0].url,
+    timeError: '',
   });
 
   useEffect(() => {
@@ -14,29 +17,53 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
       setFormData({
         title: initialData.title || '',
         date: initialData.date || new Date().toISOString().split('T')[0],
+        startTime: initialData.startTime || '',
+        endTime: initialData.endTime || '',
         description: initialData.description || '',
-        imageUrl: initialData.imageUrl || EVENT_IMAGES[0].url
+        imageUrl: initialData.imageUrl || EVENT_IMAGES[0].url,
+        timeError: ''
       });
     } else {
       setFormData({
         title: '',
         date: new Date().toISOString().split('T')[0],
+        startTime: '',
+        endTime: '',
         description: '',
-        imageUrl: EVENT_IMAGES[0].url
+        imageUrl: EVENT_IMAGES[0].url,
+        timeError: ''
       });
     }
   }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+
+    // Update formData
+    setFormData(prev => {
+      const updatedData = { ...prev, [name]: value };
+
+      // Validate time if start or end time is changed
+      if (name === 'startTime' || name === 'endTime') {
+        const { startTime, endTime } = updatedData;
+        if (startTime && endTime && endTime < startTime) {
+          updatedData.timeError = 'End time cannot be before start time';
+        } else {
+          updatedData.timeError = '';
+        }
+      }
+
+      return updatedData;
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Ensure no time error before submission
+    if (formData.timeError) {
+      return;
+    }
+
     if (initialData) {
       onSubmit({ ...formData, id: initialData.id });
     } else {
@@ -85,6 +112,41 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 required
               />
             </div>
+
+            <div>
+              <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-1">
+              Start Time
+              </label>
+              <input
+                type="time"
+                id="startTime"
+                name="startTime"
+                value={formData.startTime}
+                onChange={handleChange}
+                className="input-field"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-1">
+              End Time
+              </label>
+              <input
+                type="time"
+                id="endTime"
+                name="endTime"
+                value={formData.endTime}
+                onChange={handleChange}
+                className="input-field"
+                required
+              />
+            </div>
+            
+            {formData.timeError && (
+              <div className="text-red-500 text-sm mt-2">
+                {formData.timeError}
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
