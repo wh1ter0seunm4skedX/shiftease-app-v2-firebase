@@ -320,12 +320,12 @@ function EventDashboard() {
                       <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                      <span>{format(new Date(event.date), 'MMMM d, yyyy')}</span>
+                      <span>{format(new Date(event.date), 'dd.MM.yyyy')}</span>
                       <span className="mx-2">|</span>
-                      <span>{event.startTime ? format(new Date(`1970-01-01T${event.startTime}:00`), 'HH:mm') : 'N/A'}</span>
+                      <span>{event.startTime ? format(new Date(`1970-01-01T${event.startTime.padStart(5, '0')}:00`), 'HH:mm') : 'N/A'}</span>
                       <span className="mx-2">-</span>
-                      <span>{event.endTime ? format(new Date(`1970-01-01T${event.endTime}:00`), 'HH:mm') : 'N/A'}</span>
-                    </div>
+                      <span>{event.endTime ? format(new Date(`1970-01-01T${event.endTime.padStart(5, '0')}:00`), 'HH:mm') : 'N/A'}</span>
+                      </div>
                     
                     <p className="text-gray-600 mb-4 line-clamp-2 text-sm sm:text-base">{event.description}</p>
                     

@@ -81,10 +81,17 @@ export const generateRandomEvent = () => {
 
   const randomDate = new Date();
   randomDate.setDate(randomDate.getDate() + Math.floor(Math.random() * 30));
+  const randomHour = Math.floor(Math.random() * 24);
+  const randomMinute = Math.floor(Math.random() * 60);
+  randomDate.setHours(randomHour, randomMinute, 0, 0);  // setting seconds and milliseconds to 0
+  const randomStartTime = `${randomHour}:${randomMinute < 10 ? '0' : ''}${randomMinute}`;
+  const randomEndTime = `${(randomHour + 1) % 24}:${randomMinute < 10 ? '0' : ''}${randomMinute}`;  // end time 1 hour later
 
   return {
     title: titles[Math.floor(Math.random() * titles.length)],
     date: randomDate.toISOString().split('T')[0],
+    startTime: randomStartTime,
+    endTime: randomEndTime,
     description: descriptions[Math.floor(Math.random() * descriptions.length)],
     imageUrl: EVENT_IMAGES[Math.floor(Math.random() * EVENT_IMAGES.length)].url
   };

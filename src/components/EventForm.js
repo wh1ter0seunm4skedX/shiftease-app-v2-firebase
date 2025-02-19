@@ -113,7 +113,8 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
               />
             </div>
 
-            <div>
+            <div className="flex justify-between space-x-4">
+            <div className='w-full'>
               <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-1">
               Start Time
               </label>
@@ -123,11 +124,11 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 name="startTime"
                 value={formData.startTime}
                 onChange={handleChange}
-                className="input-field"
+                className="input-field w-full"
                 required
               />
             </div>
-            <div>
+            <div className='w-full'>
               <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-1">
               End Time
               </label>
@@ -137,11 +138,11 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 name="endTime"
                 value={formData.endTime}
                 onChange={handleChange}
-                className="input-field"
+                className="input-field w-full"
                 required
               />
             </div>
-            
+            </div>
             {formData.timeError && (
               <div className="text-red-500 text-sm mt-2">
                 {formData.timeError}
@@ -185,7 +186,6 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 onChange={handleChange}
                 rows="4"
                 className="input-field"
-                required
               />
             </div>
           </div>
