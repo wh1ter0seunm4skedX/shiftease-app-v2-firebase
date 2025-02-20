@@ -10,6 +10,10 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
     description: '',
     imageUrl: EVENT_IMAGES[0].url,
     timeError: '',
+    capacity: '',
+    standbyCapacity: '',
+    registrations: [],
+    standbyRegistrations: []
   });
 
   useEffect(() => {
@@ -21,7 +25,11 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
         endTime: initialData.endTime || '',
         description: initialData.description || '',
         imageUrl: initialData.imageUrl || EVENT_IMAGES[0].url,
-        timeError: ''
+        timeError: '',
+        capacity: initialData.capacity || '',
+        standbyCapacity: initialData.standbyCapacity || '',
+        registrations: initialData.registrations || [],
+        standbyRegistrations: initialData.standbyRegistrations || []
       });
     } else {
       setFormData({
@@ -31,7 +39,11 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
         endTime: '',
         description: '',
         imageUrl: EVENT_IMAGES[0].url,
-        timeError: ''
+        timeError: '',
+        capacity: '',
+        standbyCapacity: '',
+        registrations: [],
+        standbyRegistrations: []
       });
     }
   }, [initialData]);
@@ -64,11 +76,22 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
       return;
     }
 
+    // Create the submission data
+    const submissionData = {
+      ...formData,
+      capacity: parseInt(formData.capacity) || 0,
+      standbyCapacity: parseInt(formData.standbyCapacity) || 0
+    };
+    delete submissionData.timeError;
+
     if (initialData) {
-      onSubmit({ ...formData, id: initialData.id });
-    } else {
-      onSubmit(formData);
+      // For editing, include the id and existing registrations
+      submissionData.id = initialData.id;
+      submissionData.registrations = initialData.registrations || [];
+      submissionData.standbyRegistrations = initialData.standbyRegistrations || [];
     }
+
+    onSubmit(submissionData);
     onClose();
   };
 
@@ -184,9 +207,46 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                rows="4"
+                rows="3"
                 className="input-field"
+                required
               />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="capacity" className="block text-sm font-medium text-gray-700 mb-1">
+                  Worker Capacity
+                </label>
+                <input
+                  type="number"
+                  id="capacity"
+                  name="capacity"
+                  min="1"
+                  value={formData.capacity}
+                  onChange={handleChange}
+                  className="input-field"
+                  required
+                  placeholder="Number of workers needed"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="standbyCapacity" className="block text-sm font-medium text-gray-700 mb-1">
+                  Standby Capacity
+                </label>
+                <input
+                  type="number"
+                  id="standbyCapacity"
+                  name="standbyCapacity"
+                  min="0"
+                  value={formData.standbyCapacity}
+                  onChange={handleChange}
+                  className="input-field"
+                  required
+                  placeholder="Number of standby workers"
+                />
+              </div>
             </div>
           </div>
 

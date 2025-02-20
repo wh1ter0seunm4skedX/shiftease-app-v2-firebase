@@ -43,7 +43,8 @@ function EventDashboard() {
           eventsData.push({ 
             id: doc.id, 
             ...doc.data(),
-            registrations: doc.data().registrations || []
+            registrations: doc.data().registrations || [],
+            standbyRegistrations: doc.data().standbyRegistrations || []
           });
         });
         setEvents(eventsData);
@@ -66,7 +67,10 @@ function EventDashboard() {
       const eventData = {
         ...newEvent,
         createdAt: new Date().toISOString(),
-        registrations: []
+        registrations: [],
+        standbyRegistrations: [],
+        capacity: parseInt(newEvent.capacity),
+        standbyCapacity: parseInt(newEvent.standbyCapacity)
       };
       await addDoc(collection(db, 'events'), eventData);
       setIsFormOpen(false);
@@ -84,7 +88,14 @@ function EventDashboard() {
 
     try {
       const eventRef = doc(db, 'events', eventData.id);
-      const { id, createdAt, registrations, ...updateData } = eventData;
+      // Only remove id and createdAt, keep other fields for update
+      const { id, createdAt, ...updateData } = eventData;
+      
+      // Ensure capacity fields are numbers
+      updateData.capacity = parseInt(updateData.capacity);
+      updateData.standbyCapacity = parseInt(updateData.standbyCapacity);
+      
+      console.log('Updating event with data:', updateData);
       await updateDoc(eventRef, updateData);
       setEditingEvent(null);
     } catch (error) {
@@ -110,6 +121,11 @@ function EventDashboard() {
   };
 
   const handleRegisterForEvent = async (eventId) => {
+    if (!user) {
+      alert('Please log in to register for events');
+      return;
+    }
+
     if (isAdmin) {
       alert('Administrators cannot register for events');
       return;
@@ -117,13 +133,39 @@ function EventDashboard() {
 
     try {
       const eventRef = doc(db, 'events', eventId);
-      await updateDoc(eventRef, {
-        registrations: arrayUnion({
-          userId: user.uid,
-          fullName: user.fullName || user.email,
-          registeredAt: new Date().toISOString()
-        })
-      });
+      const eventDoc = await getDoc(eventRef);
+      
+      if (!eventDoc.exists()) {
+        alert('Event not found');
+        return;
+      }
+
+      const eventData = eventDoc.data();
+      const isUserRegistered = eventData.registrations?.includes(user.uid);
+      const isUserStandby = eventData.standbyRegistrations?.includes(user.uid);
+
+      if (isUserRegistered || isUserStandby) {
+        alert('You are already registered for this event');
+        return;
+      }
+
+      // Check if regular capacity is available
+      if (eventData.registrations?.length < eventData.capacity) {
+        await updateDoc(eventRef, {
+          registrations: arrayUnion(user.uid)
+        });
+        alert('Successfully registered for the event!');
+      } 
+      // Check if standby capacity is available
+      else if (eventData.standbyRegistrations?.length < eventData.standbyCapacity) {
+        await updateDoc(eventRef, {
+          standbyRegistrations: arrayUnion(user.uid)
+        });
+        alert('Successfully registered for the event!');
+      } 
+      else {
+        alert('Sorry, this event is full.');
+      }
     } catch (error) {
       console.error('Error registering for event: ', error);
       alert('Error registering for event. Please try again.');
@@ -131,18 +173,43 @@ function EventDashboard() {
   };
 
   const handleUnregisterFromEvent = async (eventId) => {
-    if (!window.confirm('Are you sure you want to unregister from this event?')) {
-      return;
-    }
+    if (!user) return;
 
     try {
       const eventRef = doc(db, 'events', eventId);
-      const event = events.find(e => e.id === eventId);
-      const registration = event.registrations.find(reg => reg.userId === user.uid);
+      const eventDoc = await getDoc(eventRef);
       
-      await updateDoc(eventRef, {
-        registrations: arrayRemove(registration)
-      });
+      if (!eventDoc.exists()) {
+        alert('Event not found');
+        return;
+      }
+
+      const eventData = eventDoc.data();
+      const isUserRegistered = eventData.registrations?.includes(user.uid);
+      const isUserStandby = eventData.standbyRegistrations?.includes(user.uid);
+
+      if (isUserRegistered) {
+        await updateDoc(eventRef, {
+          registrations: arrayRemove(user.uid)
+        });
+
+        // If there are people in standby, move the first one to regular registration
+        if (eventData.standbyRegistrations?.length > 0) {
+          const firstStandbyUser = eventData.standbyRegistrations[0];
+          await updateDoc(eventRef, {
+            registrations: arrayUnion(firstStandbyUser),
+            standbyRegistrations: arrayRemove(firstStandbyUser)
+          });
+        }
+
+        alert('Successfully unregistered from the event');
+      } 
+      else if (isUserStandby) {
+        await updateDoc(eventRef, {
+          standbyRegistrations: arrayRemove(user.uid)
+        });
+        alert('Successfully removed from the standby list');
+      }
     } catch (error) {
       console.error('Error unregistering from event: ', error);
       alert('Error unregistering from event. Please try again.');
@@ -150,7 +217,11 @@ function EventDashboard() {
   };
 
   const isUserRegistered = (event) => {
-    return event.registrations?.some(reg => reg.userId === user.uid) || false;
+    return event.registrations?.some(reg => reg === user.uid) || false;
+  };
+
+  const isUserStandby = (event) => {
+    return event.standbyRegistrations?.some(reg => reg === user.uid) || false;
   };
 
   const handleLogout = async () => {
@@ -342,62 +413,113 @@ function EventDashboard() {
                     </div>
                   </div>
                   
-                  <div className="p-4 sm:p-6">
-                    <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">{event.title}</h3>
-                    
-                    <div className="flex items-center text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <span>{format(new Date(event.date), 'dd.MM.yyyy')}</span>
-                      <span className="mx-2">|</span>
-                      <span>{event.startTime ? format(new Date(`1970-01-01T${event.startTime.padStart(5, '0')}:00`), 'HH:mm') : 'N/A'}</span>
-                      <span className="mx-2">-</span>
-                      <span>{event.endTime ? format(new Date(`1970-01-01T${event.endTime.padStart(5, '0')}:00`), 'HH:mm') : 'N/A'}</span>
-                      </div>
-                    
-                    <p className="text-gray-600 mb-4 line-clamp-2 text-sm sm:text-base">{event.description}</p>
-                    
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0">
-                      {!isAdmin && (
-                        <button
-                          onClick={() => isUserRegistered(event) 
-                            ? handleUnregisterFromEvent(event.id)
-                            : handleRegisterForEvent(event.id)
-                          }
-                          className={`w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md ${
-                            isUserRegistered(event)
-                              ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                              : 'bg-green-600 text-white hover:bg-green-700'
-                          } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200`}
-                        >
-                          {isUserRegistered(event) ? 'Unregister' : 'Register'}
-                        </button>
-                      )}
-                      
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-xl font-semibold text-gray-900">{event.title}</h3>
                       {isAdmin && (
-                        <div className="flex space-x-3 w-full sm:w-auto justify-end">
+                        <div className="flex space-x-2">
                           <button
                             onClick={() => setEditingEvent(event)}
-                            className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors duration-200 text-sm sm:text-base"
+                            className="text-blue-600 hover:text-blue-800"
                           >
-                            <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
-                            Edit
                           </button>
                           <button
                             onClick={() => handleDeleteEvent(event.id)}
-                            className="inline-flex items-center text-red-600 hover:text-red-700 transition-colors duration-200 text-sm sm:text-base"
+                            className="text-red-600 hover:text-red-800"
                           >
-                            <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
-                            Delete
                           </button>
                         </div>
                       )}
                     </div>
+
+                    <div className="mb-4">
+                      <p className="text-gray-600">{event.description}</p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-4 mb-4">
+                      <div className="flex items-center text-gray-600">
+                        <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>{format(new Date(event.date), 'MMMM d, yyyy')}</span>
+                      </div>
+                      <div className="flex items-center text-gray-600">
+                        <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{event.startTime} - {event.endTime}</span>
+                      </div>
+                    </div>
+
+                    {/* Capacity Information - Only visible to admin */}
+                    {isAdmin && (
+                      <div className="mb-4 space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600">Regular Registration:</span>
+                          <span className="text-sm font-medium">
+                            {event.registrations?.length || 0} / {event.capacity}
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className="bg-blue-600 h-2 rounded-full"
+                            style={{ width: `${(event.registrations?.length || 0) / event.capacity * 100}%` }}
+                          ></div>
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600">Standby List:</span>
+                          <span className="text-sm font-medium">
+                            {event.standbyRegistrations?.length || 0} / {event.standbyCapacity}
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className="bg-yellow-400 h-2 rounded-full"
+                            style={{ width: `${(event.standbyRegistrations?.length || 0) / event.standbyCapacity * 100}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Registration Button - Only visible to non-admin users */}
+                    {!isAdmin && (
+                      <div className="mt-4">
+                        {isUserRegistered(event) ? (
+                          <button
+                            onClick={() => handleUnregisterFromEvent(event.id)}
+                            className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
+                          >
+                            Unregister
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleRegisterForEvent(event.id)}
+                            className={`w-full py-2 px-4 rounded-lg transition-colors ${
+                              event.registrations?.length >= event.capacity &&
+                              event.standbyRegistrations?.length >= event.standbyCapacity
+                                ? 'bg-gray-400 cursor-not-allowed'
+                                : 'bg-blue-600 hover:bg-blue-700 text-white'
+                            }`}
+                            disabled={
+                              event.registrations?.length >= event.capacity &&
+                              event.standbyRegistrations?.length >= event.standbyCapacity
+                            }
+                          >
+                            {event.registrations?.length >= event.capacity &&
+                            event.standbyRegistrations?.length >= event.standbyCapacity
+                              ? 'Event Full'
+                              : 'Register'}
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

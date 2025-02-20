@@ -176,9 +176,12 @@ export const generateRandomEvent = () => {
   randomDate.setDate(randomDate.getDate() + Math.floor(Math.random() * 30));
   const randomHour = Math.floor(Math.random() * 24);
   const randomMinute = Math.floor(Math.random() * 60);
-  randomDate.setHours(randomHour, randomMinute, 0, 0);  // setting seconds and milliseconds to 0
+  randomDate.setHours(randomHour, randomMinute, 0, 0); 
   const randomStartTime = `${randomHour}:${randomMinute < 10 ? '0' : ''}${randomMinute}`;
-  const randomEndTime = `${(randomHour + 1) % 24}:${randomMinute < 10 ? '0' : ''}${randomMinute}`;  // end time 1 hour later
+  const randomEndTime = `${(randomHour + 1) % 24}:${randomMinute < 10 ? '0' : ''}${randomMinute}`; 
+
+  const randomCapacity = Math.floor(Math.random() * 10) + 1;
+  const randomStandbyCapacity = Math.floor(Math.random() * 5) + 1;
 
   return {
     title: titles[Math.floor(Math.random() * titles.length)],
@@ -186,6 +189,8 @@ export const generateRandomEvent = () => {
     startTime: randomStartTime,
     endTime: randomEndTime,
     description: descriptions[Math.floor(Math.random() * descriptions.length)],
-    imageUrl: EVENT_IMAGES[Math.floor(Math.random() * EVENT_IMAGES.length)].url
+    imageUrl: EVENT_IMAGES[Math.floor(Math.random() * EVENT_IMAGES.length)].url,
+    capacity: randomCapacity,
+    standbyCapacity: randomStandbyCapacity
   };
 };
