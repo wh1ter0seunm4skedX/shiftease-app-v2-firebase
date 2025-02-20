@@ -141,8 +141,13 @@ function EventDashboard() {
       }
 
       const eventData = eventDoc.data();
-      const isUserRegistered = eventData.registrations?.includes(user.uid);
-      const isUserStandby = eventData.standbyRegistrations?.includes(user.uid);
+      const registrationData = {
+        userId: user.uid,
+        registeredAt: new Date().toISOString()
+      };
+
+      const isUserRegistered = eventData.registrations?.some(reg => reg.userId === user.uid);
+      const isUserStandby = eventData.standbyRegistrations?.some(reg => reg.userId === user.uid);
 
       if (isUserRegistered || isUserStandby) {
         alert('You are already registered for this event');
@@ -152,16 +157,16 @@ function EventDashboard() {
       // Check if regular capacity is available
       if (eventData.registrations?.length < eventData.capacity) {
         await updateDoc(eventRef, {
-          registrations: arrayUnion(user.uid)
+          registrations: arrayUnion(registrationData)
         });
         alert('Successfully registered for the event!');
       } 
       // Check if standby capacity is available
       else if (eventData.standbyRegistrations?.length < eventData.standbyCapacity) {
         await updateDoc(eventRef, {
-          standbyRegistrations: arrayUnion(user.uid)
+          standbyRegistrations: arrayUnion(registrationData)
         });
-        alert('Successfully registered for the event!');
+        alert('You have been added to the standby list.');
       } 
       else {
         alert('Sorry, this event is full.');
@@ -185,12 +190,12 @@ function EventDashboard() {
       }
 
       const eventData = eventDoc.data();
-      const isUserRegistered = eventData.registrations?.includes(user.uid);
-      const isUserStandby = eventData.standbyRegistrations?.includes(user.uid);
+      const userRegistration = eventData.registrations?.find(reg => reg.userId === user.uid);
+      const userStandby = eventData.standbyRegistrations?.find(reg => reg.userId === user.uid);
 
-      if (isUserRegistered) {
+      if (userRegistration) {
         await updateDoc(eventRef, {
-          registrations: arrayRemove(user.uid)
+          registrations: arrayRemove(userRegistration)
         });
 
         // If there are people in standby, move the first one to regular registration
@@ -204,9 +209,9 @@ function EventDashboard() {
 
         alert('Successfully unregistered from the event');
       } 
-      else if (isUserStandby) {
+      else if (userStandby) {
         await updateDoc(eventRef, {
-          standbyRegistrations: arrayRemove(user.uid)
+          standbyRegistrations: arrayRemove(userStandby)
         });
         alert('Successfully removed from the standby list');
       }
@@ -217,11 +222,11 @@ function EventDashboard() {
   };
 
   const isUserRegistered = (event) => {
-    return event.registrations?.some(reg => reg === user.uid) || false;
+    return event.registrations?.some(reg => reg.userId === user?.uid) || false;
   };
 
   const isUserStandby = (event) => {
-    return event.standbyRegistrations?.some(reg => reg === user.uid) || false;
+    return event.standbyRegistrations?.some(reg => reg.userId === user?.uid) || false;
   };
 
   const handleLogout = async () => {
@@ -498,6 +503,13 @@ function EventDashboard() {
                           >
                             Unregister
                           </button>
+                        ) : isUserStandby(event) ? (
+                          <button
+                            onClick={() => handleUnregisterFromEvent(event.id)}
+                            className="w-full bg-yellow-400 text-gray-900 py-2 px-4 rounded-lg hover:bg-yellow-500 transition-colors"
+                          >
+                            Leave Standby List
+                          </button>
                         ) : (
                           <button
                             onClick={() => handleRegisterForEvent(event.id)}
@@ -505,6 +517,8 @@ function EventDashboard() {
                               event.registrations?.length >= event.capacity &&
                               event.standbyRegistrations?.length >= event.standbyCapacity
                                 ? 'bg-gray-400 cursor-not-allowed'
+                                : event.registrations?.length >= event.capacity
+                                ? 'bg-yellow-400 hover:bg-yellow-500 text-gray-900'
                                 : 'bg-blue-600 hover:bg-blue-700 text-white'
                             }`}
                             disabled={
@@ -512,9 +526,10 @@ function EventDashboard() {
                               event.standbyRegistrations?.length >= event.standbyCapacity
                             }
                           >
-                            {event.registrations?.length >= event.capacity &&
-                            event.standbyRegistrations?.length >= event.standbyCapacity
-                              ? 'Event Full'
+                            {event.registrations?.length >= event.capacity
+                              ? event.standbyRegistrations?.length >= event.standbyCapacity
+                                ? 'Full'
+                                : 'Register for standby'
                               : 'Register'}
                           </button>
                         )}
