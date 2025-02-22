@@ -1,9 +1,8 @@
 {
   "files": {
-    "main.css": "/ShiftEase-App/static/css/main.d3971831.css",
-    "main.js": "/ShiftEase-App/static/js/main.b0e55846.js",
+    "main.css": "/ShiftEase-App/static/css/main.411a793c.css",
+    "main.js": "/ShiftEase-App/static/js/main.e0713cb7.js",
     "static/media/welcome-icon.png": "/ShiftEase-App/static/media/welcome-icon.76059aff6c8f0f5febd7.png",
-    "static/media/uifaces-cartoon-image (13).jpg": "/ShiftEase-App/static/media/uifaces-cartoon-image (13).d6b78d8bb632adc5f8da.jpg",
     "static/media/uifaces-cartoon-image (15).jpg": "/ShiftEase-App/static/media/uifaces-cartoon-image (15).f48b09c600db67c6c710.jpg",
     "static/media/uifaces-cartoon-image (6).jpg": "/ShiftEase-App/static/media/uifaces-cartoon-image (6).297093a9ec074eeb083a.jpg",
     "static/media/uifaces-cartoon-image (9).jpg": "/ShiftEase-App/static/media/uifaces-cartoon-image (9).e2aee25717cb2c6adfa1.jpg",
@@ -20,11 +19,11 @@
     "static/media/uifaces-cartoon-image.jpg": "/ShiftEase-App/static/media/uifaces-cartoon-image.9ddb04d3e68e91d016b1.jpg",
     "static/media/uifaces-cartoon-image (1).jpg": "/ShiftEase-App/static/media/uifaces-cartoon-image (1).fc9532d6f60db6452943.jpg",
     "index.html": "/ShiftEase-App/index.html",
-    "main.d3971831.css.map": "/ShiftEase-App/static/css/main.d3971831.css.map",
-    "main.b0e55846.js.map": "/ShiftEase-App/static/js/main.b0e55846.js.map"
+    "main.411a793c.css.map": "/ShiftEase-App/static/css/main.411a793c.css.map",
+    "main.e0713cb7.js.map": "/ShiftEase-App/static/js/main.e0713cb7.js.map"
   },
   "entrypoints": [
-    "static/css/main.d3971831.css",
-    "static/js/main.b0e55846.js"
+    "static/css/main.411a793c.css",
+    "static/js/main.e0713cb7.js"
   ]
 }
