@@ -162,16 +162,12 @@ function SignUp() {
             </div>
 
             <div>
-              <select
+              <input
+                type="hidden"
                 id="role"
                 name="role"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
-              >
-                <option value="user">Regular User</option>
-                <option value="admin">Administrator</option>
-              </select>
+                value="user"
+              />
             </div>
 
             <div>
