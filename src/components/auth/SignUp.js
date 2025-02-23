@@ -11,7 +11,7 @@ function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [fullName, setFullName] = useState('');
-  const [role, setRole] = useState('user');
+  const [role] = useState('user');
   const [selectedPicture, setSelectedPicture] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
