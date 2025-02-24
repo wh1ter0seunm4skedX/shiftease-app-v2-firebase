@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/shiftease-app-v2-firebase/static/css/main.a3797af8.css",
-    "main.js": "/shiftease-app-v2-firebase/static/js/main.472ae29c.js",
+    "main.js": "/shiftease-app-v2-firebase/static/js/main.03254690.js",
     "static/media/welcome-icon.png": "/shiftease-app-v2-firebase/static/media/welcome-icon.76059aff6c8f0f5febd7.png",
     "static/media/uifaces-cartoon-image (15).jpg": "/shiftease-app-v2-firebase/static/media/uifaces-cartoon-image (15).f48b09c600db67c6c710.jpg",
     "static/media/uifaces-cartoon-image (6).jpg": "/shiftease-app-v2-firebase/static/media/uifaces-cartoon-image (6).297093a9ec074eeb083a.jpg",
@@ -20,10 +20,10 @@
     "static/media/uifaces-cartoon-image (1).jpg": "/shiftease-app-v2-firebase/static/media/uifaces-cartoon-image (1).fc9532d6f60db6452943.jpg",
     "index.html": "/shiftease-app-v2-firebase/index.html",
     "main.a3797af8.css.map": "/shiftease-app-v2-firebase/static/css/main.a3797af8.css.map",
-    "main.472ae29c.js.map": "/shiftease-app-v2-firebase/static/js/main.472ae29c.js.map"
+    "main.03254690.js.map": "/shiftease-app-v2-firebase/static/js/main.03254690.js.map"
   },
   "entrypoints": [
     "static/css/main.a3797af8.css",
-    "static/js/main.472ae29c.js"
+    "static/js/main.03254690.js"
   ]
 }
