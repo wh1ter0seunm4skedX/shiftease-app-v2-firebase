@@ -12,7 +12,7 @@
 
 
 # **ShiftEase** 🚀  
-_A full-stack solution for managing events and youth worker coordination._
+_A full-stack solution for managing and registering for events._
 
 ![ShiftEase Banner](https://github.com/wh1ter0seunm4skedX/my-github-pages-app/blob/main/src/assets/ShiftEase_banner.png?raw=true)  
 
@@ -20,9 +20,9 @@ _A full-stack solution for managing events and youth worker coordination._
 
 ## **Overview** 📌  
 
-**ShiftEase** is a full-stack web application designed to streamline event management and youth worker coordination in community centers. Whether you're scheduling events or tracking participation, ShiftEase provides an intuitive interface to keep administrators and workers organized.  
+**ShiftEase** is a full-stack web application designed to streamline event management and youth worker coordination in community centers. Whether you're scheduling events or tracking participation, this app provides an intuitive interface to keep admins and workers organized.  
 
-Built with **React** on the frontend and **Firebase** for authentication and data management, it ensures real-time updates and seamless collaboration.  
+Built with **React.js** on the frontend and **Firebase** for authentication and data management.  
 
 ---
 
@@ -30,15 +30,15 @@ Built with **React** on the frontend and **Firebase** for authentication and dat
 
 ✅ **User Authentication** – Secure login & role-based access control to manage permissions effectively.  
 ✅ **Event Management** – Create, update, and delete events with detailed descriptions, times, and tasks.  
-✅ **Responsive Design** – Fully functional on desktop and mobile devices.  
+✅ **Responsive Design** – Fully functional on desktop and **mobile** devices.  
 
 ---
 
 ## **Tech Stack** 🛠  
 
-- **Frontend:** React.js (with React Router, Context API)  
-- **Backend:** Firebase (Firestore, Firebase Auth, Firebase Functions)  
-- **Hosting & Deployment:** Firebase Hosting  
+- **Frontend:** React.js (with React Router)  
+- **Backend:** Firebase (Firestore, Firebase Auth)  
+- **Hosting & Deployment:** GitHub Pages  
 - **Styling:** Tailwind CSS 
 
 ---
