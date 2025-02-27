@@ -58,7 +58,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 100 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed right-0 top-1/3 z-50 max-w-sm w-full shadow-xl"
+          className="fixed right-0 top-20 z-50 max-w-sm w-full md:w-96 shadow-xl"
         >
           <div className="bg-white rounded-l-lg overflow-hidden border-l border-t border-b border-gray-200">
             <div className="bg-gradient-to-r from-purple-600 to-blue-500 px-4 py-3 flex justify-between items-center">
@@ -73,23 +73,23 @@ const FeedbackModal = ({ isOpen, onClose }) => {
               </button>
             </div>
             
-            <div className="p-4">
+            <div className="p-4 max-h-[80vh] overflow-y-auto">
               <p className="text-gray-600 mb-3 text-sm">Feel Free To Share Your Feedback With Us</p>
               
               <div className="flex justify-center items-center mb-4">
-                <div className="flex space-x-2 items-center">
+                <div className="flex space-x-1 sm:space-x-2 items-center">
                   {emojis.map((emoji) => (
                     <button
                       key={emoji.value}
                       onClick={() => setRating(emoji.value)}
-                      className={`p-2 rounded-full transition-all transform ${
+                      className={`p-1 sm:p-2 rounded-full transition-all transform ${
                         rating === emoji.value 
                           ? 'bg-yellow-100 scale-125 ring-2 ring-yellow-400' 
                           : 'hover:bg-gray-100'
                       }`}
                       title={emoji.label}
                     >
-                      <span className="text-2xl">{emoji.icon}</span>
+                      <span className="text-xl sm:text-2xl">{emoji.icon}</span>
                     </button>
                   ))}
                 </div>
@@ -128,14 +128,14 @@ const FeedbackModal = ({ isOpen, onClose }) => {
               <div className="mt-4 flex justify-between">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                  className="px-3 py-2 sm:px-4 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 >
                   Dismiss
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={isSubmitting || !feedbackText.trim() || isSuccess}
-                  className={`px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white 
+                  className={`px-3 py-2 sm:px-4 rounded-md shadow-sm text-xs sm:text-sm font-medium text-white 
                     ${isSubmitting || !feedbackText.trim() || isSuccess
                       ? 'bg-gray-400 cursor-not-allowed'
                       : 'bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'
