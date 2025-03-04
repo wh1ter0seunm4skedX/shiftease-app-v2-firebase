@@ -4,6 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 function EventForm({ open, onClose, onSubmit, initialData = null }) {
   const { t, language } = useLanguage();
+  const isRtl = language === 'he';
   const [formData, setFormData] = useState({
     title: '',
     date: new Date().toISOString().split('T')[0],
@@ -101,7 +102,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className={`bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all ${language === 'he' ? 'text-right rtl' : 'text-left ltr'}`}>
+      <div className={`bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all ${isRtl ? 'rtl' : 'ltr'}`}>
         <form onSubmit={handleSubmit} className="p-6">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">
             {initialData ? t('edit_event') : t('create_new_event')}
@@ -120,7 +121,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 onChange={handleChange}
                 className="input-field"
                 required
-                dir={language === 'he' ? 'rtl' : 'ltr'}
+                dir={isRtl ? 'rtl' : 'ltr'}
               />
             </div>
 
@@ -136,41 +137,41 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 onChange={handleChange}
                 className="input-field"
                 required
-                dir={language === 'he' ? 'rtl' : 'ltr'}
+                dir={isRtl ? 'rtl' : 'ltr'}
               />
             </div>
 
-            <div className="flex justify-between space-x-4">
-            <div className='w-full'>
-              <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-1">
-              {t('start_time')}
-              </label>
-              <input
-                type="time"
-                id="startTime"
-                name="startTime"
-                value={formData.startTime}
-                onChange={handleChange}
-                className="input-field w-full"
-                required
-                dir={language === 'he' ? 'rtl' : 'ltr'}
-              />
-            </div>
-            <div className='w-full'>
-              <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-1">
-              {t('end_time')}
-              </label>
-              <input
-                type="time"
-                id="endTime"
-                name="endTime"
-                value={formData.endTime}
-                onChange={handleChange}
-                className="input-field w-full"
-                required
-                dir={language === 'he' ? 'rtl' : 'ltr'}
-              />
-            </div>
+            <div className={`flex ${isRtl ? 'flex-row-reverse' : ''} gap-4`}>
+              <div className='w-full'>
+                <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-1">
+                {t('start_time')}
+                </label>
+                <input
+                  type="time"
+                  id="startTime"
+                  name="startTime"
+                  value={formData.startTime}
+                  onChange={handleChange}
+                  className="input-field w-full"
+                  required
+                  dir={isRtl ? 'rtl' : 'ltr'}
+                />
+              </div>
+              <div className='w-full'>
+                <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-1">
+                {t('end_time')}
+                </label>
+                <input
+                  type="time"
+                  id="endTime"
+                  name="endTime"
+                  value={formData.endTime}
+                  onChange={handleChange}
+                  className="input-field w-full"
+                  required
+                  dir={isRtl ? 'rtl' : 'ltr'}
+                />
+              </div>
             </div>
             {formData.timeError && (
               <div className="text-red-500 text-sm mt-2">
@@ -216,11 +217,11 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 rows="3"
                 className="input-field"
                 required
-                dir={language === 'he' ? 'rtl' : 'ltr'}
+                dir={isRtl ? 'rtl' : 'ltr'}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className={`grid grid-cols-2 gap-4 ${isRtl ? 'flex-row-reverse' : ''}`}>
               <div>
                 <label htmlFor="capacity" className="block text-sm font-medium text-gray-700 mb-1">
                   {t('worker_capacity')}
@@ -235,7 +236,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   className="input-field"
                   required
                   placeholder={t('number_of_workers_needed')}
-                  dir={language === 'he' ? 'rtl' : 'ltr'}
+                  dir={isRtl ? 'rtl' : 'ltr'}
                 />
               </div>
 
@@ -253,13 +254,13 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   className="input-field"
                   required
                   placeholder={t('number_of_standby_workers')}
-                  dir={language === 'he' ? 'rtl' : 'ltr'}
+                  dir={isRtl ? 'rtl' : 'ltr'}
                 />
               </div>
             </div>
           </div>
 
-          <div className="mt-6 flex justify-end space-x-3">
+          <div className={`mt-6 flex ${isRtl ? 'justify-start' : 'justify-end'} ${isRtl ? 'space-x-reverse' : ''} space-x-3`}>
             <button
               type="button"
               onClick={onClose}

@@ -7,31 +7,35 @@ import { useLanguage } from '../contexts/LanguageContext';
 const FeedbackButton = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isAdmin } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   
   // Don't render the button for admins
   if (isAdmin) return null;
 
+  const isRtl = language === 'he';
+
   return (
     <>
       <motion.button
+        className="fixed right-5 bottom-5 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-full p-3 shadow-lg flex items-center justify-center z-40 group overflow-hidden"
+        whileHover={{ width: 'auto', paddingLeft: '1rem', paddingRight: '1rem' }}
+        initial={{ width: '3rem', height: '3rem' }}
         onClick={() => setIsModalOpen(true)}
-        className="fixed right-0 top-20 z-40 bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-3 sm:px-4 rounded-l-lg shadow-lg flex items-center space-x-1 sm:space-x-2"
-        whileHover={{ x: -5 }}
-        whileTap={{ scale: 0.95 }}
-        initial={{ x: 5 }}
-        animate={{ x: 0 }}
       >
-        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-        </svg>
-        <span className="text-sm sm:text-base font-medium">{t('feedback')}</span>
+        <span className="absolute right-3 opacity-100 group-hover:opacity-0">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+          </svg>
+        </span>
+        <span 
+          className="opacity-0 group-hover:opacity-100 whitespace-nowrap group-hover:block hidden"
+          style={{ direction: isRtl ? 'rtl' : 'ltr' }}
+        >
+          {t('feedback')}
+        </span>
       </motion.button>
       
-      <FeedbackModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-      />
+      <FeedbackModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 };

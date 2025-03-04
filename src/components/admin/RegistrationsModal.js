@@ -9,6 +9,7 @@ function RegistrationsModal({ isOpen, onClose, event }) {
   const [standbyUsers, setStandbyUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const { t, language } = useLanguage();
+  const isRtl = language === 'he';
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -53,7 +54,7 @@ function RegistrationsModal({ isOpen, onClose, event }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className={`bg-white rounded-xl shadow-xl w-full max-w-4xl transform transition-all max-h-[90vh] overflow-hidden ${language === 'he' ? 'rtl' : 'ltr'}`}>
+      <div className={`bg-white rounded-xl shadow-xl w-full max-w-4xl transform transition-all max-h-[90vh] overflow-hidden ${isRtl ? 'rtl' : 'ltr'}`}>
         <div className="p-6 flex justify-between items-center border-b">
           <h2 className="text-2xl font-semibold text-gray-800">
             {t('event_registrations')}: {event.title}
@@ -84,16 +85,16 @@ function RegistrationsModal({ isOpen, onClose, event }) {
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
                           {t('name')}
                         </th>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
                           {t('email')}
                         </th>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
                           {t('phone')}
                         </th>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
                           {t('registered_at')}
                         </th>
                       </tr>
@@ -115,6 +116,13 @@ function RegistrationsModal({ isOpen, onClose, event }) {
                           </td>
                         </tr>
                       ))}
+                      {registeredUsers.length === 0 && (
+                        <tr>
+                          <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
+                            {t('no_registrations')}
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -129,16 +137,16 @@ function RegistrationsModal({ isOpen, onClose, event }) {
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
                           {t('name')}
                         </th>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
                           {t('email')}
                         </th>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
                           {t('phone')}
                         </th>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
                           {t('registered_at')}
                         </th>
                       </tr>
@@ -160,6 +168,13 @@ function RegistrationsModal({ isOpen, onClose, event }) {
                           </td>
                         </tr>
                       ))}
+                      {standbyUsers.length === 0 && (
+                        <tr>
+                          <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
+                            {t('no_standby_registrations')}
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>

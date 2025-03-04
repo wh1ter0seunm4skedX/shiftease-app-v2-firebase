@@ -28,7 +28,7 @@ function LanguageSelector() {
         onClick={handleOpen}
         className="inline-flex items-center px-3 py-2 border border-gray-200 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200"
       >
-        <IoLanguageOutline className="h-4 w-4 mr-2 text-gray-500" />
+        <IoLanguageOutline className={`h-4 w-4 ${language === 'he' ? 'ml-2' : 'mr-2'} text-gray-500`} />
         {t('language')}
       </button>
 
@@ -41,7 +41,7 @@ function LanguageSelector() {
           className: 'rounded-xl overflow-hidden',
         }}
       >
-        <div className="bg-white p-6">
+        <div className={`bg-white p-6 ${language === 'he' ? 'rtl' : 'ltr'}`}>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-800">{t('language_selection')}</h2>
             <button
@@ -67,7 +67,7 @@ function LanguageSelector() {
               }`}
               onClick={() => setSelectedLanguage('en')}
             >
-              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3 ${
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${language === 'he' ? 'ml-3' : 'mr-3'} ${
                 selectedLanguage === 'en' ? 'border-purple-500' : 'border-gray-400'
               }`}>
                 {selectedLanguage === 'en' && (
@@ -89,7 +89,7 @@ function LanguageSelector() {
               }`}
               onClick={() => setSelectedLanguage('he')}
             >
-              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3 ${
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${language === 'he' ? 'ml-3' : 'mr-3'} ${
                 selectedLanguage === 'he' ? 'border-purple-500' : 'border-gray-400'
               }`}>
                 {selectedLanguage === 'he' && (
@@ -104,7 +104,7 @@ function LanguageSelector() {
             </div>
           </RadioGroup>
 
-          <div className="mt-6 flex justify-end space-x-3">
+          <div className={`mt-6 flex ${language === 'he' ? 'justify-start' : 'justify-end'} space-x-3`}>
             <button
               onClick={handleClose}
               className="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"

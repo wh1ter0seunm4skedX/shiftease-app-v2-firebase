@@ -13,6 +13,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const maxCharCount = 300;
+  const isRtl = language === 'he';
 
   const emojis = [
     { value: 1, icon: '😞', label: t('poor') },
@@ -62,8 +63,8 @@ const FeedbackModal = ({ isOpen, onClose }) => {
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           className="fixed right-0 top-20 z-50 max-w-sm w-full md:w-96 shadow-xl"
         >
-          <div className={`bg-white rounded-l-lg overflow-hidden border-l border-t border-b border-gray-200 ${language === 'he' ? 'rtl' : 'ltr'}`}>
-            <div className="bg-gradient-to-r from-purple-600 to-blue-500 px-4 py-3 flex justify-between items-center">
+          <div className={`bg-white overflow-hidden border-t border-b rounded-l-lg border-l border-gray-200 ${isRtl ? 'rtl' : 'ltr'}`}>
+            <div className={`${isRtl ? 'bg-gradient-to-l' : 'bg-gradient-to-r'} from-purple-600 to-blue-500 px-4 py-3 flex justify-between items-center`}>
               <h3 className="text-white font-medium text-lg">{t('feedback_time')}</h3>
               <button 
                 onClick={onClose}
@@ -79,7 +80,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
               <p className="text-gray-600 mb-3 text-sm">{t('share_feedback')}</p>
               
               <div className="flex justify-center items-center mb-4">
-                <div className="flex space-x-1 sm:space-x-2 items-center">
+                <div className={`flex ${isRtl ? 'space-x-reverse' : ''} space-x-1 sm:space-x-2 items-center`}>
                   {emojis.map((emoji) => (
                     <button
                       key={emoji.value}
@@ -105,8 +106,8 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                   ></div>
                 </div>
                 <div className="absolute -bottom-6 left-0 right-0 flex justify-between text-xs text-gray-500">
-                  <span>{t('poor')}</span>
-                  <span>{t('nice')}</span>
+                  <span>{isRtl ? t('nice') : t('poor')}</span>
+                  <span>{isRtl ? t('poor') : t('nice')}</span>
                 </div>
               </div>
               
@@ -121,14 +122,14 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                   placeholder={t('feedback_placeholder')}
                   value={feedbackText}
                   onChange={(e) => setFeedbackText(e.target.value.slice(0, maxCharCount))}
-                  dir={language === 'he' ? 'rtl' : 'ltr'}
+                  dir={isRtl ? 'rtl' : 'ltr'}
                 ></textarea>
-                <div className="flex justify-end mt-1 text-xs text-gray-500">
+                <div className={`flex ${isRtl ? 'justify-start' : 'justify-end'} mt-1 text-xs text-gray-500`}>
                   {feedbackText.length}/{maxCharCount}
                 </div>
               </div>
               
-              <div className="mt-4 flex justify-between">
+              <div className={`mt-4 flex ${isRtl ? 'flex-row-reverse' : ''} justify-between`}>
                 <button
                   onClick={onClose}
                   className="px-3 py-2 sm:px-4 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
