@@ -22,7 +22,7 @@ function EventDashboard() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isRegistrationsModalOpen, setIsRegistrationsModalOpen] = useState(false);
   const { user, isAdmin, logout } = useAuth();
-  const { t, language } = useLanguage();
+  const { t, language, toggleLanguage } = useLanguage();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -344,7 +344,7 @@ function EventDashboard() {
                       </div>
                     )}
                     <span className="text-sm font-medium text-gray-700">
-                      {user.email}
+                      {userData?.fullName || user.email}
                       <span className={`${language === 'he' ? 'mr-1' : 'ml-1'} px-2 py-0.5 text-xs rounded-full bg-purple-100 text-purple-800`}>
                         {isAdmin ? t('admin') : t('user')}
                       </span>
@@ -353,7 +353,7 @@ function EventDashboard() {
 
                   <button
                     onClick={handleLogout}
-                    className={`inline-flex items-center px-3 py-2 border border-gray-200 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200 ${language === 'he' ? 'rtl:space-x-reverse' : ''}`}
+                    className={`inline-flex items-center justify-center w-full sm:w-auto px-4 py-3 border border-gray-200 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200 ${language === 'he' ? 'rtl:space-x-reverse' : ''}`}
                   >
                     {language === 'he' ? (
                       <>
@@ -394,7 +394,7 @@ function EventDashboard() {
                       </div>
                     )}
                     <div>
-                      <div className="text-sm font-medium text-gray-700">{user.email}</div>
+                      <div className="text-sm font-medium text-gray-700">{userData?.fullName || user.email}</div>
                       <div className="text-xs text-gray-500">
                         <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800">
                           {isAdmin ? t('admin') : t('user')}
@@ -403,57 +403,60 @@ function EventDashboard() {
                     </div>
                   </div>
                   
-                  <div className={`border-t border-gray-200 pt-3 ${language === 'he' ? 'space-y-4' : 'space-y-3'}`}>
-                    <div className="flex justify-start px-4">
-                      <LanguageSelector />
-                    </div>
+                  <div className={`border-t border-gray-200 pt-3 px-4 ${language === 'he' ? 'space-y-4' : 'space-y-3'}`}>
+                    <div className="grid grid-cols-1 gap-3">
+
+                      <div className="flex justify-start">
+                        <LanguageSelector />
+                      </div>
                     
-                    {isAdmin && (
+                      {isAdmin && (
+                        <button
+                          onClick={() => {
+                            setIsFormOpen(true);
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className={`w-full flex items-center justify-center px-4 py-3 rounded-md text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 ${language === 'he' ? 'rtl:space-x-reverse' : ''}`}
+                        >
+                          {language === 'he' ? (
+                            <>
+                              {t('add_event')}
+                              <svg className="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                              </svg>
+                            </>
+                          ) : (
+                            <>
+                              <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                              </svg>
+                              {t('add_event')}
+                            </>
+                          )}
+                        </button>
+                      )}
+                    
                       <button
-                        onClick={() => {
-                          setIsFormOpen(true);
-                          setIsMobileMenuOpen(false);
-                        }}
-                        className={`w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 ${language === 'he' ? 'rtl:space-x-reverse' : ''}`}
+                        onClick={handleLogout}
+                        className={`w-full flex items-center justify-center px-4 py-3 rounded-md text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 ${language === 'he' ? 'rtl:space-x-reverse' : ''}`}
                       >
                         {language === 'he' ? (
                           <>
-                            {t('add_event')}
-                            <svg className="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            {t('sign_out')}
+                            <svg className="h-4 w-4 ml-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
                           </>
                         ) : (
                           <>
-                            <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            <svg className="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
-                            {t('add_event')}
+                            {t('sign_out')}
                           </>
                         )}
                       </button>
-                    )}
-                    
-                    <button
-                      onClick={handleLogout}
-                      className={`w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 ${language === 'he' ? 'rtl:space-x-reverse' : ''}`}
-                    >
-                      {language === 'he' ? (
-                        <>
-                          {t('sign_out')}
-                          <svg className="h-4 w-4 ml-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                          </svg>
-                        </>
-                      ) : (
-                        <>
-                          <svg className="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                          </svg>
-                          {t('sign_out')}
-                        </>
-                      )}
-                    </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -567,9 +570,9 @@ function EventDashboard() {
                       {/* Capacity Information - Only visible to admin */}
                       {isAdmin && (
                         <div className="mb-4 space-y-2">
-                          <div className={`flex justify-between items-center ${language === 'he' ? 'rtl' : ''}`}>
+                          <div className={`flex justify-between items-center ${language === 'he' ? '' : ''}`}>
                             <span className="text-sm text-gray-600">{t('regular_registration')}:</span>
-                            <span className="text-sm font-medium">
+                            <span className="text-sm font-medium" dir="ltr">
                               {event.registrations?.length || 0} / {event.capacity}
                             </span>
                           </div>
@@ -580,9 +583,9 @@ function EventDashboard() {
                             ></div>
                           </div>
 
-                          <div className={`flex justify-between items-center ${language === 'he' ? 'rtl' : ''}`}>
+                          <div className={`flex justify-between items-center ${language === 'he' ? '' : ''}`}>
                             <span className="text-sm text-gray-600">{t('standby_list')}:</span>
-                            <span className="text-sm font-medium">
+                            <span className="text-sm font-medium" dir="ltr">
                               {event.standbyRegistrations?.length || 0} / {event.standbyCapacity}
                             </span>
                           </div>
@@ -598,9 +601,9 @@ function EventDashboard() {
                       {/* Registration Information for non-admin users */}
                       {!isAdmin && (
                         <div className="mb-4 space-y-2">
-                          <div className={`flex justify-between items-center ${language === 'he' ? 'rtl' : ''}`}>
+                          <div className={`flex justify-between items-center ${language === 'he' ? '' : ''}`}>
                             <span className="text-sm text-gray-600">{t('registered')}:</span>
-                            <span className="text-sm font-medium">
+                            <span className="text-sm font-medium" dir="ltr">
                               {event.registrations?.length || 0} / {event.capacity}
                             </span>
                           </div>
@@ -613,9 +616,9 @@ function EventDashboard() {
 
                           {(event.registrations?.length >= event.capacity) && (
                             <>
-                              <div className={`flex justify-between items-center ${language === 'he' ? 'rtl' : ''}`}>
+                              <div className={`flex justify-between items-center ${language === 'he' ? '' : ''}`}>
                                 <span className="text-sm text-gray-600">{t('standby')}:</span>
-                                <span className="text-sm font-medium">
+                                <span className="text-sm font-medium" dir="ltr">
                                   {event.standbyRegistrations?.length || 0} / {event.standbyCapacity}
                                 </span>
                               </div>

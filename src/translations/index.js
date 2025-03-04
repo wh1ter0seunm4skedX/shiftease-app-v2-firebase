@@ -212,7 +212,7 @@ const translations = {
     edit: "עריכה",
     delete: "מחיקה",
     view_registrations: "צפו ברישומים",
-    registered: "רשומים!",
+    registered: "רשומים",
     standby: "ברשימת המתנה",
     full: "מלא",
     available_spots: "מקומות פנויים",
