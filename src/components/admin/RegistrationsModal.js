@@ -55,13 +55,14 @@ function RegistrationsModal({ isOpen, onClose, event }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className={`bg-white rounded-xl shadow-xl w-full max-w-4xl transform transition-all max-h-[90vh] overflow-hidden ${isRtl ? 'rtl' : 'ltr'}`}>
-        <div className="p-6 flex justify-between items-center border-b">
-          <h2 className="text-2xl font-semibold text-gray-800">
+        <div className="p-5 flex justify-between items-center border-b">
+          <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
             {t('event_registrations')}: {event.title}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors"
+            aria-label={t('close')}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -69,115 +70,128 @@ function RegistrationsModal({ isOpen, onClose, event }) {
           </button>
         </div>
 
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-8rem)]">
+        <div className="p-5 overflow-y-auto max-h-[calc(90vh-8rem)]">
           {loading ? (
             <div className="flex justify-center items-center h-32">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Regular Registrations */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
                   {t('regular_registration')} ({registeredUsers.length} / {event.capacity})
                 </h3>
                 <div className="bg-white rounded-lg shadow overflow-hidden">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
-                          {t('name')}
-                        </th>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
-                          {t('email')}
-                        </th>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
-                          {t('phone')}
-                        </th>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
-                          {t('registered_at')}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {registeredUsers.map((reg, index) => (
-                        <tr key={reg.userId} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {reg.userDetails?.fullName || 'N/A'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {reg.userDetails?.email || 'N/A'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {reg.userDetails?.phoneNumber || 'N/A'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {format(new Date(reg.registeredAt), 'MMM d, yyyy HH:mm')}
-                          </td>
-                        </tr>
-                      ))}
-                      {registeredUsers.length === 0 && (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
                         <tr>
-                          <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
-                            {t('no_registrations')}
-                          </td>
+                          <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
+                            {t('name')}
+                          </th>
+                          <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
+                            {t('email')}
+                          </th>
+                          <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
+                            {t('phone')}
+                          </th>
+                          <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
+                            {t('registered_at')}
+                          </th>
                         </tr>
-                      )}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {registeredUsers.map((reg, index) => (
+                          <tr key={reg.userId} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {reg.userDetails?.fullName || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {reg.userDetails?.email || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {reg.userDetails?.phoneNumber || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {format(new Date(reg.registeredAt), 'MMM d, yyyy HH:mm')}
+                            </td>
+                          </tr>
+                        ))}
+                        {registeredUsers.length === 0 && (
+                          <tr>
+                            <td colSpan="4" className="px-6 py-8 text-center text-sm text-gray-500">
+                              {t('no_registrations')}
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
 
               {/* Standby Registrations */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
                   {t('standby_list')} ({standbyUsers.length} / {event.standbyCapacity})
                 </h3>
                 <div className="bg-white rounded-lg shadow overflow-hidden">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
-                          {t('name')}
-                        </th>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
-                          {t('email')}
-                        </th>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
-                          {t('phone')}
-                        </th>
-                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
-                          {t('registered_at')}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {standbyUsers.map((reg, index) => (
-                        <tr key={reg.userId} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {reg.userDetails?.fullName || 'N/A'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {reg.userDetails?.email || 'N/A'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {reg.userDetails?.phoneNumber || 'N/A'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {format(new Date(reg.registeredAt), 'MMM d, yyyy HH:mm')}
-                          </td>
-                        </tr>
-                      ))}
-                      {standbyUsers.length === 0 && (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
                         <tr>
-                          <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
-                            {t('no_standby_registrations')}
-                          </td>
+                          <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
+                            {t('name')}
+                          </th>
+                          <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
+                            {t('email')}
+                          </th>
+                          <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
+                            {t('phone')}
+                          </th>
+                          <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
+                            {t('registered_at')}
+                          </th>
                         </tr>
-                      )}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {standbyUsers.map((reg, index) => (
+                          <tr key={reg.userId} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {reg.userDetails?.fullName || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {reg.userDetails?.email || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {reg.userDetails?.phoneNumber || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {format(new Date(reg.registeredAt), 'MMM d, yyyy HH:mm')}
+                            </td>
+                          </tr>
+                        ))}
+                        {standbyUsers.length === 0 && (
+                          <tr>
+                            <td colSpan="4" className="px-6 py-8 text-center text-sm text-gray-500">
+                              {t('no_standby_registrations')}
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
+              </div>
+              
+              <div className="flex justify-center mt-6 mb-2">
+                <button
+                  onClick={onClose}
+                  className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 min-w-[120px]"
+                >
+                  {t('close')}
+                </button>
               </div>
             </div>
           )}

@@ -64,28 +64,29 @@ const FeedbackModal = ({ isOpen, onClose }) => {
           className="fixed right-0 top-20 z-50 max-w-sm w-full md:w-96 shadow-xl"
         >
           <div className={`bg-white overflow-hidden border-t border-b rounded-l-lg border-l border-gray-200 ${isRtl ? 'rtl' : 'ltr'}`}>
-            <div className={`${isRtl ? 'bg-gradient-to-l' : 'bg-gradient-to-r'} from-purple-600 to-blue-500 px-4 py-3 flex justify-between items-center`}>
+            <div className={`${isRtl ? 'bg-gradient-to-l' : 'bg-gradient-to-r'} from-purple-600 to-blue-500 px-4 py-4 flex justify-between items-center`}>
               <h3 className="text-white font-medium text-lg">{t('feedback_time')}</h3>
               <button 
                 onClick={onClose}
-                className="text-white hover:text-gray-200 transition-colors"
+                className="text-white hover:text-gray-200 transition-colors p-1"
+                aria-label={t('close')}
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
             
-            <div className="p-4 max-h-[80vh] overflow-y-auto">
-              <p className="text-gray-600 mb-3 text-sm">{t('share_feedback')}</p>
+            <div className="p-5 max-h-[80vh] overflow-y-auto">
+              <p className="text-gray-600 mb-4 text-sm">{t('share_feedback')}</p>
               
-              <div className="flex justify-center items-center mb-4">
-                <div className={`flex ${isRtl ? 'space-x-reverse' : ''} space-x-1 sm:space-x-2 items-center`}>
+              <div className="flex justify-center items-center mb-5">
+                <div className={`flex ${isRtl ? 'space-x-reverse' : ''} space-x-2 sm:space-x-3 items-center`}>
                   {emojis.map((emoji) => (
                     <button
                       key={emoji.value}
                       onClick={() => setRating(emoji.value)}
-                      className={`p-1 sm:p-2 rounded-full transition-all transform ${
+                      className={`p-2 sm:p-3 rounded-full transition-all transform ${
                         rating === emoji.value 
                           ? 'bg-yellow-100 scale-125 ring-2 ring-yellow-400' 
                           : 'hover:bg-gray-100'
@@ -98,7 +99,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                 </div>
               </div>
               
-              <div className="relative mb-2">
+              <div className="relative mb-4">
                 <div className="w-full bg-gray-200 h-2 rounded-full">
                   <div 
                     className="bg-yellow-400 h-2 rounded-full transition-all"
@@ -111,14 +112,14 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                 </div>
               </div>
               
-              <div className="mt-8">
-                <label htmlFor="feedback" className="block text-sm font-medium text-gray-700 mb-1">
+              <div className="mt-10">
+                <label htmlFor="feedback" className="block text-sm font-medium text-gray-700 mb-2">
                   {t('about_experience')}
                 </label>
                 <textarea
                   id="feedback"
                   rows="4"
-                  className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-3 py-3 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   placeholder={t('feedback_placeholder')}
                   value={feedbackText}
                   onChange={(e) => setFeedbackText(e.target.value.slice(0, maxCharCount))}
@@ -129,17 +130,17 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                 </div>
               </div>
               
-              <div className={`mt-4 flex ${isRtl ? 'flex-row-reverse' : ''} justify-between`}>
+              <div className={`mt-6 flex ${isRtl ? 'flex-row-reverse' : ''} justify-between space-x-4 ${isRtl ? 'space-x-reverse' : ''}`}>
                 <button
                   onClick={onClose}
-                  className="px-3 py-2 sm:px-4 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                  className="min-w-[100px] px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 >
                   {t('dismiss')}
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={isSubmitting || !feedbackText.trim() || isSuccess}
-                  className={`px-3 py-2 sm:px-4 rounded-md shadow-sm text-xs sm:text-sm font-medium text-white 
+                  className={`min-w-[120px] px-4 py-3 rounded-md shadow-sm text-sm font-medium text-white 
                     ${isSubmitting || !feedbackText.trim() || isSuccess
                       ? 'bg-gray-400 cursor-not-allowed'
                       : 'bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'
@@ -150,7 +151,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
               </div>
               
               {isSuccess && (
-                <div className="mt-3 p-2 bg-green-100 text-green-800 rounded-md text-sm text-center">
+                <div className="mt-4 p-3 bg-green-100 text-green-800 rounded-md text-sm text-center">
                   {t('feedback_thanks')}
                 </div>
               )}

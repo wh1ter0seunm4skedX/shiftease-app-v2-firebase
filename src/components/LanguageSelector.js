@@ -26,7 +26,7 @@ function LanguageSelector() {
     <>
       <button
         onClick={handleOpen}
-        className="inline-flex items-center px-3 py-2 border border-gray-200 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200"
+        className={`inline-flex items-center px-3 py-2 border border-gray-200 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200 ${language === 'he' ? 'rtl:space-x-reverse' : ''}`}
       >
         <IoLanguageOutline className={`h-4 w-4 ${language === 'he' ? 'ml-2' : 'mr-2'} text-gray-500`} />
         {t('language')}
@@ -46,7 +46,8 @@ function LanguageSelector() {
             <h2 className="text-xl font-semibold text-gray-800">{t('language_selection')}</h2>
             <button
               onClick={handleClose}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label={t('close')}
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -54,66 +55,53 @@ function LanguageSelector() {
             </button>
           </div>
 
-          <RadioGroup
-            value={selectedLanguage}
-            onChange={(e) => setSelectedLanguage(e.target.value)}
-            className="space-y-3 mt-4"
-          >
-            <div
-              className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors ${
-                selectedLanguage === 'en'
-                  ? 'bg-purple-50 border-2 border-purple-500'
-                  : 'border-2 border-gray-200 hover:bg-gray-50'
-              }`}
-              onClick={() => setSelectedLanguage('en')}
+          <div className="mb-6">
+            <RadioGroup
+              value={selectedLanguage}
+              onChange={(e) => setSelectedLanguage(e.target.value)}
             >
-              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${language === 'he' ? 'ml-3' : 'mr-3'} ${
-                selectedLanguage === 'en' ? 'border-purple-500' : 'border-gray-400'
-              }`}>
-                {selectedLanguage === 'en' && (
-                  <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                )}
-              </div>
-              <div className="flex-1">
-                <div className="font-medium">English</div>
-                <div className="text-sm text-gray-500">English language</div>
-              </div>
-              <span className="text-2xl">🇺🇸</span>
-            </div>
+              <div className={`space-y-3 ${language === 'he' ? 'rtl' : 'ltr'}`}>
+                <label className={`flex items-center justify-center p-3 border border-gray-200 rounded-lg ${selectedLanguage === 'en' ? 'bg-purple-50 border-purple-200' : 'bg-white'} cursor-pointer hover:bg-gray-50 transition-colors`}>
+                  <input
+                    type="radio"
+                    name="language"
+                    value="en"
+                    checked={selectedLanguage === 'en'}
+                    onChange={() => setSelectedLanguage('en')}
+                    className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300"
+                  />
+                  <span className={`${language === 'he' ? 'mr-3' : 'ml-3'} block text-sm font-medium text-gray-700 text-center`}>
+                    English
+                  </span>
+                </label>
 
-            <div
-              className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors ${
-                selectedLanguage === 'he'
-                  ? 'bg-purple-50 border-2 border-purple-500'
-                  : 'border-2 border-gray-200 hover:bg-gray-50'
-              }`}
-              onClick={() => setSelectedLanguage('he')}
-            >
-              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${language === 'he' ? 'ml-3' : 'mr-3'} ${
-                selectedLanguage === 'he' ? 'border-purple-500' : 'border-gray-400'
-              }`}>
-                {selectedLanguage === 'he' && (
-                  <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                )}
+                <label className={`flex items-center justify-center p-3 border border-gray-200 rounded-lg ${selectedLanguage === 'he' ? 'bg-purple-50 border-purple-200' : 'bg-white'} cursor-pointer hover:bg-gray-50 transition-colors`}>
+                  <input
+                    type="radio"
+                    name="language"
+                    value="he"
+                    checked={selectedLanguage === 'he'}
+                    onChange={() => setSelectedLanguage('he')}
+                    className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300"
+                  />
+                  <span className={`${language === 'he' ? 'mr-3' : 'ml-3'} block text-sm font-medium text-gray-700 text-center`}>
+                    עברית
+                  </span>
+                </label>
               </div>
-              <div className="flex-1">
-                <div className="font-medium">עברית</div>
-                <div className="text-sm text-gray-500">Hebrew language</div>
-              </div>
-              <span className="text-2xl">🇮🇱</span>
-            </div>
-          </RadioGroup>
+            </RadioGroup>
+          </div>
 
-          <div className={`mt-6 flex ${language === 'he' ? 'justify-start' : 'justify-end'} space-x-3`}>
+          <div className={`flex ${language === 'he' ? 'flex-row-reverse space-x-reverse' : ''} space-x-3 justify-end`}>
             <button
               onClick={handleClose}
-              className="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 min-w-[80px] text-center"
             >
               {t('cancel')}
             </button>
             <button
               onClick={handleSave}
-              className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+              className="px-4 py-2 bg-purple-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 min-w-[80px] text-center"
             >
               {t('save')}
             </button>

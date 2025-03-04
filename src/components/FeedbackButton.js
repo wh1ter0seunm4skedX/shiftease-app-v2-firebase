@@ -17,22 +17,38 @@ const FeedbackButton = () => {
   return (
     <>
       <motion.button
-        className="fixed right-5 bottom-5 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-full p-3 shadow-lg flex items-center justify-center z-40 group overflow-hidden"
-        whileHover={{ width: 'auto', paddingLeft: '1rem', paddingRight: '1rem' }}
-        initial={{ width: '3rem', height: '3rem' }}
+        className={`fixed ${isRtl ? 'left-4 md:left-6' : 'right-4 md:right-6'} bottom-6 md:bottom-8 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-full p-4 shadow-lg flex items-center justify-center z-40 group overflow-hidden`}
+        whileHover={{ width: 'auto', paddingLeft: '1.25rem', paddingRight: '1.25rem' }}
+        initial={{ width: '3.5rem', height: '3.5rem' }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setIsModalOpen(true)}
+        aria-label={t('feedback')}
       >
-        <span className="absolute right-3 opacity-100 group-hover:opacity-0">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
-          </svg>
-        </span>
-        <span 
-          className="opacity-0 group-hover:opacity-100 whitespace-nowrap group-hover:block hidden"
-          style={{ direction: isRtl ? 'rtl' : 'ltr' }}
-        >
-          {t('feedback')}
-        </span>
+        {isRtl ? (
+          <>
+            <span className="opacity-0 group-hover:opacity-100 whitespace-nowrap group-hover:block hidden text-base font-medium"
+                  style={{ direction: 'rtl' }}>
+              {t('feedback')}
+            </span>
+            <span className="absolute right-4 opacity-100 group-hover:opacity-0">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+              </svg>
+            </span>
+          </>
+        ) : (
+          <>
+            <span className="absolute right-4 opacity-100 group-hover:opacity-0">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+              </svg>
+            </span>
+            <span className="opacity-0 group-hover:opacity-100 whitespace-nowrap group-hover:block hidden text-base font-medium"
+                  style={{ direction: 'ltr' }}>
+              {t('feedback')}
+            </span>
+          </>
+        )}
       </motion.button>
       
       <FeedbackModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />

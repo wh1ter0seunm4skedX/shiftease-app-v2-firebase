@@ -104,13 +104,25 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className={`bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all ${isRtl ? 'rtl' : 'ltr'}`}>
         <form onSubmit={handleSubmit} className="p-6">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-            {initialData ? t('edit_event') : t('create_new_event')}
-          </h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold text-gray-800">
+              {initialData ? t('edit_event') : t('create_new_event')}
+            </h2>
+            <button 
+              type="button" 
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 p-1"
+              aria-label={t('close')}
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
           
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
                 {t('event_title')}
               </label>
               <input
@@ -119,14 +131,14 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="input-field"
+                className="input-field py-3"
                 required
                 dir={isRtl ? 'rtl' : 'ltr'}
               />
             </div>
 
             <div>
-              <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
                 {t('date')}
               </label>
               <input
@@ -135,7 +147,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 name="date"
                 value={formData.date}
                 onChange={handleChange}
-                className="input-field"
+                className="input-field py-3"
                 required
                 dir={isRtl ? 'rtl' : 'ltr'}
               />
@@ -143,7 +155,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
 
             <div className={`flex ${isRtl ? 'flex-row-reverse' : ''} gap-4`}>
               <div className='w-full'>
-                <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-2">
                 {t('start_time')}
                 </label>
                 <input
@@ -152,13 +164,13 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   name="startTime"
                   value={formData.startTime}
                   onChange={handleChange}
-                  className="input-field w-full"
+                  className="input-field w-full py-3"
                   required
                   dir={isRtl ? 'rtl' : 'ltr'}
                 />
               </div>
               <div className='w-full'>
-                <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-2">
                 {t('end_time')}
                 </label>
                 <input
@@ -167,14 +179,14 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   name="endTime"
                   value={formData.endTime}
                   onChange={handleChange}
-                  className="input-field w-full"
+                  className="input-field w-full py-3"
                   required
                   dir={isRtl ? 'rtl' : 'ltr'}
                 />
               </div>
             </div>
             {formData.timeError && (
-              <div className="text-red-500 text-sm mt-2">
+              <div className="text-red-500 text-sm mt-1">
                 {formData.timeError}
               </div>
             )}
@@ -206,7 +218,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
             </div>
 
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
                 {t('description')}
               </label>
               <textarea
@@ -215,7 +227,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 value={formData.description}
                 onChange={handleChange}
                 rows="3"
-                className="input-field"
+                className="input-field py-3"
                 required
                 dir={isRtl ? 'rtl' : 'ltr'}
               />
@@ -223,7 +235,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
 
             <div className={`grid grid-cols-2 gap-4 ${isRtl ? 'flex-row-reverse' : ''}`}>
               <div>
-                <label htmlFor="capacity" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="capacity" className="block text-sm font-medium text-gray-700 mb-2">
                   {t('worker_capacity')}
                 </label>
                 <input
@@ -233,7 +245,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   min="1"
                   value={formData.capacity}
                   onChange={handleChange}
-                  className="input-field"
+                  className="input-field py-3"
                   required
                   placeholder={t('number_of_workers_needed')}
                   dir={isRtl ? 'rtl' : 'ltr'}
@@ -241,7 +253,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
               </div>
 
               <div>
-                <label htmlFor="standbyCapacity" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="standbyCapacity" className="block text-sm font-medium text-gray-700 mb-2">
                   {t('standby_capacity')}
                 </label>
                 <input
@@ -251,7 +263,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   min="0"
                   value={formData.standbyCapacity}
                   onChange={handleChange}
-                  className="input-field"
+                  className="input-field py-3"
                   required
                   placeholder={t('number_of_standby_workers')}
                   dir={isRtl ? 'rtl' : 'ltr'}
@@ -260,17 +272,17 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
             </div>
           </div>
 
-          <div className={`mt-6 flex ${isRtl ? 'justify-start' : 'justify-end'} ${isRtl ? 'space-x-reverse' : ''} space-x-3`}>
+          <div className={`mt-8 flex ${isRtl ? 'justify-start' : 'justify-end'} ${isRtl ? 'space-x-reverse' : ''} space-x-4`}>
             <button
               type="button"
               onClick={onClose}
-              className="btn-secondary"
+              className="px-6 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 min-w-[100px]"
             >
               {t('cancel')}
             </button>
             <button
               type="submit"
-              className="btn-primary"
+              className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 min-w-[130px]"
             >
               {initialData ? t('save_changes') : t('create_event')}
             </button>
