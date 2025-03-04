@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import welcomeIcon from '../../assets/welcome-icon.png';
 
 function SignIn() {
@@ -9,6 +10,7 @@ function SignIn() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
@@ -20,7 +22,7 @@ function SignIn() {
       await login(email, password);
       navigate('/');
     } catch (error) {
-      setError('Failed to sign in. Please check your credentials.');
+      setError(t('failed_to_sign_in'));
     }
     setLoading(false);
   }
@@ -46,7 +48,7 @@ function SignIn() {
         <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(90deg, rgba(139, 92, 246, 0.1) 1px, transparent 1px), linear-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px)', backgroundSize: '48px 48px' }}></div>
       </div>
 
-      <div className="max-w-md w-full bg-white/90 rounded-3xl shadow-xl overflow-hidden relative z-10 backdrop-blur-sm">
+      <div className={`max-w-md w-full bg-white/90 rounded-3xl shadow-xl overflow-hidden relative z-10 backdrop-blur-sm ${language === 'he' ? 'text-right' : 'text-left'}`}>
         {/* Purple curved shape */}
         <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-br from-purple-600 to-purple-700 transform -skew-y-6 origin-top-left"></div>
         
@@ -60,7 +62,7 @@ function SignIn() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+            <h2 className="text-3xl font-bold text-white mb-2">{t('welcome_back')}</h2>
             {/* Welcome image */}
             <img 
               src={welcomeIcon}
@@ -85,7 +87,8 @@ function SignIn() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
-                placeholder="Email"
+                placeholder={t('email')}
+                dir={language === 'he' ? 'rtl' : 'ltr'}
               />
             </div>
 
@@ -98,7 +101,8 @@ function SignIn() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
+                placeholder={t('password')}
+                dir={language === 'he' ? 'rtl' : 'ltr'}
               />
             </div>
 
@@ -115,7 +119,7 @@ function SignIn() {
                   </svg>
                 ) : (
                   <span className="flex items-center justify-center">
-                    Sign in
+                    {t('sign_in')}
                     <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                     </svg>
@@ -129,7 +133,7 @@ function SignIn() {
                 to="/signup" 
                 className="inline-flex items-center justify-center px-6 py-2 border border-transparent text-sm font-medium rounded-full text-purple-600 bg-purple-50 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transform transition-transform duration-150 hover:scale-105"
               >
-                Create new account
+                {t('create_new_account')}
               </Link>
             </div>
           </form>

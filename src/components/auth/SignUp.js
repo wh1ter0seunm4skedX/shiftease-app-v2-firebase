@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { PROFILE_PICTURES } from '../../constants';
@@ -16,17 +17,18 @@ function SignUp() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      return setError('Passwords do not match');
+      return setError(t('passwords_do_not_match'));
     }
 
     if (!selectedPicture) {
-      return setError('Please select a profile picture');
+      return setError(t('select_profile_picture'));
     }
 
     try {
@@ -41,12 +43,13 @@ function SignUp() {
         role: role,
         phoneNumber: phoneNumber,
         profilePicture: selectedPicture.url,
+        language: language, // Save user's language preference
         createdAt: new Date().toISOString()
       });
 
       navigate('/');
     } catch (error) {
-      setError('Failed to create an account. ' + error.message);
+      setError(t('failed_to_create_account') + ' ' + error.message);
     }
     setLoading(false);
   }
@@ -72,7 +75,7 @@ function SignUp() {
         <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(90deg, rgba(236, 72, 153, 0.1) 1px, transparent 1px), linear-gradient(rgba(236, 72, 153, 0.1) 1px, transparent 1px)', backgroundSize: '48px 48px' }}></div>
       </div>
 
-      <div className="max-w-md w-full bg-white/90 rounded-3xl shadow-xl overflow-hidden relative z-10 backdrop-blur-sm">
+      <div className={`max-w-md w-full bg-white/90 rounded-3xl shadow-xl overflow-hidden relative z-10 backdrop-blur-sm ${language === 'he' ? 'text-right' : 'text-left'}`}>
         {/* Pink curved shape */}
         <div className="absolute top-0 right-0 left-0 h-72 bg-gradient-to-br from-pink-400 to-pink-500 transform skew-y-6 origin-top-right"></div>
         
@@ -86,7 +89,7 @@ function SignUp() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
+            <h2 className="text-3xl font-bold text-white mb-2">{t('sign_up')}</h2>
           </div>
 
           {error && (
@@ -105,7 +108,8 @@ function SignUp() {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
-                placeholder="Full Name"
+                placeholder={t('full_name')}
+                dir={language === 'he' ? 'rtl' : 'ltr'}
               />
             </div>
 
@@ -118,7 +122,8 @@ function SignUp() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
-                placeholder="Email"
+                placeholder={t('email')}
+                dir={language === 'he' ? 'rtl' : 'ltr'}
               />
             </div>
 
@@ -131,7 +136,8 @@ function SignUp() {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
-                placeholder="Phone Number"
+                placeholder={t('phone_number')}
+                dir={language === 'he' ? 'rtl' : 'ltr'}
               />
             </div>
 
@@ -144,7 +150,8 @@ function SignUp() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
+                placeholder={t('password')}
+                dir={language === 'he' ? 'rtl' : 'ltr'}
               />
             </div>
 
@@ -157,7 +164,8 @@ function SignUp() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
-                placeholder="Confirm Password"
+                placeholder={t('confirm_password')}
+                dir={language === 'he' ? 'rtl' : 'ltr'}
               />
             </div>
 
@@ -172,7 +180,7 @@ function SignUp() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Choose your profile picture
+                {t('choose_profile_picture')}
               </label>
               <div className="grid grid-cols-3 gap-4">
                 {PROFILE_PICTURES.map((picture) => (
@@ -213,7 +221,7 @@ function SignUp() {
                   </svg>
                 ) : (
                   <span className="flex items-center">
-                    Sign up
+                    {t('sign_up')}
                     <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                     </svg>
@@ -223,8 +231,9 @@ function SignUp() {
             </div>
 
             <div className="text-center text-sm">
+              <span className="mr-1">{t('already_have_account')}</span>
               <Link to="/signin" className="text-pink-600 hover:text-pink-500">
-                Sign in
+                {t('sign_in_here')}
               </Link>
             </div>
           </form>

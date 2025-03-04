@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, updateDoc, arrayUnion, arrayRemove, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import EventForm from './EventForm';
 import AdminPanel from './admin/AdminPanel';
 import RegistrationsModal from './admin/RegistrationsModal';
 import Footer from './Footer';
 import FeedbackButton from './FeedbackButton';
+import LanguageSelector from './LanguageSelector';
 import { format } from 'date-fns';
 import { sendRegistrationNotification } from '../services/emailService';
 
@@ -20,6 +22,7 @@ function EventDashboard() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isRegistrationsModalOpen, setIsRegistrationsModalOpen] = useState(false);
   const { user, isAdmin, logout } = useAuth();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -275,7 +278,7 @@ function EventDashboard() {
                   <svg className="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <h1 className="ml-2 text-xl font-bold text-gray-800">Dashboard</h1>
+                  <h1 className="ml-2 text-xl font-bold text-gray-800">{t('dashboard')}</h1>
                 </div>
               </div>
 
@@ -308,11 +311,13 @@ function EventDashboard() {
                     <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
-                    Add Event
+                    {t('add_event')}
                   </button>
                 )}
 
                 <div className="flex items-center space-x-3 border-l pl-4 border-gray-200">
+                  <LanguageSelector />
+                  
                   <div className="flex items-center space-x-2">
                     {userData?.profilePicture ? (
                       <img
@@ -330,7 +335,7 @@ function EventDashboard() {
                     <span className="text-sm font-medium text-gray-700">
                       {user.email}
                       <span className="ml-1 px-2 py-0.5 text-xs rounded-full bg-purple-100 text-purple-800">
-                        {isAdmin ? 'Admin' : 'User'}
+                        {isAdmin ? t('admin') : t('user')}
                       </span>
                     </span>
                   </div>
@@ -342,7 +347,7 @@ function EventDashboard() {
                     <svg className="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
-                    Sign Out
+                    {t('sign_out')}
                   </button>
                 </div>
               </div>
@@ -368,10 +373,12 @@ function EventDashboard() {
                   <div className="flex flex-col">
                     <span className="text-sm font-medium text-gray-700">{user.email}</span>
                     <span className="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 w-fit">
-                      {isAdmin ? 'Admin' : 'User'}
+                      {isAdmin ? t('admin') : t('user')}
                     </span>
                   </div>
                 </div>
+
+                <LanguageSelector />
 
                 {isAdmin && (
                   <button
@@ -384,7 +391,7 @@ function EventDashboard() {
                     <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
-                    Add Event
+                    {t('add_event')}
                   </button>
                 )}
 
@@ -398,7 +405,7 @@ function EventDashboard() {
                   <svg className="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
-                  Sign Out
+                  {t('sign_out')}
                 </button>
               </div>
             </div>
@@ -411,11 +418,11 @@ function EventDashboard() {
             {events.length === 0 ? (
               <div className="flex flex-col items-center justify-center min-h-[50vh] sm:h-[60vh] text-center">
                 <div className="bg-white p-6 sm:p-8 rounded-xl shadow-sm w-full sm:w-auto">
-                  <h2 className="text-xl sm:text-2xl font-semibold text-gray-700 mb-2">No events yet</h2>
+                  <h2 className="text-xl sm:text-2xl font-semibold text-gray-700 mb-2">{t('no_events_yet')}</h2>
                   {isAdmin ? (
-                    <p className="text-gray-500">Click the "Add Event" button to create your first event!</p>
+                    <p className="text-gray-500">{t('click_add_event')}</p>
                   ) : (
-                    <p className="text-gray-500">There are no events to display at this time.</p>
+                    <p className="text-gray-500">{t('no_events_to_display')}</p>
                   )}
                 </div>
               </div>
@@ -503,7 +510,7 @@ function EventDashboard() {
                       {isAdmin && (
                         <div className="mb-4 space-y-2">
                           <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600">Regular Registration:</span>
+                            <span className="text-sm text-gray-600">{t('regular_registration')}:</span>
                             <span className="text-sm font-medium">
                               {event.registrations?.length || 0} / {event.capacity}
                             </span>
@@ -516,7 +523,7 @@ function EventDashboard() {
                           </div>
 
                           <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600">Standby List:</span>
+                            <span className="text-sm text-gray-600">{t('standby_list')}:</span>
                             <span className="text-sm font-medium">
                               {event.standbyRegistrations?.length || 0} / {event.standbyCapacity}
                             </span>
@@ -538,14 +545,14 @@ function EventDashboard() {
                               onClick={() => handleUnregisterFromEvent(event.id)}
                               className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
                             >
-                              Unregister
+                              {t('unregister')}
                             </button>
                           ) : isUserStandby(event) ? (
                             <button
                               onClick={() => handleUnregisterFromEvent(event.id)}
                               className="w-full bg-yellow-400 text-gray-900 py-2 px-4 rounded-lg hover:bg-yellow-500 transition-colors"
                             >
-                              Leave Standby List
+                              {t('leave_standby_list')}
                             </button>
                           ) : (
                             <button
@@ -565,9 +572,9 @@ function EventDashboard() {
                             >
                               {event.registrations?.length >= event.capacity
                                 ? event.standbyRegistrations?.length >= event.standbyCapacity
-                                  ? 'Full'
-                                  : 'Register for standby'
-                                : 'Register'}
+                                  ? t('full')
+                                  : t('register_for_standby')
+                                : t('register')}
                             </button>
                           )}
                         </div>
