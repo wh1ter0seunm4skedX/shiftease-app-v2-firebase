@@ -145,49 +145,103 @@ export const PROFILE_PICTURES = [
 ];
 
 export const generateRandomEvent = () => {
-  const titles = [
-    "Team Meeting", 
-    "Product Launch", 
-    "Workshop", 
-    "Conference", 
-    "Webinar",
-    "Networking Event",
-    "Hackathon",
-    "Training Session",
-    "Annual Gala",
-    "Tech Demo"
+  const events = [
+    { 
+      title: "ערב אוכל", 
+      englishTitle: "Food Evening",
+      description: "ערב קולינרי מיוחד עם מגוון מטעמים מהמטבח העולמי. בואו לטעום ולהנות!",
+      englishDescription: "Special culinary evening featuring a variety of delicacies from world cuisines. Come taste and enjoy!"
+    },
+    { 
+      title: "ערב אומנות", 
+      englishTitle: "Art Evening",
+      description: "ערב יצירה והשראה עם אומנים מקומיים. הזדמנות לחוות יצירה משותפת ולהתנסות בטכניקות חדשות.",
+      englishDescription: "An evening of creativity and inspiration with local artists. An opportunity to experience collaborative creation and try new techniques."
+    },
+    { 
+      title: "אירוע ט\"ו בשבט", 
+      englishTitle: "Tu B'Shvat Event",
+      description: "חגיגה לכבוד ראש השנה לאילנות, עם נטיעות, סדר ט\"ו בשבט ופעילויות לכל המשפחה.",
+      englishDescription: "A celebration of the New Year for Trees, featuring planting activities, a Tu B'Shvat Seder, and activities for the whole family."
+    },
+    { 
+      title: "יריד בשקל", 
+      englishTitle: "Shekel Fair",
+      description: "יריד מיוחד בו כל המוצרים נמכרים בשקל אחד בלבד! הזדמנות מצוינת למציאות ולתרומה לקהילה.",
+      englishDescription: "A special fair where all items are sold for just one shekel! An excellent opportunity for bargains while contributing to the community."
+    },
+    { 
+      title: "מסיבת פורים", 
+      englishTitle: "Purim Party",
+      description: "מסיבת תחפושות שמחה וצבעונית לכבוד חג הפורים, עם תחרות תחפושות, משלוחי מנות וקריאת מגילה.",
+      englishDescription: "A joyful and colorful costume party celebrating Purim, featuring a costume contest, gift baskets exchange, and Megillah reading."
+    },
+    { 
+      title: "יום העצמאות", 
+      englishTitle: "Independence Day",
+      description: "חגיגה לציון יום העצמאות של מדינת ישראל, עם מופע זיקוקים, מנגלים ופעילויות מיוחדות.",
+      englishDescription: "A celebration marking Israel's Independence Day, featuring fireworks, barbecues, and special activities."
+    },
+    { 
+      title: "פעילויות פנאי", 
+      englishTitle: "Leisure Activities",
+      description: "המשך פעילות רגילה - מגוון פעילויות פנאי להנאה ולהפגה, כולל משחקים, סדנאות ומפגשים חברתיים.",
+      englishDescription: "Continuation of regular activities - a variety of leisure activities for enjoyment and relaxation, including games, workshops, and social gatherings."
+    },
+    { 
+      title: "יציאת חוץ", 
+      englishTitle: "Outdoor Trip",
+      description: "יציאה מאורגנת לטיול בטבע, עם פעילויות מגבשות ומסלול הליכה מותאם לכל הגילים.",
+      englishDescription: "An organized nature trip with team-building activities and a walking route suitable for all ages."
+    },
+    { 
+      title: "תפוח בדבש", 
+      englishTitle: "Apple in Honey",
+      description: "אירוע מיוחד לכבוד ראש השנה, עם טעימות דבש מקומי, הכנת ברכות לשנה החדשה וארוחה חגיגית.",
+      englishDescription: "A special Rosh Hashanah event featuring local honey tastings, preparation of New Year greetings, and a festive meal."
+    },
+    { 
+      title: "מסיבת חנוכה", 
+      englishTitle: "Hanukkah Party",
+      description: "חגיגת חנוכה מסורתית עם הדלקת נרות, סופגניות, סביבונים ופעילויות לכל המשפחה.",
+      englishDescription: "Traditional Hanukkah celebration with candle lighting, sufganiyot (donuts), dreidels, and activities for the whole family."
+    },
+    { 
+      title: "מיוחדים בשרון", 
+      englishTitle: "Specials in Sharon",
+      description: "אירוע קהילתי מיוחד המציג כישרונות מקומיים ויוזמות חברתיות באזור השרון.",
+      englishDescription: "A special community event showcasing local talents and social initiatives in the Sharon region."
+    }
   ];
   
-  const descriptions = [
-    "Join us for an exciting discussion about upcoming projects.",
-    "Discover the latest innovations in our product line.",
-    "Learn new skills in this hands-on workshop session.",
-    "Connect with industry experts and peers.",
-    "Gain insights from our expert speakers.",
-    "A great opportunity to meet and connect with professionals.",
-    "Compete, code, and create in this intense hackathon!",
-    "Improve your skills with guidance from experienced mentors.",
-    "Celebrate the successes of the year with us!",
-    "Experience live demonstrations of our latest tech solutions."
-  ];
-
+  const randomEvent = events[Math.floor(Math.random() * events.length)];
+  
   const randomDate = new Date();
   randomDate.setDate(randomDate.getDate() + Math.floor(Math.random() * 30));
-  const randomHour = Math.floor(Math.random() * 24);
-  const randomMinute = Math.floor(Math.random() * 60);
+  const randomHour = Math.floor(Math.random() * 12) + 9; // Between 9AM and 9PM
+  const randomMinute = [0, 15, 30, 45][Math.floor(Math.random() * 4)]; // Only 00, 15, 30, 45
   randomDate.setHours(randomHour, randomMinute, 0, 0); 
-  const randomStartTime = `${randomHour}:${randomMinute < 10 ? '0' : ''}${randomMinute}`;
-  const randomEndTime = `${(randomHour + 1) % 24}:${randomMinute < 10 ? '0' : ''}${randomMinute}`; 
+  
+  // Format time properly with leading zeros
+  const formattedStartHour = randomHour.toString().padStart(2, '0');
+  const formattedStartMinute = randomMinute.toString().padStart(2, '0');
+  const randomStartTime = `${formattedStartHour}:${formattedStartMinute}`;
+  
+  // Event duration between 1-3 hours
+  const duration = Math.floor(Math.random() * 3) + 1;
+  const endHour = (randomHour + duration) % 24;
+  const formattedEndHour = endHour.toString().padStart(2, '0');
+  const randomEndTime = `${formattedEndHour}:${formattedStartMinute}`; 
 
-  const randomCapacity = Math.floor(Math.random() * 10) + 1;
-  const randomStandbyCapacity = Math.floor(Math.random() * 5) + 1;
+  const randomCapacity = Math.floor(Math.random() * 8) + 1; // Between 1-9
+  const randomStandbyCapacity = Math.floor(Math.random() * 5) + 1; // Between 1-5
 
   return {
-    title: titles[Math.floor(Math.random() * titles.length)],
+    title: randomEvent.title,
     date: randomDate.toISOString().split('T')[0],
     startTime: randomStartTime,
     endTime: randomEndTime,
-    description: descriptions[Math.floor(Math.random() * descriptions.length)],
+    description: randomEvent.description,
     imageUrl: EVENT_IMAGES[Math.floor(Math.random() * EVENT_IMAGES.length)].url,
     capacity: randomCapacity,
     standbyCapacity: randomStandbyCapacity

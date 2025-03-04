@@ -166,19 +166,19 @@ const translations = {
     passwords_do_not_match: "הסיסמאות אינן תואמות.",
     full_name: "שם מלא",
     phone_number: "מספר טלפון",
-    choose_profile_picture: "בחר תמונת פרופיל",
-    select_profile_picture: "אנא בחר תמונת פרופיל",
+    choose_profile_picture: "בחרו תמונת פרופיל",
+    select_profile_picture: "אנא בחרו תמונת פרופיל",
     failed_to_create_account: "יצירת החשבון נכשלה.",
     
     // Dashboard
-    dashboard: "לוח אירועים קרובים",
+    dashboard: "לוח אירועים קרובים 🥳",
     add_event: "הוספת אירוע",
     sign_out: "התנתקות",
     admin: "מנהלת מערכת",
     user: "משתמש",
-    no_events_yet: "אין אירועים עדיין",
-    click_add_event: "לחץ על כפתור \"הוסף אירוע\" כדי ליצור את האירוע הראשון שלך!",
-    no_events_to_display: "אין אירועים להצגה בזמן זה.",
+    no_events_yet: "אין אירועים עדיין 😴",
+    click_add_event: "לחצו על כפתור \"הוספת אירוע\" כדי ליצור את האירוע הראשון שלך!",
+    no_events_to_display: "חזרו עוד מעט! זה בטח יתעדכן בקרוב..",
     
     // Events
     event_details: "פרטי האירוע",
@@ -190,10 +190,10 @@ const translations = {
     event_description: "תיאור האירוע",
     event_capacity: "קיבולת",
     standby_capacity: "קיבולת המתנה",
-    create_event: "צור אירוע",
-    update_event: "עדכן אירוע",
+    create_event: "צרו אירוע",
+    update_event: "עדכנו אירוע",
     cancel: "ביטול",
-    create_new_event: "צור אירוע חדש",
+    create_new_event: "צרו אירוע חדש",
     edit_event: "עריכת אירוע",
     date: "תאריך",
     start_time: "שעת התחלה",
@@ -229,7 +229,7 @@ const translations = {
     registered_at: "נרשם ב",
     
     // Confirmations
-    confirm_delete: "האם אתה בטוח שברצונך למחוק אירוע זה?",
+    confirm_delete: "האם אתם בטוחים שאתם רוצים למחוק את האירוע הזה?",
     successfully_registered: "נרשמת בהצלחה לאירוע!",
     added_to_standby: "נוספת לרשימת ההמתנה.",
     event_full: "מצטערים, האירוע מלא.",
