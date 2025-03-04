@@ -22,7 +22,7 @@ const translations = {
     failed_to_create_account: "Failed to create an account.",
     
     // Dashboard
-    dashboard: "Dashboard",
+    dashboard: "Upcoming Events",
     add_event: "Add Event",
     sign_out: "Sign Out",
     admin: "Admin",
@@ -171,7 +171,7 @@ const translations = {
     failed_to_create_account: "יצירת החשבון נכשלה.",
     
     // Dashboard
-    dashboard: "לוח האירועים שלי",
+    dashboard: "לוח אירועים קרובים",
     add_event: "הוספת אירוע",
     sign_out: "התנתקות",
     admin: "מנהלת מערכת",
@@ -255,17 +255,17 @@ const translations = {
     
     // Feedback
     feedback: "משוב",
-    feedback_time: "מה דעתכם?!",
-    share_feedback: "אל תהסס לשתף איתנו את המשוב שלך",
+    feedback_time: "מה דעתכם על האפליקציה?!",
+    share_feedback: "המשוב אנונימי לגמרי אז ממש נשמח לדעת מה אתם חושבים עלינו :)",
     poor: "גרוע",
     fair: "סביר",
     okay: "בסדר",
     good: "טוב",
     nice: "מצוין",
-    about_experience: "ממש נשמח לשמוע מה אתם חושבים עלינו",
+    about_experience: "כאן תוכלו לכתוב את מה שאתם חושבים שאנחנו יכולים לשפר או לשמר",
     feedback_placeholder: "זה אפליקציה מעניינת ונהניתי להשתמש בה אבל...",
     dismiss: "סגור",
-    send_feedback: "שלח משוב",
+    send_feedback: "שלחו משוב",
     sending: "שולח...",
     sent: "נשלח!",
     feedback_thanks: ":) תודה על המשוב שלך! אנחנו ממש מעריכים את זה.",

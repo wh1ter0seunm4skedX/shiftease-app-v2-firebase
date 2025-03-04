@@ -107,8 +107,8 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                   ></div>
                 </div>
                 <div className="absolute -bottom-6 left-0 right-0 flex justify-between text-xs text-gray-500">
-                  <span>{isRtl ? t('nice') : t('poor')}</span>
-                  <span>{isRtl ? t('poor') : t('nice')}</span>
+                  <span>{isRtl ? t('poor') : t('poor')}</span>
+                  <span>{isRtl ? t('nice') : t('nice')}</span>
                 </div>
               </div>
               
