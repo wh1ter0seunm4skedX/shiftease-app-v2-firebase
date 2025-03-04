@@ -42,7 +42,7 @@ function EventDashboard() {
 
     const eventsQuery = query(
       collection(db, 'events'),
-      orderBy('date', 'desc')
+      orderBy('date', 'asc')
     );
     
     const unsubscribe = onSnapshot(eventsQuery, 
@@ -56,7 +56,22 @@ function EventDashboard() {
             standbyRegistrations: doc.data().standbyRegistrations || []
           });
         });
-        setEvents(eventsData);
+        
+        // Sort events: first by date (ascending), then by start time (ascending)
+        const sortedEvents = eventsData.sort((a, b) => {
+          // First compare dates
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          
+          if (dateA.getTime() !== dateB.getTime()) {
+            return dateA - dateB;
+          }
+          
+          // If dates are the same, compare start times
+          return a.startTime.localeCompare(b.startTime);
+        });
+        
+        setEvents(sortedEvents);
       },
       (error) => {
         console.error("Error fetching events: ", error);
