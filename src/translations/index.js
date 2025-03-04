@@ -172,7 +172,7 @@ const translations = {
     
     // Dashboard
     dashboard: "לוח האירועים שלי",
-    add_event: "הופסת אירוע",
+    add_event: "הוספת אירוע",
     sign_out: "התנתקות",
     admin: "מנהלת מערכת",
     user: "משתמש",

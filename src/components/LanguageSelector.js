@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Dialog, RadioGroup } from '@mui/material';
 import { IoLanguageOutline } from 'react-icons/io5';
@@ -7,6 +7,7 @@ function LanguageSelector() {
   const { language, changeLanguage, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(language);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -18,9 +19,23 @@ function LanguageSelector() {
   };
 
   const handleSave = () => {
-    changeLanguage(selectedLanguage);
+    if (selectedLanguage !== language) {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        changeLanguage(selectedLanguage);
+      }, 300);
+    }
     setIsOpen(false);
   };
+
+  // Reset transition state after language change
+  useEffect(() => {
+    if (isTransitioning) {
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 700);
+    }
+  }, [language, isTransitioning]);
 
   return (
     <>
@@ -28,8 +43,17 @@ function LanguageSelector() {
         onClick={handleOpen}
         className={`inline-flex items-center justify-center w-full sm:w-auto px-4 py-3 border border-gray-200 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200 ${language === 'he' ? 'rtl:space-x-reverse' : ''}`}
       >
-        <IoLanguageOutline className={`h-4 w-4 ${language === 'he' ? 'ml-2' : 'mr-2'} text-gray-500`} />
-        {t('language')}
+        {language === 'he' ? (
+          <>
+            {t('language')}
+            <IoLanguageOutline className="h-4 w-4 ml-2 text-gray-500" />
+          </>
+        ) : (
+          <>
+            <IoLanguageOutline className="h-4 w-4 mr-2 text-gray-500" />
+            {t('language')}
+          </>
+        )}
       </button>
 
       <Dialog
@@ -108,6 +132,18 @@ function LanguageSelector() {
           </div>
         </div>
       </Dialog>
+
+      {/* Language transition overlay */}
+      {isTransitioning && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center transition-opacity duration-500 animate-pulse">
+          <div className="bg-white p-8 rounded-lg shadow-xl transform transition-transform duration-500 animate-bounce">
+            <IoLanguageOutline className="h-16 w-16 text-purple-500 mx-auto mb-4 animate-spin" />
+            <p className="text-xl font-medium text-center">
+              {selectedLanguage === 'he' ? 'מחליף לעברית...' : 'Switching to English...'}
+            </p>
+          </div>
+        </div>
+      )}
     </>
   );
 }
