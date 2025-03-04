@@ -56,6 +56,8 @@ const translations = {
     number_of_standby_workers: "Number of standby workers",
     save_changes: "Save Changes",
     end_time_before_start: "End time cannot be before start time",
+    show_images: "Show Images",
+    hide_images: "Hide Images",
     
     // Event Actions
     register: "Register",
@@ -205,6 +207,8 @@ const translations = {
     number_of_standby_workers: "מספר עובדי ההמתנה",
     save_changes: "שמרו שינויים",
     end_time_before_start: "שעת הסיום לא יכולה להיות לפני שעת ההתחלה",
+    show_images: "הצג תמונות",
+    hide_images: "הסתר תמונות",
     
     // Event Actions
     register: "הרשמה",

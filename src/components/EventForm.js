@@ -5,6 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 function EventForm({ open, onClose, onSubmit, initialData = null }) {
   const { t, language } = useLanguage();
   const isRtl = language === 'he';
+  const [showImages, setShowImages] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     date: new Date().toISOString().split('T')[0],
@@ -102,10 +103,10 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className={`bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all ${isRtl ? 'rtl' : 'ltr'}`}>
-        <form onSubmit={handleSubmit} className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold text-gray-800">
+      <div className={`bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all ${isRtl ? 'rtl' : 'ltr'} max-h-[90vh] overflow-y-auto`}>
+        <form onSubmit={handleSubmit} className="p-4">
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-xl font-semibold text-gray-800">
               {initialData ? t('edit_event') : t('create_new_event')}
             </h2>
             <button 
@@ -120,9 +121,9 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
             </button>
           </div>
           
-          <div className="space-y-5">
+          <div className="space-y-3">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
                 {t('event_title')}
               </label>
               <input
@@ -131,14 +132,14 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="input-field py-3"
+                className="input-field py-2"
                 required
                 dir={isRtl ? 'rtl' : 'ltr'}
               />
             </div>
 
             <div>
-              <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">
                 {t('date')}
               </label>
               <input
@@ -147,30 +148,15 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 name="date"
                 value={formData.date}
                 onChange={handleChange}
-                className="input-field py-3"
+                className="input-field py-2"
                 required
                 dir={isRtl ? 'rtl' : 'ltr'}
               />
             </div>
 
-            <div className={`flex ${isRtl ? 'flex-row-reverse' : ''} gap-4`}>
+            <div className={`flex ${isRtl ? 'flex-row-reverse' : 'flex-row-reverse'} gap-4`}>
               <div className='w-full'>
-                <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('start_time')}
-                </label>
-                <input
-                  type="time"
-                  id="startTime"
-                  name="startTime"
-                  value={formData.startTime}
-                  onChange={handleChange}
-                  className="input-field w-full py-3"
-                  required
-                  dir={isRtl ? 'rtl' : 'ltr'}
-                />
-              </div>
-              <div className='w-full'>
-                <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-1">
                 {t('end_time')}
                 </label>
                 <input
@@ -179,46 +165,87 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   name="endTime"
                   value={formData.endTime}
                   onChange={handleChange}
-                  className="input-field w-full py-3"
+                  className="input-field w-full py-2"
+                  required
+                  dir={isRtl ? 'rtl' : 'ltr'}
+                />
+              </div>
+              <div className='w-full'>
+                <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-1">
+                {t('start_time')}
+                </label>
+                <input
+                  type="time"
+                  id="startTime"
+                  name="startTime"
+                  value={formData.startTime}
+                  onChange={handleChange}
+                  className="input-field w-full py-2"
                   required
                   dir={isRtl ? 'rtl' : 'ltr'}
                 />
               </div>
             </div>
             {formData.timeError && (
-              <div className="text-red-500 text-sm mt-1">
+              <div className="text-red-500 text-sm">
                 {formData.timeError}
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t('select_image')}
               </label>
-              <div className="grid grid-cols-5 gap-2">
-                {EVENT_IMAGES.map((image) => (
-                  <button
-                    key={image.id}
-                    type="button"
-                    className={`relative aspect-square overflow-hidden rounded-lg border-2 ${
-                      formData.imageUrl === image.url
-                        ? 'border-blue-500'
-                        : 'border-transparent'
-                    }`}
-                    onClick={() => handleChange({ target: { name: 'imageUrl', value: image.url } })}
-                  >
-                    <img
-                      src={image.url}
-                      alt={image.alt}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
+              
+              <div className="flex items-center justify-between mb-2">
+                <button
+                  type="button"
+                  onClick={() => setShowImages(!showImages)}
+                  className="flex-grow px-4 py-2 text-sm font-medium text-white bg-purple-600 border border-transparent rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                >
+                  {showImages ? t('hide_images') : t('show_images')}
+                </button>
+                
+                {/* Display the currently selected image next to the button */}
+                {!showImages && (
+                  <div className="ml-2 flex-shrink-0">
+                    <div className="relative w-10 h-10 overflow-hidden rounded-lg border-2 border-blue-500">
+                      <img
+                        src={formData.imageUrl}
+                        alt="Selected event image"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
+              
+              {showImages && (
+                <div className="grid grid-cols-5 gap-2 mb-2">
+                  {EVENT_IMAGES.map((image) => (
+                    <button
+                      key={image.id}
+                      type="button"
+                      className={`relative aspect-square overflow-hidden rounded-lg border-2 ${
+                        formData.imageUrl === image.url
+                          ? 'border-blue-500'
+                          : 'border-transparent'
+                      }`}
+                      onClick={() => handleChange({ target: { name: 'imageUrl', value: image.url } })}
+                    >
+                      <img
+                        src={image.url}
+                        alt={image.alt}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
                 {t('description')}
               </label>
               <textarea
@@ -226,8 +253,8 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                rows="3"
-                className="input-field py-3"
+                rows="2"
+                className="input-field py-2"
                 required
                 dir={isRtl ? 'rtl' : 'ltr'}
               />
@@ -235,7 +262,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
 
             <div className={`grid grid-cols-2 gap-4 ${isRtl ? 'flex-row-reverse' : ''}`}>
               <div>
-                <label htmlFor="capacity" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="capacity" className="block text-sm font-medium text-gray-700 mb-1">
                   {t('worker_capacity')}
                 </label>
                 <input
@@ -245,7 +272,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   min="1"
                   value={formData.capacity}
                   onChange={handleChange}
-                  className="input-field py-3"
+                  className="input-field py-2"
                   required
                   placeholder={t('number_of_workers_needed')}
                   dir={isRtl ? 'rtl' : 'ltr'}
@@ -253,7 +280,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
               </div>
 
               <div>
-                <label htmlFor="standbyCapacity" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="standbyCapacity" className="block text-sm font-medium text-gray-700 mb-1">
                   {t('standby_capacity')}
                 </label>
                 <input
@@ -263,7 +290,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   min="0"
                   value={formData.standbyCapacity}
                   onChange={handleChange}
-                  className="input-field py-3"
+                  className="input-field py-2"
                   required
                   placeholder={t('number_of_standby_workers')}
                   dir={isRtl ? 'rtl' : 'ltr'}
@@ -272,17 +299,17 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
             </div>
           </div>
 
-          <div className={`mt-8 flex ${isRtl ? 'justify-start' : 'justify-end'} ${isRtl ? 'space-x-reverse' : ''} space-x-4`}>
+          <div className={`mt-4 flex ${isRtl ? 'justify-start' : 'justify-end'} ${isRtl ? 'space-x-reverse' : ''} space-x-4`}>
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 min-w-[100px]"
+              className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 min-w-[100px]"
             >
               {t('cancel')}
             </button>
             <button
               type="submit"
-              className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 min-w-[130px]"
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 min-w-[130px]"
             >
               {initialData ? t('save_changes') : t('create_event')}
             </button>
