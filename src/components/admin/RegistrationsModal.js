@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { format } from 'date-fns';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 function RegistrationsModal({ isOpen, onClose, event }) {
   const [registeredUsers, setRegisteredUsers] = useState([]);
   const [standbyUsers, setStandbyUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -51,10 +53,10 @@ function RegistrationsModal({ isOpen, onClose, event }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl transform transition-all max-h-[90vh] overflow-hidden">
+      <div className={`bg-white rounded-xl shadow-xl w-full max-w-4xl transform transition-all max-h-[90vh] overflow-hidden ${language === 'he' ? 'rtl' : 'ltr'}`}>
         <div className="p-6 flex justify-between items-center border-b">
           <h2 className="text-2xl font-semibold text-gray-800">
-            Event Registrations: {event.title}
+            {t('event_registrations')}: {event.title}
           </h2>
           <button
             onClick={onClose}
@@ -76,23 +78,23 @@ function RegistrationsModal({ isOpen, onClose, event }) {
               {/* Regular Registrations */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                  Regular Registrations ({registeredUsers.length} / {event.capacity})
+                  {t('regular_registration')} ({registeredUsers.length} / {event.capacity})
                 </h3>
                 <div className="bg-white rounded-lg shadow overflow-hidden">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Name
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                          {t('name')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Email
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                          {t('email')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Phone
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                          {t('phone')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Registered At
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                          {t('registered_at')}
                         </th>
                       </tr>
                     </thead>
@@ -121,23 +123,23 @@ function RegistrationsModal({ isOpen, onClose, event }) {
               {/* Standby Registrations */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                  Standby List ({standbyUsers.length} / {event.standbyCapacity})
+                  {t('standby_list')} ({standbyUsers.length} / {event.standbyCapacity})
                 </h3>
                 <div className="bg-white rounded-lg shadow overflow-hidden">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Name
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                          {t('name')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Email
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                          {t('email')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Phone
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                          {t('phone')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Registered At
+                        <th className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                          {t('registered_at')}
                         </th>
                       </tr>
                     </thead>

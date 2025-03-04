@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const FeedbackModal = ({ isOpen, onClose }) => {
   const [feedbackText, setFeedbackText] = useState('');
@@ -10,14 +11,15 @@ const FeedbackModal = ({ isOpen, onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const { user } = useAuth();
+  const { t, language } = useLanguage();
   const maxCharCount = 300;
 
   const emojis = [
-    { value: 1, icon: '😞', label: 'Poor' },
-    { value: 2, icon: '🙁', label: 'Fair' },
-    { value: 3, icon: '😐', label: 'Okay' },
-    { value: 4, icon: '🙂', label: 'Good' },
-    { value: 5, icon: '😄', label: 'Nice' },
+    { value: 1, icon: '😞', label: t('poor') },
+    { value: 2, icon: '🙁', label: t('fair') },
+    { value: 3, icon: '😐', label: t('okay') },
+    { value: 4, icon: '🙂', label: t('good') },
+    { value: 5, icon: '😄', label: t('nice') },
   ];
 
   const handleSubmit = async () => {
@@ -44,7 +46,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
       }, 3000);
     } catch (error) {
       console.error('Error submitting feedback:', error);
-      alert('Failed to submit feedback. Please try again.');
+      alert(t('failed_to_submit'));
     } finally {
       setIsSubmitting(false);
     }
@@ -60,9 +62,9 @@ const FeedbackModal = ({ isOpen, onClose }) => {
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           className="fixed right-0 top-20 z-50 max-w-sm w-full md:w-96 shadow-xl"
         >
-          <div className="bg-white rounded-l-lg overflow-hidden border-l border-t border-b border-gray-200">
+          <div className={`bg-white rounded-l-lg overflow-hidden border-l border-t border-b border-gray-200 ${language === 'he' ? 'rtl' : 'ltr'}`}>
             <div className="bg-gradient-to-r from-purple-600 to-blue-500 px-4 py-3 flex justify-between items-center">
-              <h3 className="text-white font-medium text-lg">Its Feedback Time!</h3>
+              <h3 className="text-white font-medium text-lg">{t('feedback_time')}</h3>
               <button 
                 onClick={onClose}
                 className="text-white hover:text-gray-200 transition-colors"
@@ -74,7 +76,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
             </div>
             
             <div className="p-4 max-h-[80vh] overflow-y-auto">
-              <p className="text-gray-600 mb-3 text-sm">Feel Free To Share Your Feedback With Us</p>
+              <p className="text-gray-600 mb-3 text-sm">{t('share_feedback')}</p>
               
               <div className="flex justify-center items-center mb-4">
                 <div className="flex space-x-1 sm:space-x-2 items-center">
@@ -103,22 +105,23 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                   ></div>
                 </div>
                 <div className="absolute -bottom-6 left-0 right-0 flex justify-between text-xs text-gray-500">
-                  <span>Poor</span>
-                  <span>Nice</span>
+                  <span>{t('poor')}</span>
+                  <span>{t('nice')}</span>
                 </div>
               </div>
               
               <div className="mt-8">
                 <label htmlFor="feedback" className="block text-sm font-medium text-gray-700 mb-1">
-                  Tell Us About Your Experience
+                  {t('about_experience')}
                 </label>
                 <textarea
                   id="feedback"
                   rows="4"
                   className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="It's An Interesting App And I Enjoyed Using It But..."
+                  placeholder={t('feedback_placeholder')}
                   value={feedbackText}
                   onChange={(e) => setFeedbackText(e.target.value.slice(0, maxCharCount))}
+                  dir={language === 'he' ? 'rtl' : 'ltr'}
                 ></textarea>
                 <div className="flex justify-end mt-1 text-xs text-gray-500">
                   {feedbackText.length}/{maxCharCount}
@@ -130,7 +133,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                   onClick={onClose}
                   className="px-3 py-2 sm:px-4 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 >
-                  Dismiss
+                  {t('dismiss')}
                 </button>
                 <button
                   onClick={handleSubmit}
@@ -141,13 +144,13 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                       : 'bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'
                     }`}
                 >
-                  {isSubmitting ? 'Sending...' : isSuccess ? 'Sent!' : 'Send Feedback'}
+                  {isSubmitting ? t('sending') : isSuccess ? t('sent') : t('send_feedback')}
                 </button>
               </div>
               
               {isSuccess && (
                 <div className="mt-3 p-2 bg-green-100 text-green-800 rounded-md text-sm text-center">
-                  Thank you for your feedback! We appreciate it.
+                  {t('feedback_thanks')}
                 </div>
               )}
             </div>

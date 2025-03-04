@@ -27,10 +27,14 @@ const translations = {
     sign_out: "Sign Out",
     admin: "Admin",
     user: "User",
+    no_events_yet: "No events yet",
+    click_add_event: "Click the \"Add Event\" button to create your first event!",
+    no_events_to_display: "There are no events to display at this time.",
     
     // Events
     event_details: "Event Details",
     event_name: "Event Name",
+    event_title: "Event Title",
     event_date: "Event Date",
     event_time: "Event Time",
     event_location: "Event Location",
@@ -40,6 +44,18 @@ const translations = {
     create_event: "Create Event",
     update_event: "Update Event",
     cancel: "Cancel",
+    create_new_event: "Create New Event",
+    edit_event: "Edit Event",
+    date: "Date",
+    start_time: "Start Time",
+    end_time: "End Time",
+    select_image: "Select Image",
+    description: "Description",
+    worker_capacity: "Worker Capacity",
+    number_of_workers_needed: "Number of workers needed",
+    number_of_standby_workers: "Number of standby workers",
+    save_changes: "Save Changes",
+    end_time_before_start: "End time cannot be before start time",
     
     // Event Actions
     register: "Register",
@@ -52,6 +68,16 @@ const translations = {
     full: "Full",
     available_spots: "Available Spots",
     standby_spots: "Standby Spots",
+    register_for_standby: "Register for standby",
+    leave_standby_list: "Leave Standby List",
+    regular_registration: "Regular Registration",
+    standby_list: "Standby List",
+    
+    // Registrations Modal
+    event_registrations: "Event Registrations",
+    name: "Name",
+    phone: "Phone",
+    registered_at: "Registered At",
     
     // Confirmations
     confirm_delete: "Are you sure you want to delete this event?",
@@ -78,12 +104,52 @@ const translations = {
     event_not_found: "Event not found",
     already_registered: "You are already registered for this event",
     
+    // Feedback
+    feedback: "Feedback",
+    feedback_time: "It's Feedback Time!",
+    share_feedback: "Feel Free To Share Your Feedback With Us",
+    poor: "Poor",
+    fair: "Fair",
+    okay: "Okay",
+    good: "Good",
+    nice: "Nice",
+    about_experience: "Tell Us About Your Experience",
+    feedback_placeholder: "It's An Interesting App And I Enjoyed Using It But...",
+    dismiss: "Dismiss",
+    send_feedback: "Send Feedback",
+    sending: "Sending...",
+    sent: "Sent!",
+    feedback_thanks: "Thank you for your feedback! We appreciate it.",
+    failed_to_submit: "Failed to submit feedback. Please try again.",
+    
+    // Event Form
+    event_form_title: "Event Form",
+    event_form_description: "Please fill out the form to create a new event",
+    event_form_name_label: "Event Name",
+    event_form_date_label: "Event Date",
+    event_form_time_label: "Event Time",
+    event_form_location_label: "Event Location",
+    event_form_description_label: "Event Description",
+    event_form_capacity_label: "Event Capacity",
+    event_form_standby_capacity_label: "Standby Capacity",
+    
+    
     // Language
     language: "Language",
     english: "English",
     hebrew: "Hebrew",
     language_selection: "Language Selection",
     save: "Save",
+    
+    // Feedback Button
+    feedback_button: "Feedback",
+    feedback_button_tooltip: "Click to provide feedback",
+    
+    // Feedback Modal
+    feedback_modal_title: "Feedback",
+    feedback_modal_description: "Please provide your feedback",
+    feedback_modal_rating_label: "Rating",
+    feedback_modal_comment_label: "Comment",
   },
   he: {
     // Auth
@@ -110,10 +176,14 @@ const translations = {
     sign_out: "התנתק",
     admin: "מנהל",
     user: "משתמש",
+    no_events_yet: "אין אירועים עדיין",
+    click_add_event: "לחץ על כפתור \"הוסף אירוע\" כדי ליצור את האירוע הראשון שלך!",
+    no_events_to_display: "אין אירועים להצגה בזמן זה.",
     
     // Events
     event_details: "פרטי האירוע",
     event_name: "שם האירוע",
+    event_title: "כותרת האירוע",
     event_date: "תאריך האירוע",
     event_time: "שעת האירוע",
     event_location: "מיקום האירוע",
@@ -123,6 +193,18 @@ const translations = {
     create_event: "צור אירוע",
     update_event: "עדכן אירוע",
     cancel: "ביטול",
+    create_new_event: "צור אירוע חדש",
+    edit_event: "ערוך אירוע",
+    date: "תאריך",
+    start_time: "שעת התחלה",
+    end_time: "שעת סיום",
+    select_image: "בחר תמונה",
+    description: "תיאור",
+    worker_capacity: "קיבולת עובדים",
+    number_of_workers_needed: "מספר העובדים הנדרשים",
+    number_of_standby_workers: "מספר עובדי ההמתנה",
+    save_changes: "שמור שינויים",
+    end_time_before_start: "שעת הסיום לא יכולה להיות לפני שעת ההתחלה",
     
     // Event Actions
     register: "הרשם",
@@ -135,6 +217,16 @@ const translations = {
     full: "מלא",
     available_spots: "מקומות פנויים",
     standby_spots: "מקומות בהמתנה",
+    register_for_standby: "הרשם להמתנה",
+    leave_standby_list: "עזוב רשימת המתנה",
+    regular_registration: "רישום רגיל",
+    standby_list: "רשימת המתנה",
+    
+    // Registrations Modal
+    event_registrations: "רישומים לאירוע",
+    name: "שם",
+    phone: "טלפון",
+    registered_at: "נרשם ב",
     
     // Confirmations
     confirm_delete: "האם אתה בטוח שברצונך למחוק אירוע זה?",
@@ -161,12 +253,54 @@ const translations = {
     event_not_found: "האירוע לא נמצא",
     already_registered: "אתה כבר רשום לאירוע זה",
     
+    // Feedback
+    feedback: "משוב",
+    feedback_time: "זה זמן למשוב!",
+    share_feedback: "אל תהסס לשתף איתנו את המשוב שלך",
+    poor: "גרוע",
+    fair: "סביר",
+    okay: "בסדר",
+    good: "טוב",
+    nice: "מצוין",
+    about_experience: "ספר לנו על החוויה שלך",
+    feedback_placeholder: "זה אפליקציה מעניינת ונהניתי להשתמש בה אבל...",
+    dismiss: "סגור",
+    send_feedback: "שלח משוב",
+    sending: "שולח...",
+    sent: "נשלח!",
+    feedback_thanks: "תודה על המשוב שלך! אנחנו מעריכים את זה.",
+    failed_to_submit: "שליחת המשוב נכשלה. אנא נסה שוב.",
+    
+    // Event Form
+    event_form_title: "טופס אירוע",
+    event_form_description: "אנא מלא את הטופס כדי ליצור אירוע חדש",
+    event_form_name_label: "שם האירוע",
+    event_form_date_label: "תאריך האירוע",
+    event_form_time_label: "שעת האירוע",
+    event_form_location_label: "מיקום האירוע",
+    event_form_description_label: "תיאור האירוע",
+    event_form_capacity_label: "קיבולת האירוע",
+    event_form_standby_capacity_label: "קיבולת המתנה",
+    
+    // Footer
+    all_rights_reserved: "כל הזכויות שמורות",
+    
     // Language
     language: "שפה",
     english: "אנגלית",
     hebrew: "עברית",
     language_selection: "בחירת שפה",
     save: "שמור",
+    
+    // Feedback Button
+    feedback_button: "משוב",
+    feedback_button_tooltip: "לחץ כדי לתת משוב",
+    
+    // Feedback Modal
+    feedback_modal_title: "משוב",
+    feedback_modal_description: "אנא תן את המשוב שלך",
+    feedback_modal_rating_label: "דירוג",
+    feedback_modal_comment_label: "הערה",
   }
 };
 

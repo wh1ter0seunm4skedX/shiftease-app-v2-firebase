@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { EVENT_IMAGES } from '../constants';
+import { useLanguage } from '../contexts/LanguageContext';
 
 function EventForm({ open, onClose, onSubmit, initialData = null }) {
+  const { t, language } = useLanguage();
   const [formData, setFormData] = useState({
     title: '',
     date: new Date().toISOString().split('T')[0],
@@ -59,7 +61,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
       if (name === 'startTime' || name === 'endTime') {
         const { startTime, endTime } = updatedData;
         if (startTime && endTime && endTime < startTime) {
-          updatedData.timeError = 'End time cannot be before start time';
+          updatedData.timeError = t('end_time_before_start');
         } else {
           updatedData.timeError = '';
         }
@@ -99,16 +101,16 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all">
+      <div className={`bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all ${language === 'he' ? 'text-right rtl' : 'text-left ltr'}`}>
         <form onSubmit={handleSubmit} className="p-6">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-            {initialData ? 'Edit Event' : 'Create New Event'}
+            {initialData ? t('edit_event') : t('create_new_event')}
           </h2>
           
           <div className="space-y-4">
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                Event Title
+                {t('event_title')}
               </label>
               <input
                 type="text"
@@ -118,12 +120,13 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 onChange={handleChange}
                 className="input-field"
                 required
+                dir={language === 'he' ? 'rtl' : 'ltr'}
               />
             </div>
 
             <div>
               <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">
-                Date
+                {t('date')}
               </label>
               <input
                 type="date"
@@ -133,13 +136,14 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 onChange={handleChange}
                 className="input-field"
                 required
+                dir={language === 'he' ? 'rtl' : 'ltr'}
               />
             </div>
 
             <div className="flex justify-between space-x-4">
             <div className='w-full'>
               <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-1">
-              Start Time
+              {t('start_time')}
               </label>
               <input
                 type="time"
@@ -149,11 +153,12 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 onChange={handleChange}
                 className="input-field w-full"
                 required
+                dir={language === 'he' ? 'rtl' : 'ltr'}
               />
             </div>
             <div className='w-full'>
               <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-1">
-              End Time
+              {t('end_time')}
               </label>
               <input
                 type="time"
@@ -163,6 +168,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 onChange={handleChange}
                 className="input-field w-full"
                 required
+                dir={language === 'he' ? 'rtl' : 'ltr'}
               />
             </div>
             </div>
@@ -174,7 +180,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Select Image
+                {t('select_image')}
               </label>
               <div className="grid grid-cols-5 gap-2">
                 {EVENT_IMAGES.map((image) => (
@@ -200,7 +206,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
 
             <div>
               <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                Description
+                {t('description')}
               </label>
               <textarea
                 id="description"
@@ -210,13 +216,14 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 rows="3"
                 className="input-field"
                 required
+                dir={language === 'he' ? 'rtl' : 'ltr'}
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="capacity" className="block text-sm font-medium text-gray-700 mb-1">
-                  Worker Capacity
+                  {t('worker_capacity')}
                 </label>
                 <input
                   type="number"
@@ -227,13 +234,14 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   onChange={handleChange}
                   className="input-field"
                   required
-                  placeholder="Number of workers needed"
+                  placeholder={t('number_of_workers_needed')}
+                  dir={language === 'he' ? 'rtl' : 'ltr'}
                 />
               </div>
 
               <div>
                 <label htmlFor="standbyCapacity" className="block text-sm font-medium text-gray-700 mb-1">
-                  Standby Capacity
+                  {t('standby_capacity')}
                 </label>
                 <input
                   type="number"
@@ -244,7 +252,8 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   onChange={handleChange}
                   className="input-field"
                   required
-                  placeholder="Number of standby workers"
+                  placeholder={t('number_of_standby_workers')}
+                  dir={language === 'he' ? 'rtl' : 'ltr'}
                 />
               </div>
             </div>
@@ -256,13 +265,13 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
               onClick={onClose}
               className="btn-secondary"
             >
-              Cancel
+              {t('cancel')}
             </button>
             <button
               type="submit"
               className="btn-primary"
             >
-              {initialData ? 'Save Changes' : 'Create Event'}
+              {initialData ? t('save_changes') : t('create_event')}
             </button>
           </div>
         </form>
