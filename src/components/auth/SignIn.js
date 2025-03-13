@@ -20,11 +20,15 @@ function SignIn() {
       setError('');
       setLoading(true);
       await login(email, password);
-      navigate('/');
+      // Added a small delay to ensure authentication state is updated before navigation
+      setTimeout(() => {
+        navigate('/dashboard');
+        setLoading(false);
+      }, 500);
     } catch (error) {
       setError(t('failed_to_sign_in'));
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
