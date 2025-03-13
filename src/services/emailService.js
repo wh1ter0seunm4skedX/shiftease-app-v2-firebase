@@ -5,7 +5,7 @@ emailjs.init("CaYNOAiNaenBRf6ga");
 export const sendRegistrationNotification = async (eventData, userData, registrationType = 'regular') => {
   try {
     const formattedDate = eventData?.date
-    ? new Date(eventData.date).toLocaleDateString("en-GB").replace(/\//g, "-")
+    ? new Date(eventData.date).toLocaleDateString("en-GB")
     : "N/A";  
     const formattedTime = `${eventData?.startTime} - ${eventData?.endTime}`;
 
@@ -17,7 +17,7 @@ export const sendRegistrationNotification = async (eventData, userData, registra
       user_email: userData?.email || "No Email Provided",
       user_phone: userData?.phoneNumber || "Not Provided",
       registration_type: registrationType,
-      registration_time: new Date().toLocaleString(),
+      registration_time: new Date().toLocaleString("en-GB"),
       current_capacity: registrationType === 'regular' 
         ? `${(eventData?.registrations || []).length}/${eventData?.capacity || "N/A"}`
         : `${(eventData?.standbyRegistrations || []).length}/${eventData?.standbyCapacity || "N/A"}`

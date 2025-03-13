@@ -110,7 +110,7 @@ function RegistrationsModal({ isOpen, onClose, event }) {
                               {reg.userDetails?.fullName || 'N/A'}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {format(new Date(reg.registeredAt), 'MMM d, yyyy HH:mm')}
+                              {format(new Date(reg.registeredAt), 'dd/MM/yyyy HH:mm')}
                             </td>
                           </tr>
                         ))}
@@ -160,7 +160,7 @@ function RegistrationsModal({ isOpen, onClose, event }) {
                               {reg.userDetails?.fullName || 'N/A'}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {format(new Date(reg.registeredAt), 'MMM d, yyyy HH:mm')}
+                              {format(new Date(reg.registeredAt), 'dd/MM/yyyy HH:mm')}
                             </td>
                           </tr>
                         ))}
