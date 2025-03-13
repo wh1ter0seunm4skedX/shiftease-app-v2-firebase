@@ -30,6 +30,7 @@ const translations = {
     no_events_yet: "No events yet",
     click_add_event: "Click the \"Add Event\" button to create your first event!",
     no_events_to_display: "There are no events to display at this time.",
+    system_admin_panel: "System Admin Panel",
     
     // Events
     event_details: "Event Details",
@@ -134,7 +135,7 @@ const translations = {
     event_form_description_label: "Event Description",
     event_form_capacity_label: "Event Capacity",
     event_form_standby_capacity_label: "Standby Capacity",
-    
+    close: "Close",
     
     // Language
     language: "Language",
@@ -155,7 +156,7 @@ const translations = {
   },
   he: {
     // Auth
-    welcome_back: "ברוך שובך",
+    welcome_back: "היי! מה קורה?👋🏼",
     email: "אימייל",
     password: "סיסמה",
     sign_in: "התחברות",
@@ -181,6 +182,7 @@ const translations = {
     no_events_yet: "אין אירועים עדיין 😴",
     click_add_event: "לחצו על כפתור \"הוספת אירוע\" כדי ליצור את האירוע הראשון שלך!",
     no_events_to_display: "חזרו עוד מעט! זה בטח יתעדכן בקרוב..",
+    system_admin_panel: "לוח ניהול מערכת",
     
     // Events
     event_details: "פרטי האירוע",
@@ -191,7 +193,7 @@ const translations = {
     event_location: "מיקום האירוע",
     event_description: "תיאור האירוע",
     event_capacity: "קיבולת",
-    standby_capacity: "קיבולת המתנה",
+    standby_capacity: "כמה צריך בהמתנה?",
     create_event: "צרו אירוע",
     update_event: "עדכנו אירוע",
     cancel: "ביטול",
@@ -202,7 +204,7 @@ const translations = {
     end_time: "שעת סיום",
     select_image: "בחרו תמונה",
     description: "תיאור",
-    worker_capacity: "קיבולת עובדים",
+    worker_capacity: "כמה צריך בפועל?",
     number_of_workers_needed: "מספר העובדים הנדרשים",
     number_of_standby_workers: "מספר עובדי ההמתנה",
     save_changes: "שמרו שינויים",
@@ -285,6 +287,7 @@ const translations = {
     event_form_description_label: "תיאור האירוע",
     event_form_capacity_label: "קיבולת האירוע",
     event_form_standby_capacity_label: "קיבולת המתנה",
+    close: "סגור",
     
     // Footer
     all_rights_reserved: "כל הזכויות שמורות",
