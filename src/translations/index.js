@@ -243,8 +243,8 @@ const translations = {
     no_registrations: "אין רישומים",
     no_standby_registrations: "אין רישומים בהמתנה",
     events_archive: "ארכיון אירועים",
-    past_events: "אירועים שעברו",
-    back_to_dashboard: "חזרה ללוח הבקרה",
+    past_events: "אירוע עבר",
+    back_to_dashboard: "חזרה ללוח האירועים שלי",
     no_past_events: "לא נמצאו אירועים שעברו",
     no_past_events_to_display: "אין אירועים שעברו להצגה כרגע.",
     
