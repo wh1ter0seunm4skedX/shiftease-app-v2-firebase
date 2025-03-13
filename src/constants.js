@@ -13,56 +13,69 @@ import avatar12 from './assets/profile_pictures/uifaces-cartoon-image (12).jpg';
 import avatar14 from './assets/profile_pictures/uifaces-cartoon-image (14).jpg';
 import avatar15 from './assets/profile_pictures/uifaces-cartoon-image (15).jpg';
 import avatar16 from './assets/profile_pictures/uifaces-cartoon-image.jpg';
+
+// Import event pictures from local directory
+import eventPic1 from './assets/events_pictures/event_pic_1.jpg';
+import eventPic2 from './assets/events_pictures/event_pic_2.jpg';
+import eventPic3 from './assets/events_pictures/event_pic_3.jpg';
+import eventPic4 from './assets/events_pictures/event_pic_4.jpg';
+import eventPic5 from './assets/events_pictures/event_pic_5.jpg';
+import eventPic6 from './assets/events_pictures/event_pic_6.jpg';
+import eventPic7 from './assets/events_pictures/event_pic_7.jpg';
+import eventPic8 from './assets/events_pictures/event_pic_8.jpg';
+import eventPic9 from './assets/events_pictures/event_pic_9.jpg';
+import eventPic10 from './assets/events_pictures/event_pic_10.jpg';
+
 export const EVENT_IMAGES = [
   {
     id: 1,
-    url: "https://images.unsplash.com/photo-1541701494587-cb58502866ab",
-    alt: "Abstract purple and blue waves"
+    url: eventPic1,
+    alt: "Event picture 1"
   },
   {
     id: 2,
-    url: "https://images.unsplash.com/photo-1550859492-d5da9d8e45f3",
-    alt: "Abstract colorful gradient"
+    url: eventPic2,
+    alt: "Event picture 2"
   },
   {
     id: 3,
-    url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe",
-    alt: "Abstract geometric shapes"
+    url: eventPic3,
+    alt: "Event picture 3"
   },
   {
     id: 4,
-    url: "https://images.unsplash.com/photo-1614850715649-1d0106293bd1",
-    alt: "Abstract fluid art"
+    url: eventPic4,
+    alt: "Event picture 4"
   },
   {
     id: 5,
-    url: "https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    alt: "Abstract neon lights"
+    url: eventPic5,
+    alt: "Event picture 5"
   },
   {
     id: 6,
-    url: "https://images.pexels.com/photos/30708629/pexels-photo-30708629/free-photo-of-abstract-colorful-waves-in-blue-and-yellow-tones.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-    alt: "Abstract digital waves"
+    url: eventPic6,
+    alt: "Event picture 6"
   },
   {
     id: 7,
-    url: "https://images.pexels.com/photos/2110951/pexels-photo-2110951.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=10",
-    alt: "Vibrant abstract paint strokes"
+    url: eventPic7,
+    alt: "Event picture 7"
   },
   {
     id: 8,
-    url: "https://images.pexels.com/photos/29533798/pexels-photo-29533798/free-photo-of-abstract-pink-and-black-swirl-art-painting.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    alt: "Abstract futuristic grid"
+    url: eventPic8,
+    alt: "Event picture 8"
   },
   {
     id: 9,
-    url: "https://images.pexels.com/photos/15315570/pexels-photo-15315570/free-photo-of-vibrant-purple-fluid-art.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    alt: "Abstract blue smoke"
+    url: eventPic9,
+    alt: "Event picture 9"
   },
   {
     id: 10,
-    url: "https://images.pexels.com/photos/2693212/pexels-photo-2693212.png?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    alt: "Abstract glowing particles"
+    url: eventPic10,
+    alt: "Event picture 10"
   }
 ];
 

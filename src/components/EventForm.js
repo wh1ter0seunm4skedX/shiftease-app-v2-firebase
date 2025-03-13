@@ -212,7 +212,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                     <div className="relative w-10 h-10 overflow-hidden rounded-lg border-2 border-blue-500">
                       <img
                         src={formData.imageUrl}
-                        alt="Selected event image"
+                        alt="Selected event"
                         className="w-full h-full object-cover"
                       />
                     </div>
