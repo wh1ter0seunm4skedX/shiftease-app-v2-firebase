@@ -36,7 +36,7 @@ function EventCard({
             className={`w-full h-40 sm:h-48 object-cover ${isPastEvent ? 'opacity-80' : ''}`}
           />
         ) : (
-          <div className={`w-full h-40 sm:h-48 bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center ${isPastEvent ? 'opacity-80' : ''}`}>
+          <div className={`w-full h-40 sm:h-48 bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center ${isPastEvent ? 'opacity-80' : ''}`}>
             <span className="text-white text-xl font-semibold">{event.title[0]}</span>
           </div>
         )}
@@ -54,7 +54,7 @@ function EventCard({
               {showViewRegistrationsButton && (
                 <button 
                   onClick={() => onViewRegistrations(event)}
-                  className="p-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
+                  className="p-2 bg-purple-50 text-purple-600 rounded-md hover:bg-purple-100 transition-colors"
                   aria-label={t('view_registrations')}
                 >
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -117,15 +117,12 @@ function EventCard({
             <div className={`flex justify-between items-center ${language === 'he' ? '' : ''}`}>
               <span className="text-sm text-gray-600">{t('regular_registration')}:</span>
               <span className="text-sm font-medium" dir="ltr">
-                {isRtl 
-                  ? `${event.capacity} / ${event.registrations?.length || 0}`
-                  : `${event.registrations?.length || 0} / ${event.capacity}`
-                }
+                {`${event.registrations?.length || 0} / ${event.capacity}`}
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-2" dir="ltr">
               <div
-                className="bg-blue-600 h-2 rounded-full"
+                className="bg-purple-600 h-2 rounded-full"
                 style={{ width: `${(event.registrations?.length || 0) / event.capacity * 100}%` }}
               ></div>
             </div>
@@ -133,15 +130,12 @@ function EventCard({
             <div className={`flex justify-between items-center ${language === 'he' ? '' : ''}`}>
               <span className="text-sm text-gray-600">{t('standby_list')}:</span>
               <span className="text-sm font-medium" dir="ltr">
-                {isRtl 
-                  ? `${event.standbyCapacity} / ${event.standbyRegistrations?.length || 0}`
-                  : `${event.standbyRegistrations?.length || 0} / ${event.standbyCapacity}`
-                }
+                {`${event.standbyRegistrations?.length || 0} / ${event.standbyCapacity}`}
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-2" dir="ltr">
               <div
-                className="bg-yellow-400 h-2 rounded-full"
+                className="bg-yellow-500 h-2 rounded-full"
                 style={{ width: `${(event.standbyRegistrations?.length || 0) / event.standbyCapacity * 100}%` }}
               ></div>
             </div>
@@ -161,7 +155,7 @@ function EventCard({
             ) : isUserStandby ? (
               <button
                 onClick={() => onUnregister(event.id)}
-                className={`w-full flex justify-center bg-yellow-400 text-gray-900 py-3 px-4 rounded-lg hover:bg-yellow-500 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 ${language === 'he' ? 'rtl' : 'ltr'}`}
+                className={`w-full flex justify-center bg-yellow-500 text-gray-900 py-3 px-4 rounded-lg hover:bg-yellow-600 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 ${language === 'he' ? 'rtl' : 'ltr'}`}
               >
                 {t('leave_standby_list')}
               </button>
@@ -173,8 +167,8 @@ function EventCard({
                   event.standbyRegistrations?.length >= event.standbyCapacity
                     ? 'bg-gray-400 cursor-not-allowed focus:ring-gray-400'
                     : event.registrations?.length >= event.capacity
-                    ? 'bg-yellow-400 hover:bg-yellow-500 text-gray-900 focus:ring-yellow-400'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500'
+                    ? 'bg-yellow-500 hover:bg-yellow-600 text-gray-900 focus:ring-yellow-500'
+                    : 'bg-purple-600 hover:bg-purple-700 text-white focus:ring-purple-500'
                 } ${language === 'he' ? 'rtl' : 'ltr'}`}
                 disabled={
                   event.registrations?.length >= event.capacity &&
