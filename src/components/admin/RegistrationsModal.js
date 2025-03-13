@@ -80,7 +80,15 @@ function RegistrationsModal({ isOpen, onClose, event }) {
               {/* Regular Registrations */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                  {t('regular_registration')} ({registeredUsers.length} / {event.capacity})
+                  {isRtl ? (
+                    <>
+                      {t('regular_registration')} ({event.capacity} / {registeredUsers.length})
+                    </>
+                  ) : (
+                    <>
+                      {t('regular_registration')} ({registeredUsers.length} / {event.capacity})
+                    </>
+                  )}
                 </h3>
                 <div className="bg-white rounded-lg shadow overflow-hidden">
                   <div className="overflow-x-auto">
@@ -89,12 +97,6 @@ function RegistrationsModal({ isOpen, onClose, event }) {
                         <tr>
                           <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
                             {t('name')}
-                          </th>
-                          <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
-                            {t('email')}
-                          </th>
-                          <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
-                            {t('phone')}
                           </th>
                           <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
                             {t('registered_at')}
@@ -108,19 +110,13 @@ function RegistrationsModal({ isOpen, onClose, event }) {
                               {reg.userDetails?.fullName || 'N/A'}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {reg.userDetails?.email || 'N/A'}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {reg.userDetails?.phoneNumber || 'N/A'}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {format(new Date(reg.registeredAt), 'MMM d, yyyy HH:mm')}
                             </td>
                           </tr>
                         ))}
                         {registeredUsers.length === 0 && (
                           <tr>
-                            <td colSpan="4" className="px-6 py-8 text-center text-sm text-gray-500">
+                            <td colSpan="2" className="px-6 py-8 text-center text-sm text-gray-500">
                               {t('no_registrations')}
                             </td>
                           </tr>
@@ -134,7 +130,15 @@ function RegistrationsModal({ isOpen, onClose, event }) {
               {/* Standby Registrations */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                  {t('standby_list')} ({standbyUsers.length} / {event.standbyCapacity})
+                  {isRtl ? (
+                    <>
+                      {t('standby_list')} ({event.standbyCapacity} / {standbyUsers.length})
+                    </>
+                  ) : (
+                    <>
+                      {t('standby_list')} ({standbyUsers.length} / {event.standbyCapacity})
+                    </>
+                  )}
                 </h3>
                 <div className="bg-white rounded-lg shadow overflow-hidden">
                   <div className="overflow-x-auto">
@@ -143,12 +147,6 @@ function RegistrationsModal({ isOpen, onClose, event }) {
                         <tr>
                           <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
                             {t('name')}
-                          </th>
-                          <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
-                            {t('email')}
-                          </th>
-                          <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
-                            {t('phone')}
                           </th>
                           <th className={`px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
                             {t('registered_at')}
@@ -162,19 +160,13 @@ function RegistrationsModal({ isOpen, onClose, event }) {
                               {reg.userDetails?.fullName || 'N/A'}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {reg.userDetails?.email || 'N/A'}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {reg.userDetails?.phoneNumber || 'N/A'}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {format(new Date(reg.registeredAt), 'MMM d, yyyy HH:mm')}
                             </td>
                           </tr>
                         ))}
                         {standbyUsers.length === 0 && (
                           <tr>
-                            <td colSpan="4" className="px-6 py-8 text-center text-sm text-gray-500">
+                            <td colSpan="2" className="px-6 py-8 text-center text-sm text-gray-500">
                               {t('no_standby_registrations')}
                             </td>
                           </tr>

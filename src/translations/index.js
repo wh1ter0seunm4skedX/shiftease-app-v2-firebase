@@ -81,6 +81,8 @@ const translations = {
     name: "Name",
     phone: "Phone",
     registered_at: "Registered At",
+    no_registrations: "No Registrations",
+    no_standby_registrations: "No Standby Registrations",
     
     // Confirmations
     confirm_delete: "Are you sure you want to delete this event?",
@@ -233,7 +235,9 @@ const translations = {
     name: "שם",
     phone: "טלפון",
     registered_at: "נרשם ב",
-    
+    no_registrations: "אין רישומים",
+    no_standby_registrations: "אין רישומים בהמתנה",
+
     // Confirmations
     confirm_delete: "האם אתם בטוחים שאתם רוצים למחוק את האירוע הזה?",
     successfully_registered: "נרשמת בהצלחה לאירוע!",
