@@ -469,10 +469,6 @@ function EventDashboard() {
                   
                   <div className={`border-t border-gray-200 pt-3 px-4 ${language === 'he' ? 'space-y-4' : 'space-y-3'}`}>
                     <div className="grid grid-cols-1 gap-3">
-
-                      <div className="flex justify-start">
-                        <LanguageSelector />
-                      </div>
                     
                       {isAdmin && (
                         <div className="flex flex-col space-y-3">
@@ -549,7 +545,11 @@ function EventDashboard() {
                           </button>
                         </div>
                       )}
-
+                      
+                      <div className="flex justify-start">
+                        <LanguageSelector />
+                      </div>
+                      
                       <button
                         onClick={handleLogout}
                         className={`w-full flex items-center justify-center  px-4 py-3 rounded-md text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 ${language === 'he' ? 'rtl:space-x-reverse' : ''}`}
