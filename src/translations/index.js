@@ -30,7 +30,7 @@ const translations = {
     no_events_yet: "No events yet",
     click_add_event: "Click the \"Add Event\" button to create your first event!",
     no_events_to_display: "There are no events to display at this time.",
-    system_admin_panel: "System Admin Panel",
+    system_admin_panel: "Admin Panel",
     
     // Events
     event_details: "Event Details",
@@ -189,7 +189,7 @@ const translations = {
     no_events_yet: "אין אירועים עדיין 😴",
     click_add_event: "לחצו על כפתור \"הוספת אירוע\" כדי ליצור את האירוע הראשון שלך!",
     no_events_to_display: "חזרו עוד מעט! זה בטח יתעדכן בקרוב..",
-    system_admin_panel: "לוח ניהול מערכת",
+    system_admin_panel: "ניהול מערכת",
     
     // Events
     event_details: "פרטי האירוע",
