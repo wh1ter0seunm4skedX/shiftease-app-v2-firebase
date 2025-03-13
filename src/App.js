@@ -6,6 +6,7 @@ import SignIn from './components/auth/SignIn';
 import SignUp from './components/auth/SignUp';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import EventDashboard from './components/EventDashboard';
+import EventsArchive from './components/admin/EventsArchive';
 
 // RTL wrapper component to apply RTL direction when Hebrew is selected
 function AppContent() {
@@ -34,6 +35,14 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <EventDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/archive"
+          element={
+            <ProtectedRoute>
+              <EventsArchive />
             </ProtectedRoute>
           }
         />

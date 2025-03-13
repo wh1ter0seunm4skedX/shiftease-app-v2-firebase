@@ -83,6 +83,11 @@ const translations = {
     registered_at: "Registered At",
     no_registrations: "No Registrations",
     no_standby_registrations: "No Standby Registrations",
+    events_archive: "Events Archive",
+    past_events: "Past Events",
+    back_to_dashboard: "Back to Dashboard",
+    no_past_events: "No past events found",
+    no_past_events_to_display: "There are no past events to display at this time.",
     
     // Confirmations
     confirm_delete: "Are you sure you want to delete this event?",
@@ -237,7 +242,12 @@ const translations = {
     registered_at: "נרשם ב",
     no_registrations: "אין רישומים",
     no_standby_registrations: "אין רישומים בהמתנה",
-
+    events_archive: "ארכיון אירועים",
+    past_events: "אירועים שעברו",
+    back_to_dashboard: "חזרה ללוח הבקרה",
+    no_past_events: "לא נמצאו אירועים שעברו",
+    no_past_events_to_display: "אין אירועים שעברו להצגה כרגע.",
+    
     // Confirmations
     confirm_delete: "האם אתם בטוחים שאתם רוצים למחוק את האירוע הזה?",
     successfully_registered: "נרשמת בהצלחה לאירוע!",
