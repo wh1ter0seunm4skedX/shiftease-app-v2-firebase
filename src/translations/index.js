@@ -20,6 +20,7 @@ const translations = {
     choose_profile_picture: "Choose your profile picture",
     select_profile_picture: "Please select a profile picture",
     failed_to_create_account: "Failed to create an account.",
+    sign_in_to_continue: "Sign in to continue",
     
     // Dashboard
     dashboard: "Upcoming Events",
@@ -179,6 +180,7 @@ const translations = {
     choose_profile_picture: "בחרו תמונת פרופיל",
     select_profile_picture: "אנא בחרו תמונת פרופיל",
     failed_to_create_account: "יצירת החשבון נכשלה.",
+    sign_in_to_continue: "התחברו להמשיך",
     
     // Dashboard
     dashboard: "לוח אירועים קרובים 🥳",

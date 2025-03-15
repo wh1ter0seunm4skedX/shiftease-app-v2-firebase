@@ -1,6 +1,6 @@
 {
   "name": "shiftease-app-v2-firebase",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "private": true,
   "homepage": "https://wh1ter0seunm4skedx.github.io/shiftease-app-v2-firebase",
   "dependencies": {
@@ -15,6 +15,7 @@
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^13.5.0",
     "date-fns": "^2.30.0",
+    "dotenv": "^16.4.7",
     "firebase": "^11.3.1",
     "framer-motion": "^12.4.7",
     "react": "^19.0.0",
