@@ -163,23 +163,28 @@ function EventCard({
               <button
                 onClick={() => onRegister(event.id)}
                 className={`w-full flex justify-center py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                  event.registrations?.length >= event.capacity &&
-                  event.standbyRegistrations?.length >= event.standbyCapacity
-                    ? 'bg-gray-400 cursor-not-allowed focus:ring-gray-400'
-                    : event.registrations?.length >= event.capacity
-                    ? 'bg-yellow-500 hover:bg-yellow-600 text-gray-900 focus:ring-yellow-500'
-                    : 'bg-purple-600 hover:bg-purple-700 text-white focus:ring-purple-500'
+                  isUserRegistered || isUserStandby
+                    ? 'bg-gray-400 text-gray-700 cursor-not-allowed focus:ring-gray-400'
+                    : event.registrations?.length >= event.capacity &&
+                      event.standbyRegistrations?.length >= event.standbyCapacity
+                      ? 'bg-gray-400 text-gray-700 cursor-not-allowed focus:ring-gray-400'
+                      : event.registrations?.length >= event.capacity
+                      ? 'bg-yellow-500 hover:bg-yellow-600 text-gray-900 focus:ring-yellow-500'
+                      : 'bg-purple-600 hover:bg-purple-700 text-white focus:ring-purple-500'
                 } ${language === 'he' ? 'rtl' : 'ltr'}`}
                 disabled={
-                  event.registrations?.length >= event.capacity &&
-                  event.standbyRegistrations?.length >= event.standbyCapacity
+                  isUserRegistered || isUserStandby ||
+                  (event.registrations?.length >= event.capacity &&
+                  event.standbyRegistrations?.length >= event.standbyCapacity)
                 }
               >
-                {event.registrations?.length >= event.capacity
-                  ? event.standbyRegistrations?.length >= event.standbyCapacity
-                    ? t('full')
-                    : t('register_for_standby')
-                  : t('register')}
+                {isUserRegistered || isUserStandby ? 
+                  t('already_registered') :
+                  event.registrations?.length >= event.capacity
+                    ? event.standbyRegistrations?.length >= event.standbyCapacity
+                      ? t('full')
+                      : t('register_for_standby')
+                    : t('register')}
               </button>
             )}
           </div>

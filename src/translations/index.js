@@ -273,7 +273,7 @@ const translations = {
     login_to_register: "אנא התחבר כדי להירשם לאירועים",
     failed_to_logout: "ההתנתקות נכשלה. אנא נסה שוב.",
     event_not_found: "האירוע לא נמצא",
-    already_registered: "אתה כבר רשום לאירוע זה",
+    already_registered: "כבר נרשמת לאירוע זה",
     
     // Feedback
     feedback: "משוב",

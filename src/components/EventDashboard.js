@@ -598,6 +598,8 @@ function EventDashboard() {
                     key={event.id} 
                     event={event} 
                     isAdmin={isAdmin}
+                    isUserRegistered={isUserRegistered(event)}
+                    isUserStandby={isUserStandby(event)}
                     onRegister={handleRegisterForEvent}
                     onUnregister={handleUnregisterFromEvent}
                     onEdit={() => {
