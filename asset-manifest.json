@@ -1,11 +1,11 @@
 {
   "files": {
-    "main.css": "/shiftease-app-v2-firebase/static/css/main.c0e9ecab.css",
-    "main.js": "/shiftease-app-v2-firebase/static/js/main.87526d6c.js",
+    "main.css": "/shiftease-app-v2-firebase/static/css/main.c7fedc67.css",
+    "main.js": "/shiftease-app-v2-firebase/static/js/main.72ab1571.js",
     "static/media/event_pic_10.jpg": "/shiftease-app-v2-firebase/static/media/event_pic_10.ce7f401f4ee1610604c9.jpg",
     "static/media/event_pic_4.jpg": "/shiftease-app-v2-firebase/static/media/event_pic_4.96fe9d6b23e2d385abe8.jpg",
     "static/media/event_pic_8.jpg": "/shiftease-app-v2-firebase/static/media/event_pic_8.82380f9cf7159660ab5a.jpg",
-    "static/media/welcome-icon.png": "/shiftease-app-v2-firebase/static/media/welcome-icon.76059aff6c8f0f5febd7.png",
+    "static/media/welcome.png": "/shiftease-app-v2-firebase/static/media/welcome.56085f40735c73f9ba68.png",
     "static/media/uifaces-cartoon-image (15).jpg": "/shiftease-app-v2-firebase/static/media/uifaces-cartoon-image (15).f48b09c600db67c6c710.jpg",
     "static/media/uifaces-cartoon-image (6).jpg": "/shiftease-app-v2-firebase/static/media/uifaces-cartoon-image (6).297093a9ec074eeb083a.jpg",
     "static/media/uifaces-cartoon-image (9).jpg": "/shiftease-app-v2-firebase/static/media/uifaces-cartoon-image (9).e2aee25717cb2c6adfa1.jpg",
@@ -29,11 +29,11 @@
     "static/media/event_pic_6.jpg": "/shiftease-app-v2-firebase/static/media/event_pic_6.449492b4610f98d8f0ee.jpg",
     "static/media/event_pic_9.jpg": "/shiftease-app-v2-firebase/static/media/event_pic_9.2b123fe37d897969fdf5.jpg",
     "index.html": "/shiftease-app-v2-firebase/index.html",
-    "main.c0e9ecab.css.map": "/shiftease-app-v2-firebase/static/css/main.c0e9ecab.css.map",
-    "main.87526d6c.js.map": "/shiftease-app-v2-firebase/static/js/main.87526d6c.js.map"
+    "main.c7fedc67.css.map": "/shiftease-app-v2-firebase/static/css/main.c7fedc67.css.map",
+    "main.72ab1571.js.map": "/shiftease-app-v2-firebase/static/js/main.72ab1571.js.map"
   },
   "entrypoints": [
-    "static/css/main.c0e9ecab.css",
-    "static/js/main.87526d6c.js"
+    "static/css/main.c7fedc67.css",
+    "static/js/main.72ab1571.js"
   ]
 }
