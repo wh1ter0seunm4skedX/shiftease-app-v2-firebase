@@ -1,16 +1,3 @@
-```
-   .=-.-..-._                                ,----.         ,-.-. 
-  /==/_ /==/ \  .-._          _,..---._   ,-.--` , \ ,--.-./=/ ,/ 
- |==|, ||==|, \/ /, /       /==/,   -  \ |==|-  _.-`/==/, ||=| -| 
- |==|  ||==|-  \|  |        |==|   _   _\|==|   `.-.\==\,  \ / ,| 
- |==|- ||==| ,  | -|        |==|  .=.   /==/_ ,    / \==\ - ' - / 
- |==| ,||==| -   _ |        |==|,|   | -|==|    .-'   \==\ ,   |  
- |==|- ||==|  /\ , |        |==|  '='   /==|_  ,`-._  |==| -  ,/  
- /==/. //==/, | |- |        |==|-,   _`//==/ ,     /  \==\  _ /   
- `--`-` `--`./  `--`        `-.`.____.' `--`-----``    `--`--'
-```
-
-
 # **ShiftEase** 🚀  
 _A full-stack solution for managing and registering for events._
 
@@ -40,11 +27,5 @@ Built with **React.js** on the frontend and **Firebase** for authentication and 
 - **Backend:** Firebase (Firestore, Firebase Auth)  
 - **Hosting & Deployment:** GitHub Pages  
 - **Styling:** Tailwind CSS 
-
----
-
-## **License** 📜  
-
-This project is licensed under the [MIT License](LICENSE).  
 
 ---
