@@ -10,6 +10,7 @@ import avatar9 from './assets/profile_pictures/uifaces-cartoon-image (9).jpg';
 import avatar10 from './assets/profile_pictures/uifaces-cartoon-image (10).jpg';
 import avatar11 from './assets/profile_pictures/uifaces-cartoon-image (11).jpg';
 import avatar12 from './assets/profile_pictures/uifaces-cartoon-image (12).jpg';
+import avatar13 from './assets/profile_pictures/uifaces-cartoon-image (13).jpg';
 import avatar14 from './assets/profile_pictures/uifaces-cartoon-image (14).jpg';
 import avatar15 from './assets/profile_pictures/uifaces-cartoon-image (15).jpg';
 import avatar16 from './assets/profile_pictures/uifaces-cartoon-image.jpg';
@@ -139,6 +140,11 @@ export const PROFILE_PICTURES = [
     id: 12,
     url: avatar12,
     alt: "Cartoon profile avatar 12"
+  },
+  {
+    id: 13,
+    url: avatar13,
+    alt: "Cartoon profile avatar 13"
   },
   {
     id: 14,

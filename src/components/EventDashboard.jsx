@@ -9,7 +9,6 @@ import EventCard from './EventCard';
 import AdminPanel from './admin/AdminPanel';
 import RegistrationsModal from './admin/RegistrationsModal';
 import Footer from './Footer';
-import FeedbackButton from './FeedbackButton';
 import LanguageSelector from './LanguageSelector';
 import { format } from 'date-fns';
 import { sendRegistrationNotification } from '../services/emailService';
@@ -680,7 +679,6 @@ function EventDashboard() {
         )}
 
         <Footer />
-        <FeedbackButton />
       </div>
     </div>
   );

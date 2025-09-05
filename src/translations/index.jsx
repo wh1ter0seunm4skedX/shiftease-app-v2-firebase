@@ -115,23 +115,6 @@ const translations = {
     event_not_found: "Event not found",
     already_registered: "You are already registered for this event",
     
-    // Feedback
-    feedback: "Feedback",
-    feedback_time: "It's Feedback Time!",
-    share_feedback: "Feel Free To Share Your Feedback With Us",
-    poor: "Poor",
-    fair: "Fair",
-    okay: "Okay",
-    good: "Good",
-    nice: "Nice",
-    about_experience: "Tell Us About Your Experience",
-    feedback_placeholder: "It's An Interesting App And I Enjoyed Using It But...",
-    dismiss: "Dismiss",
-    send_feedback: "Send Feedback",
-    sending: "Sending...",
-    sent: "Sent!",
-    feedback_thanks: "Thank you for your feedback! We appreciate it.",
-    failed_to_submit: "Failed to submit feedback. Please try again.",
     
     // Event Form
     event_form_title: "Event Form",
@@ -152,15 +135,6 @@ const translations = {
     language_selection: "Language Selection",
     save: "Save",
     
-    // Feedback Button
-    feedback_button: "Feedback",
-    feedback_button_tooltip: "Click to provide feedback",
-    
-    // Feedback Modal
-    feedback_modal_title: "Feedback",
-    feedback_modal_description: "Please provide your feedback",
-    feedback_modal_rating_label: "Rating",
-    feedback_modal_comment_label: "Comment",
   },
   he: {
     // Auth
@@ -275,23 +249,6 @@ const translations = {
     event_not_found: "האירוע לא נמצא",
     already_registered: "כבר נרשמת לאירוע זה",
     
-    // Feedback
-    feedback: "משוב",
-    feedback_time: "מה דעתכם על האפליקציה?!",
-    share_feedback: "המשוב אנונימי לגמרי אז ממש נשמח לדעת מה אתם חושבים עלינו :)",
-    poor: "גרוע",
-    fair: "סביר",
-    okay: "בסדר",
-    good: "טוב",
-    nice: "מצוין",
-    about_experience: "כאן תוכלו לכתוב את מה שאתם חושבים שאנחנו יכולים לשפר או לשמר",
-    feedback_placeholder: "זה אפליקציה מעניינת ונהניתי להשתמש בה אבל...",
-    dismiss: "סגור",
-    send_feedback: "שלחו משוב",
-    sending: "שולח...",
-    sent: "נשלח!",
-    feedback_thanks: ":) תודה על המשוב שלך! אנחנו ממש מעריכים את זה.",
-    failed_to_submit: "שליחת המשוב נכשלה. אנא נסה שוב.",
     
     // Event Form
     event_form_title: "טופס אירוע",
@@ -315,15 +272,6 @@ const translations = {
     language_selection: "בחירת שפה",
     save: "שמור",
     
-    // Feedback Button
-    feedback_button: "משוב",
-    feedback_button_tooltip: "לחץ כדי לתת משוב",
-    
-    // Feedback Modal
-    feedback_modal_title: "משוב",
-    feedback_modal_description: "אנא תן את המשוב שלך",
-    feedback_modal_rating_label: "דירוג",
-    feedback_modal_comment_label: "הערה",
   }
 };
 
