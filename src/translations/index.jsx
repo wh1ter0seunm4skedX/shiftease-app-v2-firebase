@@ -93,7 +93,19 @@ const translations = {
   confirm: "אישור",
   yes: "כן",
   no: "לא",
-  
+    // Admin (panel actions)
+  create_test_event: "צור אירוע בדיקה",
+  delete_all_events: "מחק את כל האירועים",
+  creating_ellipsis: "יוצר...",
+  deleting_ellipsis: "מוחק...",
+
+  // Admin (messages)
+  test_event_created_success: "אירוע בדיקה נוצר בהצלחה!",
+  error_creating_test_event: "שגיאה ביצירת אירוע בדיקה",
+  confirm_delete_all_events: "האם אתם בטוחים שברצונכם למחוק את כל האירועים? פעולה זו אינה ניתנת לביטול!",
+  all_events_deleted_success: "כל האירועים נמחקו בהצלחה!",
+  error_deleting_events: "שגיאה במחיקת האירועים",
+
   // Navigation
   logout: "התנתקות",
   login_to_register: "אנא התחבר כדי להירשם לאירועים",
