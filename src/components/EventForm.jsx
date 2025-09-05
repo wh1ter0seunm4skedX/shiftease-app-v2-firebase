@@ -320,13 +320,6 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
               </label>
 
               <div className="flex items-center justify-between mb-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowImages(!showImages)}
-                  className="flex-grow px-4 py-2 text-sm font-medium text-white bg-purple-600 border border-transparent rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                >
-                  {showImages ? t("hide_images") : t("show_images")}
-                </button>
 
                 <button
                   type="button"
@@ -354,7 +347,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                       ? undefined
                       : "Pexels key missing. Set VITE_PEXELS_API_KEY."
                   }
-                  className="flex-grow px-4 py-2 text-sm font-medium text-white bg-slate-800 border border-transparent rounded-md shadow-sm hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-60"
+className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-60"
                 >
                   {t("search_image") || "חפש תמונה"}
                 </button>
@@ -398,14 +391,14 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                           }
                           className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
                         />
-            <button
-  type="button"
-  onClick={() => runSearch(1, searchQuery)}
-  disabled={searchLoading || !searchQuery.trim()}
-  className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-60"
->
-  {t("search") || "חפש"}
-</button>
+                        <button
+                          type="button"
+                          onClick={() => runSearch(1, searchQuery)}
+                          disabled={searchLoading || !searchQuery.trim()}
+                          className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-60"
+                        >
+                          {t("search") || "חפש"}
+                        </button>
 
                         <button
                           type="button"
