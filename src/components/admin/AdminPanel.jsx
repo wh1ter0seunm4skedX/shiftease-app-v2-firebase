@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { PlusIcon, TrashIcon, CommandLineIcon, ShieldExclamationIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, TrashIcon, CommandLineIcon, ShieldExclamationIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { db } from '../../firebase';
 import { collection, addDoc, deleteDoc, getDocs } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { generateRandomEvent } from '../../constants';
 
-function AdminPanel() {
+function AdminPanel({ onClose }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' }); // type: 'success' | 'error'
   const { isAdmin } = useAuth();
@@ -19,6 +19,14 @@ function AdminPanel() {
       return () => clearTimeout(id);
     }
   }, [message]);
+
+  // Optional: allow closing on Escape
+  useEffect(() => {
+    if (!onClose) return;
+    const handler = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose]);
 
   if (!isAdmin) return null;
 
@@ -76,7 +84,23 @@ function AdminPanel() {
       <div className="max-w-md mx-auto">
         <div className="relative p-[1px] rounded-xl bg-gradient-to-br from-slate-700 to-slate-900">
           <div className="relative bg-slate-900 text-slate-100 rounded-xl shadow-xl p-5 overflow-hidden">
-            <div className="pointer-events-none absolute inset-0 opacity-[0.06]" aria-hidden="true" style={{backgroundImage:'radial-gradient(1px 1px at 1px 1px, #fff 1px, transparent 0)',backgroundSize:'16px 16px'}}></div>
+            {/* Close button inside AdminPanel */}
+            {onClose && (
+              <button
+                type="button"
+                aria-label={t('close')}
+                onClick={onClose}
+                className="absolute top-3 left-3 inline-flex items-center justify-center rounded-md p-2 text-slate-300 hover:text-white hover:bg-slate-700/60 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+              >
+                <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+              </button>
+            )}
+
+            <div
+              className="pointer-events-none absolute inset-0 opacity-[0.06]"
+              aria-hidden="true"
+              style={{ backgroundImage: 'radial-gradient(1px 1px at 1px 1px, #fff 1px, transparent 0)', backgroundSize: '16px 16px' }}
+            ></div>
             <div className="absolute -top-3 -left-3 h-12 w-12 rounded-full bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300">
               <CommandLineIcon className="h-5 w-5" aria-hidden="true" />
             </div>
@@ -125,6 +149,19 @@ function AdminPanel() {
                 {loading ? t('deleting_ellipsis') : t('delete_all_events')}
               </button>
             </div>
+
+            {/* Optional secondary close button at bottom (comment out if not wanted)
+            {onClose && (
+              <div className="mt-4">
+                <button
+                  type="button"
+                  className="w-full inline-flex justify-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-slate-200 bg-transparent hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                  onClick={onClose}
+                >
+                  {t('close')}
+                </button>
+              </div>
+            )} */}
           </div>
         </div>
       </div>

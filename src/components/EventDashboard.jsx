@@ -570,47 +570,22 @@ function EventDashboard() {
         </div>
 
         {/* Admin Panel Modal */}
-        {isAdmin && isAdminPanelOpen && (
-          <div className="fixed inset-0 z-50 overflow-y-auto">
-            <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-              <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-              </div>
+{isAdmin && isAdminPanelOpen && (
+  <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="flex items-center justify-center min-h-screen p-4 text-center sm:block sm:p-0">
+      {/* Overlay */}
+      <div className="fixed inset-0 bg-gray-500 opacity-75" aria-hidden="true"></div>
+      <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-              <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+      {/* Directly render AdminPanel without white box */}
+      <div className="inline-block align-bottom transform transition-all sm:my-8 sm:align-middle">
+        <AdminPanel onClose={() => setIsAdminPanelOpen(false)} />
+      </div>
+    </div>
+  </div>
+)}
 
-              <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div className="bg-white px-6 pt-5 pb-6 sm:p-6">
-                  <div className="flex flex-col items-center sm:items-start sm:flex-row">
-                    <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 sm:mx-0 sm:h-12 sm:w-12 mb-4 sm:mb-0">
-                      <svg className="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                    </div>
-                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4 text-center sm:text-left" id="modal-title">
-                        {t('system_admin_panel')}
-                      </h3>
-                      <div className="mt-2 w-full">
-                        <AdminPanel />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-gray-50 px-6 py-4 sm:px-6 flex justify-center sm:justify-end">
-                  <button
-                    type="button"
-                    className="w-full sm:w-auto inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 max-w-xs"
-                    onClick={() => setIsAdminPanelOpen(false)}
-                  >
-                    {t('close')}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+
 
         <Footer />
       </div>
