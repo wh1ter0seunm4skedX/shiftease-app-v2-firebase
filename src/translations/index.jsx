@@ -80,7 +80,6 @@ const translations = {
   
   // Admin
   admin_panel: "לוח ניהול",
-  system_admin_panel: "לוח ניהול מערכת",
   view_registrations: "צפה בהרשמות",
   regular_registration: "הרשמה רגילה",
   standby_list: "רשימת המתנה",
@@ -115,6 +114,51 @@ const translations = {
   
   // Footer
   all_rights_reserved: "כל הזכויות שמורות",
+  
+  // Missing translations found in components
+  select_profile_picture: "אנא בחרו תמונת פרופיל",
+  failed_to_create_account: "יצירת החשבון נכשלה",
+  event_registrations: "הרשמות לאירוע",
+  name: "שם",
+  registered_at: "נרשם ב",
+  no_registrations: "אין הרשמות",
+  no_standby_registrations: "אין רשימת המתנה",
+  back_to_dashboard: "חזרה ללוח הבקרה",
+  no_past_events_to_display: "אין אירועים שעברו להצגה",
+  create_new_event: "צור אירוע חדש",
+  date: "תאריך",
+  end_time: "שעת סיום",
+  start_time: "שעת התחלה",
+  select_image: "בחר תמונה",
+  hide_images: "הסתר תמונות",
+  show_images: "הצג תמונות",
+  description: "תיאור",
+  worker_capacity: "קיבולת עובדים",
+  number_of_workers_needed: "מספר עובדים נדרש",
+  standby_capacity: "קיבולת המתנה",
+  number_of_standby_workers: "מספר עובדי המתנה",
+  save_changes: "שמור שינויים",
+  
+  // Alert messages
+  only_administrators_can_create_events: "רק מנהלים יכולים ליצור אירועים",
+  error_adding_event: "שגיאה בהוספת אירוע. אנא נסו שוב.",
+  only_administrators_can_edit_events: "רק מנהלים יכולים לערוך אירועים",
+  error_updating_event: "שגיאה בעדכון אירוע. אנא נסו שוב.",
+  only_administrators_can_delete_events: "רק מנהלים יכולים למחוק אירועים",
+  error_deleting_event: "שגיאה במחיקת אירוע. אנא נסו שוב.",
+  please_log_in_to_register: "אנא התחברו כדי להירשם לאירועים",
+  administrators_cannot_register: "מנהלים לא יכולים להירשם לאירועים",
+  event_not_found: "האירוע לא נמצא",
+  already_registered_for_event: "כבר נרשמת לאירוע זה",
+  successfully_registered: "נרשמת בהצלחה לאירוע!",
+  added_to_standby_list: "נוספת לרשימת המתנה.",
+  event_is_full: "מצטערים, האירוע מלא.",
+  error_registering_for_event: "שגיאה בהרשמה לאירוע. אנא נסו שוב.",
+  successfully_unregistered: "ביטלת הרשמה בהצלחה מהאירוע",
+  successfully_removed_from_standby: "הוסרת בהצלחה מרשימת המתנה",
+  error_unregistering_from_event: "שגיאה בביטול הרשמה מהאירוע. אנא נסו שוב.",
+  failed_to_log_out: "ההתנתקות נכשלה. אנא נסו שוב.",
+  end_time_before_start: "שעת הסיום חייבת להיות אחרי שעת ההתחלה",
 };
 
 export default translations;

@@ -87,7 +87,7 @@ function EventDashboard() {
 
   const handleAddEvent = async (newEvent) => {
     if (!isAdmin) {
-      alert('Only administrators can create events');
+      alert(t('only_administrators_can_create_events'));
       return;
     }
 
@@ -104,13 +104,13 @@ function EventDashboard() {
       setIsFormOpen(false);
     } catch (error) {
       console.error('Error adding event: ', error);
-      alert('Error adding event. Please try again.');
+      alert(t('error_adding_event'));
     }
   };
 
   const handleEditEvent = async (eventData) => {
     if (!isAdmin) {
-      alert('Only administrators can edit events');
+      alert(t('only_administrators_can_edit_events'));
       return;
     }
 
@@ -128,13 +128,13 @@ function EventDashboard() {
       setEditingEvent(null);
     } catch (error) {
       console.error('Error updating event: ', error);
-      alert('Error updating event. Please try again.');
+      alert(t('error_updating_event'));
     }
   };
 
   const handleDeleteEvent = async (eventId) => {
     if (!isAdmin) {
-      alert('Only administrators can delete events');
+      alert(t('only_administrators_can_delete_events'));
       return;
     }
 
@@ -143,19 +143,19 @@ function EventDashboard() {
         await deleteDoc(doc(db, 'events', eventId));
       } catch (error) {
         console.error('Error deleting event: ', error);
-        alert('Error deleting event. Please try again.');
+        alert(t('error_deleting_event'));
       }
     }
   };
 
   const handleRegisterForEvent = async (eventId) => {
     if (!user) {
-      alert('Please log in to register for events');
+      alert(t('please_log_in_to_register'));
       return;
     }
 
     if (isAdmin) {
-      alert('Administrators cannot register for events');
+      alert(t('administrators_cannot_register'));
       return;
     }
 
@@ -164,7 +164,7 @@ function EventDashboard() {
       const eventDoc = await getDoc(eventRef);
       
       if (!eventDoc.exists()) {
-        alert('Event not found');
+        alert(t('event_not_found'));
         return;
       }
 
@@ -178,7 +178,7 @@ function EventDashboard() {
       const isUserStandby = eventData.standbyRegistrations?.some(reg => reg.userId === user.uid);
 
       if (isUserRegistered || isUserStandby) {
-        alert('You are already registered for this event');
+        alert(t('already_registered_for_event'));
         return;
       }
 
@@ -196,7 +196,7 @@ function EventDashboard() {
           // Don't block the registration process if email fails
         }
         
-        alert('Successfully registered for the event!');
+        alert(t('successfully_registered'));
       } 
       // Check if standby capacity is available
       else if (eventData.standbyRegistrations?.length < eventData.standbyCapacity) {
@@ -212,14 +212,14 @@ function EventDashboard() {
           // Don't block the registration process if email fails
         }
         
-        alert('You have been added to the standby list.');
+        alert(t('added_to_standby_list'));
       } 
       else {
-        alert('Sorry, this event is full.');
+        alert(t('event_is_full'));
       }
     } catch (error) {
       console.error('Error registering for event: ', error);
-      alert('Error registering for event. Please try again.');
+      alert(t('error_registering_for_event'));
     }
   };
 
@@ -231,7 +231,7 @@ function EventDashboard() {
       const eventDoc = await getDoc(eventRef);
       
       if (!eventDoc.exists()) {
-        alert('Event not found');
+        alert(t('event_not_found'));
         return;
       }
 
@@ -253,17 +253,17 @@ function EventDashboard() {
           });
         }
 
-        alert('Successfully unregistered from the event');
+        alert(t('successfully_unregistered'));
       } 
       else if (userStandby) {
         await updateDoc(eventRef, {
           standbyRegistrations: arrayRemove(userStandby)
         });
-        alert('Successfully removed from the standby list');
+        alert(t('successfully_removed_from_standby'));
       }
     } catch (error) {
       console.error('Error unregistering from event: ', error);
-      alert('Error unregistering from event. Please try again.');
+      alert(t('error_unregistering_from_event'));
     }
   };
 
@@ -281,7 +281,7 @@ function EventDashboard() {
       navigate('/signin');
     } catch (error) {
       console.error('Failed to log out', error);
-      alert('Failed to log out. Please try again.');
+      alert(t('failed_to_log_out'));
     }
   };
 
