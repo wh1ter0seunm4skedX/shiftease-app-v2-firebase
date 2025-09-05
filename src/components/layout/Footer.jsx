@@ -1,5 +1,5 @@
 import React from 'react';
-import packageInfo from '../../package.json';
+import packageInfo from '../../../package.json';
 
 function Footer() {
   const year = new Date().getFullYear();
@@ -10,11 +10,8 @@ function Footer() {
       role="contentinfo"
     >
       <div className="container mx-auto px-4 flex items-center justify-center gap-2">
-        {/* Live indicator */}
         <span className="relative inline-flex items-center" aria-hidden="true">
-          {/* ping ring (respects reduced motion) */}
           <span className="motion-safe:animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full bg-green-400 opacity-75"></span>
-          {/* solid dot */}
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
         </span>
 
@@ -28,3 +25,4 @@ function Footer() {
 }
 
 export default Footer;
+

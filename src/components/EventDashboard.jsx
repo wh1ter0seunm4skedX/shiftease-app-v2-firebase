@@ -8,7 +8,7 @@ import EventForm from './EventForm';
 import EventCard from './EventCard';
 import AdminPanel from './admin/AdminPanel';
 import RegistrationsModal from './admin/RegistrationsModal';
-import Footer from './Footer';
+import Footer from './layout/Footer';
 import DashboardHeader from './layout/DashboardHeader';
 import { format } from 'date-fns';
 import { sendRegistrationNotification } from '../services/emailService';

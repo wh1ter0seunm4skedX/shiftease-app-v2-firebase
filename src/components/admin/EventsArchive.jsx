@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import EventCard from '../EventCard';
-import Footer from '../Footer';
+import Footer from '../layout/Footer';
 
 function EventsArchive() {
   const [pastEvents, setPastEvents] = useState([]);
