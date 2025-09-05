@@ -8,25 +8,17 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import EventDashboard from './components/EventDashboard';
 import EventsArchive from './components/admin/EventsArchive';
 
-// RTL wrapper component to apply RTL direction when Hebrew is selected
+// Hebrew-only app with RTL support
 function AppContent() {
-  const { language } = useLanguage();
-  
   useEffect(() => {
-    // Update document direction based on language
-    document.documentElement.dir = language === 'he' ? 'rtl' : 'ltr';
-    document.body.dir = language === 'he' ? 'rtl' : 'ltr';
-    
-    // Add/remove RTL class from body
-    if (language === 'he') {
-      document.body.classList.add('rtl');
-    } else {
-      document.body.classList.remove('rtl');
-    }
-  }, [language]);
+    // Set RTL for Hebrew
+    document.documentElement.dir = 'rtl';
+    document.body.dir = 'rtl';
+    document.body.classList.add('rtl');
+  }, []);
 
   return (
-    <div className={`min-h-screen bg-gray-50 ${language === 'he' ? 'rtl' : 'ltr'}`}>
+    <div className="min-h-screen bg-gray-50 rtl">
       <Routes>
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
