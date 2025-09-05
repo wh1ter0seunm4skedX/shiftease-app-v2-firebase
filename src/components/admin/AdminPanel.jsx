@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { PlusIcon, TrashIcon, CommandLineIcon, ShieldExclamationIcon } from '@heroicons/react/24/outline';
 import { db } from '../../firebase';
 import { collection, addDoc, deleteDoc, getDocs } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
@@ -71,46 +72,61 @@ function AdminPanel() {
   };
 
   return (
-    <div className="w-full flex flex-col items-center">
-      {/* Status banner */}
-      {message.text ? (
-        <div
-          role="status"
-          aria-live="polite"
-          className={`p-3 rounded-md mb-6 w-full max-w-sm flex items-start gap-2
-            ${message.type === 'success' ? 'bg-green-50 text-green-800 ring-1 ring-green-200' : 'bg-red-50 text-red-800 ring-1 ring-red-200'}
-          `}
-        >
-          <span
-            className={`mt-0.5 inline-block h-2.5 w-2.5 rounded-full
-              ${message.type === 'success' ? 'bg-green-500' : 'bg-red-500'}
-            `}
-            aria-hidden="true"
-          />
-          <p className="text-sm">{message.text}</p>
+    <div className="w-full" dir="rtl">
+      <div className="max-w-md mx-auto">
+        <div className="relative p-[1px] rounded-xl bg-gradient-to-br from-slate-700 to-slate-900">
+          <div className="relative bg-slate-900 text-slate-100 rounded-xl shadow-xl p-5 overflow-hidden">
+            <div className="pointer-events-none absolute inset-0 opacity-[0.06]" aria-hidden="true" style={{backgroundImage:'radial-gradient(1px 1px at 1px 1px, #fff 1px, transparent 0)',backgroundSize:'16px 16px'}}></div>
+            <div className="absolute -top-3 -left-3 h-12 w-12 rounded-full bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300">
+              <CommandLineIcon className="h-5 w-5" aria-hidden="true" />
+            </div>
+
+            {message.text ? (
+              <div
+                role="status"
+                aria-live="polite"
+                className={`p-3 rounded-md mb-5 w-full flex items-start gap-2 ${
+                  message.type === 'success'
+                    ? 'bg-emerald-900/40 text-emerald-200 ring-1 ring-emerald-700/40'
+                    : 'bg-rose-900/40 text-rose-200 ring-1 ring-rose-700/40'
+                }`}
+              >
+                <span
+                  className={`mt-0.5 inline-block h-2.5 w-2.5 rounded-full ${
+                    message.type === 'success' ? 'bg-emerald-400' : 'bg-rose-400'
+                  }`}
+                  aria-hidden="true"
+                />
+                <p className="text-sm">{message.text}</p>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 text-xs text-slate-400 mb-4">
+                <ShieldExclamationIcon className="h-4 w-4 text-amber-300" aria-hidden="true" />
+                <span>כלי פיתוח — למשתמשים מתקדמים בלבד</span>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              <button
+                onClick={handleCreateTestEvent}
+                disabled={loading}
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-amber-300 rounded-md hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <PlusIcon className="h-4 w-4" aria-hidden="true" />
+                {loading ? t('creating_ellipsis') : t('create_test_event')}
+              </button>
+
+              <button
+                onClick={deleteAllEvents}
+                disabled={loading}
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-rose-600 rounded-md hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <TrashIcon className="h-4 w-4" aria-hidden="true" />
+                {loading ? t('deleting_ellipsis') : t('delete_all_events')}
+              </button>
+            </div>
+          </div>
         </div>
-      ) : null}
-
-      <div className="space-y-4 w-full max-w-sm mx-auto">
-        <button
-          onClick={handleCreateTestEvent}
-          disabled={loading}
-          className="w-full px-4 py-3 text-sm font-medium text-white bg-indigo-600 rounded-md
-                     hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
-                     disabled:opacity-50 disabled:cursor-not-allowed transition-transform duration-150 hover:scale-[1.02]"
-        >
-          {loading ? t('creating_ellipsis') : t('create_test_event')}
-        </button>
-
-        <button
-          onClick={deleteAllEvents}
-          disabled={loading}
-          className="w-full px-4 py-3 text-sm font-medium text-white bg-red-600 rounded-md
-                     hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500
-                     disabled:opacity-50 disabled:cursor-not-allowed transition-transform duration-150 hover:scale-[1.02]"
-        >
-          {loading ? t('deleting_ellipsis') : t('delete_all_events')}
-        </button>
       </div>
     </div>
   );

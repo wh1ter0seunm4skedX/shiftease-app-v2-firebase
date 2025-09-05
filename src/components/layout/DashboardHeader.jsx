@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { Cog6ToothIcon, PlusIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline';
 
 function DashboardHeader({ user, userData, isAdmin, onAddEvent, onOpenArchive, onOpenAdminPanel, onLogout }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -49,35 +50,23 @@ function DashboardHeader({ user, userData, isAdmin, onAddEvent, onOpenArchive, o
                   onClick={onAddEvent}
                   className={`flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ${'rtl:space-x-reverse'}`}
                 >
-                  <>
-                    <span className="mx-1">{t('add_event')}</span>
-                    <svg className="h-5 w-5 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-                    </svg>
-                  </>
+                  <span className="mx-1">{t('add_event')}</span>
+                  <PlusIcon className="h-5 w-5 ml-1" aria-hidden="true" />
                 </button>
                 <button
                   onClick={onOpenArchive}
                   className={`flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 ${'rtl:space-x-reverse'}`}
                 >
-                  <>
-                    <span className="mx-1">{t('events_archive')}</span>
-                    <svg className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                    </svg>
-                  </>
+                  <span className="mx-1">{t('events_archive')}</span>
+                  <ArchiveBoxIcon className="h-5 w-5 ml-1" aria-hidden="true" />
                 </button>
                 <button
                   onClick={onOpenAdminPanel}
-                  className={`flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 ${'rtl:space-x-reverse'}`}
+                  className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-slate-900 text-amber-300 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400"
+                  aria-label={t('system_admin_panel')}
+                  title={t('system_admin_panel')}
                 >
-                  <>
-                    <span className="mx-1">{t('system_admin_panel')}</span>
-                    <svg className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </>
+                  <Cog6ToothIcon className="h-5 w-5" aria-hidden="true" />
                 </button>
               </div>
             )}
@@ -216,4 +205,3 @@ function DashboardHeader({ user, userData, isAdmin, onAddEvent, onOpenArchive, o
 }
 
 export default DashboardHeader;
-
