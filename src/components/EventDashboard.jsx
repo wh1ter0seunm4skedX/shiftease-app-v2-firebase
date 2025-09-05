@@ -12,6 +12,7 @@ import Footer from './layout/Footer';
 import DashboardHeader from './layout/DashboardHeader';
 import { format } from 'date-fns';
 import { sendRegistrationNotification } from '../services/emailService';
+import { fetchEventImage } from '../services/imageService';
 
 function EventDashboard() {
   const [events, setEvents] = useState([]);
@@ -92,13 +93,23 @@ function EventDashboard() {
     }
 
     try {
+      let imageUrl = newEvent.imageUrl;
+      if (!imageUrl && import.meta?.env?.VITE_ENABLE_AUTO_EVENT_IMAGE === 'true') {
+        try {
+          const img = await fetchEventImage(newEvent.title || newEvent.description || 'event');
+          imageUrl = img?.url || null;
+        } catch (e) {
+          console.warn('Auto image fetch failed:', e?.message || e);
+        }
+      }
       const eventData = {
         ...newEvent,
         createdAt: new Date().toISOString(),
         registrations: [],
         standbyRegistrations: [],
         capacity: parseInt(newEvent.capacity),
-        standbyCapacity: parseInt(newEvent.standbyCapacity)
+        standbyCapacity: parseInt(newEvent.standbyCapacity),
+        ...(imageUrl ? { imageUrl } : {})
       };
       await addDoc(collection(db, 'events'), eventData);
       setIsFormOpen(false);
