@@ -1,8 +1,6 @@
 # **ShiftEase** 🚀  
 _A full-stack solution for managing and registering for events._
 
-![ShiftEase Banner](https://github.com/wh1ter0seunm4skedX/my-github-pages-app/blob/main/src/assets/shiftease_banner_1.png?raw=true)  
-
 ---
 
 ## **Overview** 📌  
