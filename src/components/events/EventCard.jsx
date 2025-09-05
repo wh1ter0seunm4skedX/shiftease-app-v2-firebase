@@ -1,7 +1,7 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 function EventCard({ 
   event, 
@@ -195,3 +195,4 @@ function EventCard({
 }
 
 export default EventCard;
+

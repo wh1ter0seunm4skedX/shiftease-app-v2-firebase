@@ -4,7 +4,7 @@ import { db } from '../../firebase';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import EventCard from '../EventCard';
+import EventCard from '../events/EventCard';
 import Footer from '../layout/Footer';
 
 function EventsArchive() {
