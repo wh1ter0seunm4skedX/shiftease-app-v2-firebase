@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, updateDoc, arrayUnion, arrayRemove, getDoc, where } from 'firebase/firestore';
-import { db } from '../../firebase';
-import { useAuth } from '../../contexts/AuthContext';
-import { useLanguage } from '../../contexts/LanguageContext';
+import { db } from '../firebase';
+import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import EventForm from './EventForm';
 import EventCard from './EventCard';
-import AdminPanel from '../admin/AdminPanel';
-import RegistrationsModal from '../admin/RegistrationsModal';
-import Footer from '../layout/Footer';
-import DashboardHeader from '../layout/DashboardHeader';
+import AdminPanel from './admin/AdminPanel';
+import RegistrationsModal from './admin/RegistrationsModal';
+import Footer from './layout/Footer';
+import DashboardHeader from './layout/DashboardHeader';
 import { format } from 'date-fns';
-import { sendRegistrationNotification } from '../../services/emailService';
-import { fetchEventImage } from '../../services/imageService';
+import { sendRegistrationNotification } from '../services/emailService';
+import { fetchEventImage } from '../services/imageService';
 
 function EventDashboard() {
   const [events, setEvents] = useState([]);
@@ -143,95 +143,147 @@ function EventDashboard() {
     }
   };
 
-  const handleDeleteEvent = async (id) => {
+  const handleDeleteEvent = async (eventId) => {
     if (!isAdmin) {
       alert(t('only_administrators_can_delete_events'));
       return;
     }
-    
-    if (!window.confirm(t('are_you_sure_delete_event'))) return;
-    
-    try {
-      await deleteDoc(doc(db, 'events', id));
-    } catch (error) {
-      console.error('Error deleting event: ', error);
-      alert(t('error_deleting_event'));
+
+    if (window.confirm('Are you sure you want to delete this event?')) {
+      try {
+        await deleteDoc(doc(db, 'events', eventId));
+      } catch (error) {
+        console.error('Error deleting event: ', error);
+        alert(t('error_deleting_event'));
+      }
     }
   };
 
-  const isUserRegistered = (event) => {
-    return event.registrations?.some(reg => reg.userId === user?.uid);
-  };
-
-  const isUserStandby = (event) => {
-    return event.standbyRegistrations?.some(reg => reg.userId === user?.uid);
-  };
-
   const handleRegisterForEvent = async (eventId) => {
-    if (isAdmin) return; // Admins can't register
+    if (!user) {
+      alert(t('please_log_in_to_register'));
+      return;
+    }
+
+    if (isAdmin) {
+      alert(t('administrators_cannot_register'));
+      return;
+    }
 
     try {
       const eventRef = doc(db, 'events', eventId);
       const eventDoc = await getDoc(eventRef);
-      const eventData = eventDoc.data();
-
-      // Check if the user is already registered
-      const isRegistered = eventData.registrations?.some(reg => reg.userId === user.uid);
-      const isOnStandby = eventData.standbyRegistrations?.some(reg => reg.userId === user.uid);
-
-      if (isRegistered || isOnStandby) {
-        alert(t('already_registered'));
+      
+      if (!eventDoc.exists()) {
+        alert(t('event_not_found'));
         return;
       }
 
-      if ((eventData.registrations?.length || 0) >= eventData.capacity) {
-        // Add to standby list
+      const eventData = eventDoc.data();
+      const registrationData = {
+        userId: user.uid,
+        registeredAt: new Date().toISOString()
+      };
+
+      const isUserRegistered = eventData.registrations?.some(reg => reg.userId === user.uid);
+      const isUserStandby = eventData.standbyRegistrations?.some(reg => reg.userId === user.uid);
+
+      if (isUserRegistered || isUserStandby) {
+        alert(t('already_registered_for_event'));
+        return;
+      }
+
+      // Check if regular capacity is available
+      if (eventData.registrations?.length < eventData.capacity) {
         await updateDoc(eventRef, {
-          standbyRegistrations: arrayUnion({ userId: user.uid, registeredAt: new Date().toISOString() })
+          registrations: arrayUnion(registrationData)
         });
+        
+        // Send email notification for regular registration
+        try {
+          await sendRegistrationNotification(eventData, userData, 'regular');
+        } catch (error) {
+          console.error('Failed to send email notification:', error);
+          // Don't block the registration process if email fails
+        }
+        
+        alert(t('successfully_registered'));
+      } 
+      // Check if standby capacity is available
+      else if (eventData.standbyRegistrations?.length < eventData.standbyCapacity) {
+        await updateDoc(eventRef, {
+          standbyRegistrations: arrayUnion(registrationData)
+        });
+        
+        // Send email notification for standby registration
+        try {
+          await sendRegistrationNotification(eventData, userData, 'standby');
+        } catch (error) {
+          console.error('Failed to send email notification:', error);
+          // Don't block the registration process if email fails
+        }
+        
         alert(t('added_to_standby_list'));
-        await sendRegistrationNotification(eventData, user, 'standby');
-      } else {
-        // Add to regular registrations
-        await updateDoc(eventRef, {
-          registrations: arrayUnion({ userId: user.uid, registeredAt: new Date().toISOString() })
-        });
-        alert(t('registered_successfully'));
-        await sendRegistrationNotification(eventData, user, 'regular');
+      } 
+      else {
+        alert(t('event_is_full'));
       }
     } catch (error) {
       console.error('Error registering for event: ', error);
-      alert(t('error_registering_event'));
+      alert(t('error_registering_for_event'));
     }
   };
 
   const handleUnregisterFromEvent = async (eventId) => {
+    if (!user) return;
+
     try {
       const eventRef = doc(db, 'events', eventId);
       const eventDoc = await getDoc(eventRef);
-      const eventData = eventDoc.data();
-
-      // Remove from registrations if present
-      if (eventData.registrations?.some(reg => reg.userId === user.uid)) {
-        await updateDoc(eventRef, {
-          registrations: arrayRemove({ userId: user.uid, registeredAt: eventData.registrations.find(reg => reg.userId === user.uid).registeredAt })
-        });
-        alert(t('unregistered_successfully'));
+      
+      if (!eventDoc.exists()) {
+        alert(t('event_not_found'));
         return;
       }
 
-      // Remove from standby if present
-      if (eventData.standbyRegistrations?.some(reg => reg.userId === user.uid)) {
+      const eventData = eventDoc.data();
+      const userRegistration = eventData.registrations?.find(reg => reg.userId === user.uid);
+      const userStandby = eventData.standbyRegistrations?.find(reg => reg.userId === user.uid);
+
+      if (userRegistration) {
         await updateDoc(eventRef, {
-          standbyRegistrations: arrayRemove({ userId: user.uid, registeredAt: eventData.standbyRegistrations.find(reg => reg.userId === user.uid).registeredAt })
+          registrations: arrayRemove(userRegistration)
         });
-        alert(t('removed_from_standby'));
-        return;
+
+        // If there are people in standby, move the first one to regular registration
+        if (eventData.standbyRegistrations?.length > 0) {
+          const firstStandbyUser = eventData.standbyRegistrations[0];
+          await updateDoc(eventRef, {
+            registrations: arrayUnion(firstStandbyUser),
+            standbyRegistrations: arrayRemove(firstStandbyUser)
+          });
+        }
+
+        alert(t('successfully_unregistered'));
+      } 
+      else if (userStandby) {
+        await updateDoc(eventRef, {
+          standbyRegistrations: arrayRemove(userStandby)
+        });
+        alert(t('successfully_removed_from_standby'));
       }
     } catch (error) {
       console.error('Error unregistering from event: ', error);
-      alert(t('error_unregistering_event'));
+      alert(t('error_unregistering_from_event'));
     }
+  };
+
+  const isUserRegistered = (event) => {
+    return event.registrations?.some(reg => reg.userId === user?.uid) || false;
+  };
+
+  const isUserStandby = (event) => {
+    return event.standbyRegistrations?.some(reg => reg.userId === user?.uid) || false;
   };
 
   const handleLogout = async () => {
@@ -240,25 +292,30 @@ function EventDashboard() {
       navigate('/signin');
     } catch (error) {
       console.error('Failed to log out', error);
+      alert(t('failed_to_log_out'));
     }
   };
 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="pb-16">
-        <header className="bg-white shadow-sm">
-          <DashboardHeader onOpenAdminPanel={() => setIsAdminPanelOpen(true)} />
-        </header>
-
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <main>
-            {/* Action bar */}
-            <div className="mb-6">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center">
-                  <svg className="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div className="min-h-screen bg-gray-100">
+      <div className="flex flex-col min-h-screen pb-16">
+        <DashboardHeader
+          user={user}
+          userData={userData}
+          isAdmin={isAdmin}
+          onAddEvent={() => setIsFormOpen(true)}
+          onOpenArchive={() => navigate('/admin/archive')}
+          onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
+          onLogout={handleLogout}
+        />
+        {false && (
+        <nav className="bg-white shadow-lg border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between h-16">
+              {/* Logo and Title */}
+              <div className="flex items-center">
+                <div className="flex-shrink-0 flex items-center">
+                  <svg className="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                   <h1 className="ml-2 text-xl font-bold text-gray-800">{t('dashboard')}</h1>
@@ -425,8 +482,11 @@ function EventDashboard() {
                             </>
                           </button>
                           <button
-                            onClick={() => setIsAdminPanelOpen(true)}
-                            className={`w-full flex items-center justify-center px-4 py-3 rounded-md text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-200 ${'rtl:space-x-reverse'}`}
+                            onClick={() => {
+                              setIsAdminPanelOpen(true);
+                              setIsMobileMenuOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-center  px-4 py-3 rounded-md text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-200 ${'rtl:space-x-reverse'}`}
                           >
                             <>
                               <span className="mx-2">{t('system_admin_panel')}</span>
@@ -438,10 +498,13 @@ function EventDashboard() {
                           </button>
                         </div>
                       )}
-
+                      
+                      <div className="flex justify-start">
+                      </div>
+                      
                       <button
                         onClick={handleLogout}
-                        className={`w-full inline-flex items-center justify-center px-4 py-3 border border-gray-200 text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 ${'rtl:space-x-reverse'}`}
+                        className={`w-full flex items-center justify-center  px-4 py-3 rounded-md text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 ${'rtl:space-x-reverse'}`}
                       >
                         <>
                           {t('sign_out')}
@@ -455,8 +518,12 @@ function EventDashboard() {
                 </div>
               </div>
             )}
+          </div>
+        </nav>
+        )}
 
-            {/* Events grid */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
             {events.length === 0 ? (
               <div className="flex flex-col items-center justify-center min-h-[50vh] sm:h-[60vh] text-center">
                 <div className="bg-white p-6 sm:p-8 rounded-xl shadow-sm w-full sm:w-auto">
@@ -538,4 +605,3 @@ function EventDashboard() {
 }
 
 export default EventDashboard;
-

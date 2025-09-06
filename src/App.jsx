@@ -5,7 +5,7 @@ import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import SignIn from './components/auth/SignIn';
 import SignUp from './components/auth/SignUp';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import EventDashboard from './components/events/EventDashboard';
+import EventDashboard from './components/EventDashboard';
 import EventsArchive from './components/admin/EventsArchive';
 
 // Hebrew-only app with RTL support
