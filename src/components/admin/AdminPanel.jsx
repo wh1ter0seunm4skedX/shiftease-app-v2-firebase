@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { PlusIcon, TrashIcon, CommandLineIcon, ShieldExclamationIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { db } from '../../firebase';
-import { collection, addDoc, deleteDoc, getDocs, updateDoc, doc, deleteField } from 'firebase/firestore';
+import { collection, addDoc, deleteDoc, getDocs, updateDoc, doc, deleteField, onSnapshot, query, where, orderBy, arrayUnion } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { generateRandomEvent } from '../../constants';
@@ -12,6 +12,13 @@ function AdminPanel({ onClose }) {
   const [message, setMessage] = useState({ text: '', type: '' }); // type: 'success' | 'error'
   const { isAdmin } = useAuth();
   const { t } = useLanguage();
+
+  // Active events for test tools
+  const [activeEvents, setActiveEvents] = useState([]);
+  const [loadingEvents, setLoadingEvents] = useState(true);
+  const [selectedEventId, setSelectedEventId] = useState('');
+  const [regFillCount, setRegFillCount] = useState('');
+  const [standbyFillCount, setStandbyFillCount] = useState('');
 
   // Auto-dismiss success after 3s (errors stay until next action)
   useEffect(() => {
@@ -28,6 +35,22 @@ function AdminPanel({ onClose }) {
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [onClose]);
+
+  // Subscribe to upcoming (active) events
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    const qy = query(
+      collection(db, 'events'),
+      where('date', '>=', today),
+      orderBy('date', 'asc')
+    );
+    const unsub = onSnapshot(qy, (snap) => {
+      const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      setActiveEvents(data);
+      setLoadingEvents(false);
+    }, () => setLoadingEvents(false));
+    return () => unsub();
+  }, []);
 
   if (!isAdmin) return null;
 
@@ -132,6 +155,67 @@ function AdminPanel({ onClose }) {
     }
   };
 
+  // Fill selected event with test registrations
+  const handleFillSelectedEvent = async () => {
+    if (!selectedEventId) {
+      toast.error(t('please_select_event') || 'אנא בחרו אירוע');
+      return;
+    }
+    const evt = activeEvents.find((e) => e.id === selectedEventId);
+    if (!evt) return;
+
+    const cap = parseInt(evt.capacity || 0, 10) || 0;
+    const standbyCap = parseInt(evt.standbyCapacity || 0, 10) || 0;
+    const wantReg = Math.max(0, Math.min(parseInt(regFillCount || 0, 10) || 0, cap));
+    const wantStandby = Math.max(0, Math.min(parseInt(standbyFillCount || 0, 10) || 0, standbyCap));
+
+    const currentReg = (evt.registrations || []).length;
+    const currentStandby = (evt.standbyRegistrations || []).length;
+
+    const needReg = Math.max(0, wantReg - currentReg);
+    const needStandby = Math.max(0, wantStandby - currentStandby);
+
+    if (needReg === 0 && needStandby === 0) {
+      toast.success(t('nothing_to_fill') || 'אין מה למלא – המספרים כבר הושגו');
+      return;
+    }
+
+    setLoading(true);
+    const eventRef = doc(db, 'events', evt.id);
+    const now = Date.now();
+
+    // Helper to chunk updates for arrayUnion
+    const chunk = (arr, size) => arr.reduce((acc, _, i) => (i % size ? acc : [...acc, arr.slice(i, i + size)]), []);
+
+    try {
+      if (needReg > 0) {
+        const regs = Array.from({ length: needReg }).map((_, i) => ({
+          userId: `test-user-${now}-r${i}`,
+          registeredAt: new Date().toISOString(),
+        }));
+        for (const batch of chunk(regs, 10)) {
+          await updateDoc(eventRef, { registrations: arrayUnion(...batch) });
+        }
+      }
+
+      if (needStandby > 0) {
+        const standbys = Array.from({ length: needStandby }).map((_, i) => ({
+          userId: `test-user-${now}-s${i}`,
+          registeredAt: new Date().toISOString(),
+        }));
+        for (const batch of chunk(standbys, 10)) {
+          await updateDoc(eventRef, { standbyRegistrations: arrayUnion(...batch) });
+        }
+      }
+
+      toast.success(t('filled_registrations_success') || 'הרשמות מולאו בהצלחה');
+    } catch (e) {
+      toast.error(t('error_filling_registrations') || 'שגיאה במילוי הרשמות');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="w-full" dir="rtl">
       <div className="max-w-md mx-auto">
@@ -217,6 +301,59 @@ function AdminPanel({ onClose }) {
               >
                 🧹 {t('remove_profile_pictures') || 'הסר שדה תמונת פרופיל מכל המשתמשים'}
               </button>
+
+              {/* Fill event registrations (test tool) */}
+              <div className="mt-6 p-4 rounded-md bg-slate-800/40 ring-1 ring-slate-700/40">
+                <div className="text-sm font-semibold text-slate-200 mb-3">{t('fill_event_registrations') || 'מילוי הרשמות לאירוע (בדיקות)'}</div>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs text-slate-300 mb-1">{t('select_event_to_fill') || 'בחרו אירוע למילוי'}</label>
+                    <select
+                      value={selectedEventId}
+                      onChange={(e) => setSelectedEventId(e.target.value)}
+                      className="w-full bg-slate-900/50 text-slate-200 border border-slate-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                    >
+                      <option value="" disabled>{loadingEvents ? (t('loading_events') || 'טוען אירועים...') : (t('choose_event') || 'בחרו אירוע')}</option>
+                      {activeEvents.map((ev) => (
+                        <option key={ev.id} value={ev.id}>
+                          {`${ev.title || '—'} — ${ev.date || ''} (${(ev.registrations?.length || 0)}/${ev.capacity || 0} • ${(ev.standbyRegistrations?.length || 0)}/${ev.standbyCapacity || 0})`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs text-slate-300 mb-1">{t('regular_fill_count') || 'מספר הרשמות רגילות למלא'}</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={regFillCount}
+                        onChange={(e) => setRegFillCount(e.target.value)}
+                        placeholder={t('regular_fill_count_placeholder') || 'מ-0 עד הקיבולת'}
+                        className="w-full bg-slate-900/50 text-slate-200 border border-slate-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-slate-300 mb-1">{t('standby_fill_count') || 'מספר ממתינים למלא'}</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={standbyFillCount}
+                        onChange={(e) => setStandbyFillCount(e.target.value)}
+                        placeholder={t('standby_fill_count_placeholder') || 'מ-0 עד קיבולת המתנה'}
+                        className="w-full bg-slate-900/50 text-slate-200 border border-slate-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleFillSelectedEvent}
+                    disabled={loading || !selectedEventId}
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-amber-300 rounded-md hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    ⚙️ {loading ? (t('filling_registrations_ellipsis') || 'ממלא הרשמות…') : (t('fill_registrations') || 'מלא הרשמות')}
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* Optional secondary close button at bottom (comment out if not wanted)
