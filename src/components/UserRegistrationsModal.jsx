@@ -3,6 +3,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getUserInitials, getAvatarColor, displayName } from '../utils/user';
+import Spinner from './common/Spinner';
 
 export default function UserRegistrationsModal({ isOpen, onClose, event }) {
   const { t, language } = useLanguage();
@@ -85,10 +86,8 @@ export default function UserRegistrationsModal({ isOpen, onClose, event }) {
 
         <div className="p-4 max-h-[70vh] overflow-y-auto">
           {loading ? (
-            <div className="space-y-3">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-10 bg-gray-100 rounded-md animate-pulse" />
-              ))}
+            <div className="py-10">
+              <Spinner label={t('loading_events') || 'טוען…'} size={56} />
             </div>
           ) : users.length === 0 ? (
             <div className="text-center text-gray-500 py-10">{t('no_registrations')}</div>
@@ -114,4 +113,3 @@ export default function UserRegistrationsModal({ isOpen, onClose, event }) {
     </div>
   );
 }
-

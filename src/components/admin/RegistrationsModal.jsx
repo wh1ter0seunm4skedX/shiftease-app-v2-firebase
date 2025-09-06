@@ -232,14 +232,18 @@ function RegistrationsModal({ isOpen, onClose, event }) {
 
         <div className="p-4 sm:p-5 overflow-y-auto max-h-[calc(95vh-8rem)] sm:max-h-[calc(90vh-8rem)]">
           {loading ? (
-            <div className="space-y-8">
-              {[0, 1].map((section) => (
-                <div key={section} className="space-y-3">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="h-12 bg-gray-100 animate-pulse rounded-md" />
-                  ))}
+            <div className="py-10 flex items-center justify-center">
+              <div className="flex flex-col items-center gap-3 text-gray-600">
+                <div className="relative w-14 h-14">
+                  <div className="absolute inset-0 rounded-full border-4 border-gray-200 opacity-60" />
+                  <div
+                    className="absolute inset-0 rounded-full border-4 border-transparent animate-spin"
+                    style={{ borderTopColor: '#7c3aed', borderRightColor: '#7c3aed' }}
+                  />
+                  <div className="absolute inset-0 m-auto h-2 w-2 rounded-full bg-purple-500" />
                 </div>
-              ))}
+                <div className="text-sm font-medium">{t('loading_events') || 'טוען…'}</div>
+              </div>
             </div>
           ) : (
             <div className="space-y-8">
