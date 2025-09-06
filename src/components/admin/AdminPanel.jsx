@@ -155,7 +155,7 @@ function AdminPanel({ onClose }) {
     }
   };
 
-  // Fill selected event with test registrations
+  // Fill selected event with real users (role: 'user')
   const handleFillSelectedEvent = async () => {
     if (!selectedEventId) {
       toast.error(t('please_select_event') || 'אנא בחרו אירוע');
@@ -182,33 +182,49 @@ function AdminPanel({ onClose }) {
 
     setLoading(true);
     const eventRef = doc(db, 'events', evt.id);
-    const now = Date.now();
-
-    // Helper to chunk updates for arrayUnion
+    const nowIso = new Date().toISOString();
     const chunk = (arr, size) => arr.reduce((acc, _, i) => (i % size ? acc : [...acc, arr.slice(i, i + size)]), []);
+    const shuffle = (arr) => {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
 
     try {
-      if (needReg > 0) {
-        const regs = Array.from({ length: needReg }).map((_, i) => ({
-          userId: `test-user-${now}-r${i}`,
-          registeredAt: new Date().toISOString(),
-        }));
+      // Pull candidate users with role === 'user'
+      const usersSnap = await getDocs(query(collection(db, 'users'), where('role', '==', 'user')));
+      const allUsers = usersSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+
+      const existingRegIds = new Set((evt.registrations || []).map((r) => r.userId));
+      const existingStandbyIds = new Set((evt.standbyRegistrations || []).map((r) => r.userId));
+      const candidates = shuffle(allUsers.filter((u) => !existingRegIds.has(u.id) && !existingStandbyIds.has(u.id)));
+
+      const pickedReg = candidates.slice(0, needReg);
+      const pickedStandby = candidates.slice(needReg, needReg + needStandby);
+
+      let addedReg = 0;
+      let addedStandby = 0;
+
+      if (pickedReg.length) {
+        const regs = pickedReg.map((u) => ({ userId: u.id, registeredAt: nowIso }));
         for (const batch of chunk(regs, 10)) {
           await updateDoc(eventRef, { registrations: arrayUnion(...batch) });
+          addedReg += batch.length;
         }
       }
 
-      if (needStandby > 0) {
-        const standbys = Array.from({ length: needStandby }).map((_, i) => ({
-          userId: `test-user-${now}-s${i}`,
-          registeredAt: new Date().toISOString(),
-        }));
+      if (pickedStandby.length) {
+        const standbys = pickedStandby.map((u) => ({ userId: u.id, registeredAt: nowIso }));
         for (const batch of chunk(standbys, 10)) {
           await updateDoc(eventRef, { standbyRegistrations: arrayUnion(...batch) });
+          addedStandby += batch.length;
         }
       }
 
-      toast.success(t('filled_registrations_success') || 'הרשמות מולאו בהצלחה');
+      toast.success(`${t('filled_registrations_success') || 'הרשמות מולאו בהצלחה'} (${addedReg} רגילות, ${addedStandby} ממתינים)`);
     } catch (e) {
       toast.error(t('error_filling_registrations') || 'שגיאה במילוי הרשמות');
     } finally {
@@ -267,8 +283,13 @@ function AdminPanel({ onClose }) {
               </div>
             )}
 
-            <div className="space-y-3">
-              <button
+            {/* Developer Panel Sections */}
+            <div className="space-y-6">
+              {/* Events (CRUD) */}
+              <div>
+                <h3 className="text-sm font-bold text-slate-300 mb-2">{t('category_events') || 'אירועים (CRUD)'}</h3>
+                <div className="space-y-3">
+                  <button
                 onClick={handleCreateTestEvent}
                 disabled={loading}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-amber-300 rounded-md hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -276,16 +297,14 @@ function AdminPanel({ onClose }) {
                 <PlusIcon className="h-4 w-4" aria-hidden="true" />
                 {loading ? t('creating_ellipsis') : t('create_test_event')}
               </button>
-
-              <button
+                  <button
                 onClick={assignAvatarColorsToUsers}
                 disabled={loading}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-amber-200 rounded-md hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 🎨 {t('assign_avatar_colors') || 'הקצה צבעי אבטר לכל המשתמשים'}
               </button>
-
-              <button
+                  <button
                 onClick={deleteAllEvents}
                 disabled={loading}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-rose-600 rounded-md hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -293,18 +312,28 @@ function AdminPanel({ onClose }) {
                 <TrashIcon className="h-4 w-4" aria-hidden="true" />
                 {loading ? t('deleting_ellipsis') : t('delete_all_events')}
               </button>
+                </div>
+              </div>
 
-              <button
+              {/* Users (Maintenance) */}
+              <div>
+                <h3 className="text-sm font-bold text-slate-300 mb-2">{t('category_users') || 'משתמשים'}</h3>
+                <div className="space-y-3">
+                  <button
                 onClick={removeProfilePicturesFromUsers}
                 disabled={loading}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-slate-700 rounded-md hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 🧹 {t('remove_profile_pictures') || 'הסר שדה תמונת פרופיל מכל המשתמשים'}
               </button>
+                </div>
+              </div>
 
-              {/* Fill event registrations (test tool) */}
-              <div className="mt-6 p-4 rounded-md bg-slate-800/40 ring-1 ring-slate-700/40">
-                <div className="text-sm font-semibold text-slate-200 mb-3">{t('fill_event_registrations') || 'מילוי הרשמות לאירוע (בדיקות)'}</div>
+              {/* Testing / Data seeding */}
+              <div>
+                <h3 className="text-sm font-bold text-slate-300 mb-2">{t('category_testing') || 'בדיקות / נתוני דמה'}</h3>
+                <div className="p-4 rounded-md bg-slate-800/40 ring-1 ring-slate-700/40">
+                  <div className="text-sm font-semibold text-slate-200 mb-3">{t('fill_event_registrations') || 'מילוי הרשמות לאירוע (בדיקות)'}</div>
                 <div className="space-y-3">
                   <div>
                     <label className="block text-xs text-slate-300 mb-1">{t('select_event_to_fill') || 'בחרו אירוע למילוי'}</label>
@@ -352,6 +381,7 @@ function AdminPanel({ onClose }) {
                   >
                     ⚙️ {loading ? (t('filling_registrations_ellipsis') || 'ממלא הרשמות…') : (t('fill_registrations') || 'מלא הרשמות')}
                   </button>
+                </div>
                 </div>
               </div>
             </div>

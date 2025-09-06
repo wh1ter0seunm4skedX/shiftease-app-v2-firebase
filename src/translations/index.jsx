@@ -103,6 +103,10 @@ const translations = {
   confirm: "אישור",
   yes: "כן",
   no: "לא",
+  dev_tools_header: "ממשק מפתחים",
+  category_events: "אירועים (CRUD)",
+  category_users: "משתמשים",
+  category_testing: "בדיקות / נתוני דמה",
   // Admin test tools
   fill_event_registrations: "מילוי הרשמות לאירוע (בדיקות)",
   select_event_to_fill: "בחרו אירוע למילוי",
