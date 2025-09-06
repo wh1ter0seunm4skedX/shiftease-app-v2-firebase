@@ -28,6 +28,9 @@ function EventDashboard() {
   const [isRegistrationsModalOpen, setIsRegistrationsModalOpen] = useState(false);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
   const [isAdminPanelClosing, setIsAdminPanelClosing] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { user, isAdmin, logout } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
@@ -151,53 +154,39 @@ function EventDashboard() {
     }
   };
 
-  const handleDeleteEvent = async (eventId) => {
+  const handleDeleteEvent = (eventId) => {
     if (!isAdmin) {
       toast.error(t('only_administrators_can_delete_events'));
       return;
     }
-  toast((toastInstance) => (
-    <div className="flex flex-col items-center p-1" dir="rtl">
-      <p className="mb-3 text-center text-lg font-semibold text-gray-800">
-        {t('are_you_sure_delete_event')}
-      </p>
-      <div className="flex w-full gap-3">
-        {/* Delete Button */}
-        <button
-          className="flex-1 rounded-md bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-          onClick={async () => {
-            toast.dismiss(toastInstance.id);
-            const deletingToastId = toast.loading(t('deleting_event'));
-            try {
-              await deleteDoc(doc(db, 'events', eventId));
-              toast.success(t('event_deleted_successfully'), { id: deletingToastId });
-            } catch (error) {
-              console.error('Error deleting event: ', error);
-              toast.error(t('error_deleting_event'), { id: deletingToastId });
-            }
-          }}
-        >
-          {t('delete')}
-        </button>
-        {/* Cancel Button */}
-        <button
-          className="flex-1 rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition-colors hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-          onClick={() => toast.dismiss(toastInstance.id)}
-        >
-          {t('cancel')}
-        </button>
-      </div>
-    </div>
-  ), {
-    duration: Infinity, // Keep open until user interacts
-    position: 'top-center',
-    // You can optionally add styles to the toast container itself here
-    style: {
-      minWidth: '320px', // Ensure it has a nice width
-      boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2)',
-    },
-  });
-};
+    setDeleteTargetId(eventId);
+    setIsDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTargetId) return;
+    setIsDeleting(true);
+    try {
+      await deleteDoc(doc(db, 'events', deleteTargetId));
+      toast.success(t('event_deleted_successfully'));
+      setIsDeleteConfirmOpen(false);
+      setDeleteTargetId(null);
+    } catch (error) {
+      console.error('Error deleting event: ', error);
+      toast.error(t('error_deleting_event'));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // Freeze background scroll when delete modal is open
+  useEffect(() => {
+    if (isDeleteConfirmOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [isDeleteConfirmOpen]);
 
   const handleRegisterForEvent = async (eventId) => {
     if (!user) {
@@ -418,6 +407,34 @@ function EventDashboard() {
             )}
           </main>
         </div>
+
+        {isDeleteConfirmOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm backdrop-grayscale" aria-hidden="true"></div>
+            <div className="relative z-10 w-full max-w-sm mx-4">
+              <div className="surface rounded-xl p-5 shadow-xl">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('confirm')}</h3>
+                <p className="text-sm text-gray-700 mb-4">{t('are_you_sure_delete_event')}</p>
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    onClick={() => { if (!isDeleting) { setIsDeleteConfirmOpen(false); setDeleteTargetId(null); } }}
+                    className="btn btn-neutral"
+                    disabled={isDeleting}
+                  >
+                    {t('cancel')}
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    className="btn btn-danger"
+                    disabled={isDeleting}
+                  >
+                    {isDeleting ? t('deleting_ellipsis') : t('delete')}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {isAdmin && isAdminPanelOpen && (
           <div className={`fixed inset-0 z-50 overflow-y-auto transition-opacity duration-200 ease-out ${isAdminPanelClosing ? 'opacity-0' : 'opacity-100'}`}>
