@@ -78,7 +78,7 @@ function EventsArchive() {
             <div className="hidden sm:flex sm:items-center">
               <button
                 onClick={handleBackToDashboard}
-                className={`flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 ${language === 'he' ? 'rtl:space-x-reverse' : ''}`}
+                className={`btn btn-neutral ${language === 'he' ? 'rtl:space-x-reverse' : ''}`}
               >
                 {language === 'he' ? (
                   <>
@@ -112,28 +112,6 @@ function EventsArchive() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="sm:hidden mb-6">
-          <button
-            onClick={handleBackToDashboard}
-            className={`w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 ${language === 'he' ? 'rtl:space-x-reverse' : ''}`}
-          >
-            {language === 'he' ? (
-              <>
-                <span className="mx-1">{t('back_to_dashboard')}</span>
-                <svg className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-              </>
-            ) : (
-              <>
-                <svg className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                <span className="mx-1">{t('back_to_dashboard')}</span>
-              </>
-            )}
-          </button>
-        </div>
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
           {loading ? (

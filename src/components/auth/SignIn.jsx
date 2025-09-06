@@ -182,17 +182,6 @@ function SignIn() {
         </div>
         
         <div className="relative pt-12 pb-8 px-8">
-          <motion.button 
-            variants={itemVariants}
-            whileHover={{ scale: 1.1, rotate: -10 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate(-1)} 
-            className="absolute top-4 left-4 text-purple-600 hover:text-purple-800 z-20"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-            </svg>
-          </motion.button>
           
           {/* Welcome image*/}
           <motion.div 
