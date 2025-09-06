@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import EventCard from '../EventCard';
+import { SkeletonGrid } from '../common/Skeleton';
 import Footer from '../layout/Footer';
 
 function EventsArchive() {
@@ -118,9 +119,7 @@ function EventsArchive() {
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
           {loading ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-            </div>
+            <SkeletonGrid count={6} />
           ) : pastEvents.length === 0 ? (
             <div className="flex flex-col items-center justify-center min-h-[50vh] sm:h-[60vh] text-center">
               <div className="bg-white p-6 sm:p-8 rounded-xl shadow-sm w-full sm:w-auto">

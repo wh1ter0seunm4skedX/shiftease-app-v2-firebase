@@ -11,6 +11,7 @@ import EventCard from './EventCard';
 import AdminPanel from './admin/AdminPanel';
 import RegistrationsModal from './admin/RegistrationsModal';
 import Footer from './layout/Footer';
+import { SkeletonGrid } from './common/Skeleton';
 import Header from './layout/Header';
 import { format } from 'date-fns';
 import { sendRegistrationNotification } from '../services/emailService';
@@ -18,6 +19,7 @@ import { fetchEventImage } from '../services/imageService';
 
 function EventDashboard() {
   const [events, setEvents] = useState([]);
+  const [loadingEvents, setLoadingEvents] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -76,10 +78,12 @@ function EventDashboard() {
         });
         
         setEvents(sortedEvents);
+        setLoadingEvents(false);
       },
       (error) => {
         console.error("Error fetching events: ", error);
         toast.error(t('error_fetching_events')); // Toast for error
+        setLoadingEvents(false);
       }
     );
 
@@ -337,7 +341,9 @@ function EventDashboard() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-            {events.length === 0 ? (
+            {loadingEvents ? (
+              <SkeletonGrid count={6} />
+            ) : events.length === 0 ? (
               <div className="flex flex-col items-center justify-center min-h-[50vh] sm:h-[60vh] text-center">
                 <div className="bg-white p-6 sm:p-8 rounded-xl shadow-sm w-full sm:w-auto">
                   <h2 className="text-xl sm:text-2xl font-semibold text-gray-700 mb-2">{t('no_events_yet')}</h2>
