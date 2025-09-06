@@ -586,7 +586,7 @@ function EventDashboard() {
   <div className={`fixed inset-0 z-50 overflow-y-auto transition-opacity duration-200 ease-out ${isAdminPanelClosing ? 'opacity-0' : 'opacity-100'}`}>
     <div className="flex items-center justify-center min-h-screen p-4 text-center sm:block sm:p-0">
       {/* Overlay */}
-      <div className="fixed inset-0 bg-gray-500/75" aria-hidden="true"></div>
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-[1px]" aria-hidden="true"></div>
       <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
       {/* Panel with scale/opacity */}

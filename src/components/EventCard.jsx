@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
+import { db } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 function EventCard({ 
   event, 
@@ -20,6 +22,85 @@ function EventCard({
   const { t, language } = useLanguage();
   const { /* isAdmin */ } = useAuth();
   const isRtl = language === 'he';
+
+  const getInitials = (u) => {
+    const name = (u?.fullName || u?.name || '').trim();
+    const source = name || (u?.email || '').split('@')[0] || '';
+    if (!source) return '👤';
+    const parts = source
+      .replace(/[_\-.]+/g, ' ')
+      .split(' ')
+      .filter(Boolean);
+    const first = parts[0]?.[0] || '';
+    const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+    return (first + last).toUpperCase();
+  };
+
+  // Registrations preview (avatars)
+  const registrationIds = useMemo(() =>
+    (event?.registrations || []).map((r) => r.userId).filter(Boolean),
+  [event?.registrations]);
+
+  const [previewUsers, setPreviewUsers] = useState([]); // up to 8
+  const [allUsers, setAllUsers] = useState([]);
+  const [isUsersOpen, setIsUsersOpen] = useState(false);
+  const [isUsersClosing, setIsUsersClosing] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    const load = async () => {
+      try {
+        if (!registrationIds.length) {
+          if (alive) setPreviewUsers([]);
+          return;
+        }
+        const ids = registrationIds.slice(0, 8);
+        const docs = await Promise.all(
+          ids.map(async (id) => {
+            try {
+              const d = await getDoc(doc(db, 'users', id));
+              return d.exists() ? { id, ...d.data() } : { id };
+            } catch {
+              return { id };
+            }
+          })
+        );
+        if (alive) setPreviewUsers(docs);
+      } catch (e) {
+        if (alive) setPreviewUsers([]);
+      }
+    };
+    load();
+    return () => { alive = false; };
+  }, [registrationIds]);
+
+  const openUsersModal = async () => {
+    setIsUsersOpen(true);
+    // Fetch full list lazily
+    try {
+      const docs = await Promise.all(
+        registrationIds.map(async (id) => {
+          try {
+            const d = await getDoc(doc(db, 'users', id));
+            return d.exists() ? { id, ...d.data() } : { id };
+          } catch {
+            return { id };
+          }
+        })
+      );
+      setAllUsers(docs);
+    } catch (_) {
+      setAllUsers([]);
+    }
+  };
+
+  const closeUsersModal = () => {
+    setIsUsersClosing(true);
+    setTimeout(() => {
+      setIsUsersClosing(false);
+      setIsUsersOpen(false);
+    }, 180);
+  };
 
   return (
     <div className={`bg-white rounded-lg shadow-md overflow-hidden mb-6 transform transition-all duration-300 hover:shadow-lg hover:scale-105 ${isPastEvent ? 'border-l-4 border-gray-400' : ''}`}>
@@ -109,6 +190,35 @@ function EventCard({
               }
             </span>
           </div>
+          {!isAdmin && registrationIds.length > 0 && (
+            <button
+              type="button"
+              onClick={openUsersModal}
+              className="relative flex items-center -space-x-2 rtl:space-x-reverse hover:opacity-90 transition-opacity"
+              title={t('view_registrations')}
+            >
+              {previewUsers.slice(0, 5).map((u, idx) => (
+                <span key={u.id || idx} className={`inline-flex h-8 w-8 rounded-full ring-2 ring-white overflow-hidden ${idx === 0 ? '' : (isRtl ? '-mr-2' : '-ml-2')}`}>
+                  {u.profilePicture ? (
+                    <img src={u.profilePicture} alt={u.fullName || 'user'} className="h-full w-full object-cover" />
+                  ) : (
+                    <span className="h-full w-full bg-purple-600 text-white text-[11px] leading-none flex items-center justify-center font-semibold">
+                      {getInitials(u)}
+                    </span>
+                  )}
+                </span>
+              ))}
+              {(() => {
+                const visible = Math.min(previewUsers.length, 5);
+                const remaining = Math.max(0, registrationIds.length - visible);
+                return remaining > 0 ? (
+                  <span className={`inline-flex h-8 w-8 rounded-full ring-2 ring-white bg-gray-100 text-gray-700 text-[11px] items-center justify-center font-medium ${isRtl ? '-mr-2' : '-ml-2'}`}>
+                    +{remaining}
+                  </span>
+                ) : null;
+              })()}
+            </button>
+          )}
         </div>
 
         {/* Capacity Information - Only visible to admin */}
@@ -190,6 +300,53 @@ function EventCard({
           </div>
         )}
       </div>
+
+      {/* Registered users modal (user view) */}
+      {!isAdmin && isUsersOpen && (
+        <div className={`fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 transition-opacity duration-200 ease-out ${isUsersClosing ? 'opacity-0' : 'opacity-100'}`}>
+          <div className={`relative bg-white w-full sm:max-w-md sm:rounded-xl shadow-xl max-h-[85vh] overflow-hidden transform transition-all duration-200 ease-out ${isUsersClosing ? 'opacity-0 scale-95 translate-y-2' : 'opacity-100 scale-100 translate-y-0'}`} dir={isRtl ? 'rtl' : 'ltr'}>
+            <button
+              type="button"
+              onClick={closeUsersModal}
+              className="absolute top-3 left-3 text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              aria-label={t('close')}
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="p-4 pr-4 border-b">
+              <h3 className="text-lg font-semibold text-gray-800">
+                {t('event_registrations')}: {event.title}
+              </h3>
+              <p className="text-sm text-gray-500 mt-1">{registrationIds.length} {t('total_registrations')}</p>
+            </div>
+            <div className="p-4 overflow-y-auto max-h-[70vh]">
+              {allUsers.length === 0 ? (
+                <div className="text-center text-gray-500 py-8">{t('no_registrations')}</div>
+              ) : (
+                <ul className="divide-y divide-gray-100">
+                  {allUsers.map((u) => (
+                    <li key={u.id} className="flex items-center gap-3 py-2">
+                      <span className="inline-flex h-9 w-9 rounded-full ring-2 ring-white overflow-hidden items-center justify-center bg-purple-600 text-white">
+                        {u.profilePicture ? (
+                          <img src={u.profilePicture} alt={u.fullName || 'user'} className="h-full w-full object-cover" />
+                        ) : (
+                          <span className="text-xs font-semibold leading-none">{getInitials(u)}</span>
+                        )}
+                      </span>
+                      <div className="flex-1">
+                        <div className="text-sm text-gray-900">{u.fullName || '—'}</div>
+                        {u.email && <div className="text-xs text-gray-500">{u.email}</div>}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

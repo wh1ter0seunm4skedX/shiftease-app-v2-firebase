@@ -204,7 +204,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center p-4 z-50 transition-opacity duration-200 ease-out ${isClosing ? 'opacity-0' : 'opacity-100'} bg-black/50`}
+      className={`fixed inset-0 flex items-center justify-center p-4 z-50 transition-opacity duration-200 ease-out ${isClosing ? 'opacity-0' : 'opacity-100'} bg-black/50 backdrop-blur-[1px]`}
     >
       <div
         className={`relative bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all duration-200 ease-out ${
@@ -374,7 +374,7 @@ className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border
                 {/* SEARCH MODAL */}
                 {isSearchOpen && (
                   <div
-                    className={`fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 transition-opacity duration-200 ease-out ${isSearchClosing ? 'opacity-0' : 'opacity-100'}`}
+                    className={`fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-[1px] transition-opacity duration-200 ease-out ${isSearchClosing ? 'opacity-0' : 'opacity-100'}`}
                     onKeyDown={(e) => {
                       if (e.key === "Escape") {
                         setIsSearchClosing(true);
