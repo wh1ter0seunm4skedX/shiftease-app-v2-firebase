@@ -27,7 +27,7 @@ const translations = {
   too_many_requests: "יותר מדי ניסיונות כושלים. אנא נסו שוב מאוחר יותר.",
   network_error: "שגיאת רשת. אנא בדקו את החיבור.",
   unknown_error: "אירעה שגיאה לא ידועה. אנא נסו שוב.",
-  
+
   // Dashboard
   dashboard: "לוח אירועים",
   upcoming_events: "לוח אירועים קרובים",
@@ -55,7 +55,7 @@ const translations = {
   failed_to_delete: "מחיקת האירוע נכשלה",
   failed_to_update: "עדכון האירוע נכשל",
   failed_to_create: "יצירת האירוע נכשלה",
-  
+
   // Event Details
   event_title: "כותרת האירוע",
   event_description: "תיאור האירוע",
@@ -77,13 +77,13 @@ const translations = {
   standby_registration_failed: "הוספה לרשימת המתנה נכשלה. אנא נסו שוב.",
   standby_unregistration_success: "הוסרת מרשימת המתנה!",
   standby_unregistration_failed: "הסרה מרשימת המתנה נכשלה. אנא נסו שוב.",
-  
+
   // Admin
   admin_panel: "לוח ניהול",
   view_registrations: "צפה בהרשמות",
   regular_registration: "הרשמה רגילה",
   standby_list: "רשימת המתנה",
-  total_registrations: "סה\"כ הרשמות",
+  total_registrations: 'סה"כ הרשמות',
   export_registrations: "ייצא הרשמות",
   close: "סגור",
   cancel: "ביטול",
@@ -93,7 +93,7 @@ const translations = {
   confirm: "אישור",
   yes: "כן",
   no: "לא",
-    // Admin (panel actions)
+  // Admin (panel actions)
   create_test_event: "צור אירוע בדיקה",
   delete_all_events: "מחק את כל האירועים",
   creating_ellipsis: "יוצר...",
@@ -102,7 +102,8 @@ const translations = {
   // Admin (messages)
   test_event_created_success: "אירוע בדיקה נוצר בהצלחה!",
   error_creating_test_event: "שגיאה ביצירת אירוע בדיקה",
-  confirm_delete_all_events: "האם אתם בטוחים שברצונכם למחוק את כל האירועים? פעולה זו אינה ניתנת לביטול!",
+  confirm_delete_all_events:
+    "האם אתם בטוחים שברצונכם למחוק את כל האירועים? פעולה זו אינה ניתנת לביטול!",
   all_events_deleted_success: "כל האירועים נמחקו בהצלחה!",
   error_deleting_events: "שגיאה במחיקת האירועים",
 
@@ -111,7 +112,7 @@ const translations = {
   login_to_register: "אנא התחבר כדי להירשם לאירועים",
   failed_to_logout: "ההתנתקות נכשלה. אנא נסה שוב.",
   already_registered: "כבר נרשמת לאירוע זה",
-  
+
   // Event Form
   event_form_title: "טופס אירוע",
   event_form_description: "אנא מלא את הטופס כדי ליצור אירוע חדש",
@@ -122,10 +123,10 @@ const translations = {
   event_form_description_label: "תיאור האירוע",
   event_form_capacity_label: "קיבולת האירוע",
   event_form_standby_capacity_label: "קיבולת המתנה",
-  
+
   // Footer
   all_rights_reserved: "כל הזכויות שמורות",
-  
+
   // Missing translations found in components
   select_profile_picture: "אנא בחרו תמונת פרופיל",
   failed_to_create_account: "יצירת החשבון נכשלה",
@@ -155,7 +156,7 @@ const translations = {
   no_results: "לא נמצאו תוצאות",
   next: "הבא",
   prev: "הקודם",
-  
+
   // Alert messages
   only_administrators_can_create_events: "רק מנהלים יכולים ליצור אירועים",
   error_adding_event: "שגיאה בהוספת אירוע. אנא נסו שוב.",
@@ -176,11 +177,13 @@ const translations = {
   error_unregistering_from_event: "שגיאה בביטול הרשמה מהאירוע. אנא נסו שוב.",
   failed_to_log_out: "ההתנתקות נכשלה. אנא נסו שוב.",
   end_time_before_start: "שעת הסיום חייבת להיות אחרי שעת ההתחלה",
-  
+
   // Greetings
   greeting_morning: "בוקר טוב",
   greeting_afternoon: "צהריים טובים",
   greeting_evening: "ערב טוב",
+  greeting_night: "לילה טוב",
+  greeting_night: "לילה טוב",
 };
 
 export default translations;

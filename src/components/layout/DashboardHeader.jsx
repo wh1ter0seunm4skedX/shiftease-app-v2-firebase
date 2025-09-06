@@ -17,12 +17,33 @@ function DashboardHeader({
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { t } = useLanguage();
-  const greeting = useMemo(() => {
-    const name = (userData?.fullName || user?.email || t("user"))?.split("@")[0] || "";
-    const hour = new Date().getHours();
-    const base = hour < 12 ? t("greeting_morning") : hour < 18 ? t("greeting_afternoon") : t("greeting_evening");
-    return `${base}, ${name}!`;
-  }, [user, userData, t]);
+const greeting = useMemo(() => {
+  const name =
+    (userData?.fullName || t("user")) || "";
+  const jerusalemHour = Number(
+    new Intl.DateTimeFormat("en-IL", {
+      hour: "numeric",
+      hour12: false,
+      timeZone: "Asia/Jerusalem",
+    }).format(new Date())
+  );
+
+  let base;
+  if (jerusalemHour < 6) {
+    base = `${t("greeting_night")}`; // 0–6
+  } else if (jerusalemHour < 12) {
+    base = `${t("greeting_morning")}`; // 6–12
+  } else if (jerusalemHour < 18) {
+    base = `${t("greeting_afternoon")}`; // 12–18
+  } else {
+    base = `${t("greeting_evening")}`; // 18–24
+  }
+
+  const wave = "👋";
+  return `${base}, ${name} ${wave}`;
+}, [user, userData, t]);
+
+
 
   return (
     <nav className="bg-white shadow-lg border-b border-gray-100">

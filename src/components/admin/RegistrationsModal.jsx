@@ -146,8 +146,19 @@ function RegistrationsModal({ isOpen, onClose, event }) {
         aria-modal="true"
         aria-labelledby="registrations-title"
         dir={isRtl ? 'rtl' : 'ltr'}
-        className={`bg-white w-full sm:max-w-4xl sm:rounded-xl shadow-xl transform transition-all max-h-[95vh] sm:max-h-[90vh] overflow-hidden ${isRtl ? 'rtl' : 'ltr'}`}
+        className={`relative bg-white w-full sm:max-w-4xl sm:rounded-xl shadow-xl transform transition-all max-h-[95vh] sm:max-h-[90vh] overflow-hidden ${isRtl ? 'rtl' : 'ltr'}`}
       >
+        {/* Top-right X close */}
+        <button
+          ref={closeBtnRef}
+          onClick={onClose}
+          className="absolute top-3 left-3 text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          aria-label={t('close')}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
         <div className="sticky top-0 z-10 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 border-b">
           <div className="p-4 sm:p-5 flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center sm:justify-between">
             <div className="min-w-0">
@@ -179,7 +190,7 @@ function RegistrationsModal({ isOpen, onClose, event }) {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 pl-10">
               <div className="relative flex-1 sm:flex-initial">
                 <input
                   type="text"
@@ -204,16 +215,7 @@ function RegistrationsModal({ isOpen, onClose, event }) {
                 </svg>
                 {t('export_registrations')}
               </button>
-              <button
-                ref={closeBtnRef}
-                onClick={onClose}
-                className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                aria-label={t('close')}
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              {/* X button moved to top-right */}
             </div>
           </div>
         </div>
@@ -376,12 +378,6 @@ function RegistrationsModal({ isOpen, onClose, event }) {
                     className="inline-flex sm:hidden items-center justify-center gap-2 px-4 py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex-1"
                   >
                     {t('export_registrations')}
-                  </button>
-                  <button
-                    onClick={onClose}
-                    className="px-5 py-3 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 w-full sm:w-auto"
-                  >
-                    {t('close')}
                   </button>
                 </div>
               </div>

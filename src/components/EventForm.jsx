@@ -98,7 +98,8 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
       setSearchResults([]);
       setSearchTotal(0);
       setSearchPage(1);
-      setSearchError(t("no_results") || "לא נמצאו תוצאות");
+      // Do not show a red error for empty query
+      setSearchError("");
       return;
     }
 
@@ -195,37 +196,32 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div
-        className={`bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all ${
+        className={`relative bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all ${
           isRtl ? "rtl" : "ltr"
         } max-h-[90vh] overflow-y-auto`}
         role="dialog"
         aria-modal="true"
       >
-        <form onSubmit={handleSubmit} className="p-4">
-          <div className="flex justify-between items-center mb-3">
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-3 left-3 text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          aria-label={t("close")}
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <form onSubmit={handleSubmit} className="p-4 pt-5">
+          <div className="mb-3">
             <h2 className="text-xl font-semibold text-gray-800">
               {initialData ? t("edit_event") : t("create_new_event")}
             </h2>
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 p-1"
-              aria-label={t("close")}
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
           </div>
 
           <div className="space-y-3">
@@ -377,10 +373,20 @@ className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border
                     }}
                   >
                     <div
-                      className="bg-white w-full sm:max-w-4xl sm:rounded-xl shadow-xl max-h-[95vh] overflow-hidden"
+                      className="relative bg-white w-full sm:max-w-4xl sm:rounded-xl shadow-xl max-h-[95vh] overflow-hidden"
                       dir={isRtl ? "rtl" : "ltr"}
                     >
-                      <div className="p-4 border-b flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setIsSearchOpen(false)}
+                        className="absolute top-3 left-3 text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        aria-label={t("close")}
+                      >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                      <div className="p-4 pl-14 border-b flex items-center gap-2">
                         <input
                           autoFocus
                           type="text"
@@ -398,14 +404,6 @@ className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border
                           className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-60"
                         >
                           {t("search") || "חפש"}
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setIsSearchOpen(false)}
-                          className="ml-2 text-gray-600 hover:text-gray-800"
-                        >
-                          {t("close")}
                         </button>
                       </div>
 
@@ -597,18 +595,7 @@ className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border
             </div>
           </div>
 
-          <div
-            className={`mt-4 flex ${isRtl ? "justify-start" : "justify-end"} ${
-              isRtl ? "space-x-reverse" : ""
-            } space-x-4`}
-          >
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 min-w-[100px]"
-            >
-              {t("cancel")}
-            </button>
+          <div className={`mt-4 flex ${isRtl ? "justify-start" : "justify-end"}`}>
             <button
               type="submit"
               className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 min-w-[130px]"
