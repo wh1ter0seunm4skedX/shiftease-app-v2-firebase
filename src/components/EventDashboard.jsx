@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // Import the toast library
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster, ToastBar } from 'react-hot-toast';
 import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, updateDoc, arrayUnion, arrayRemove, getDoc, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
@@ -152,11 +152,11 @@ function EventDashboard() {
       return;
     }
 
-    // Custom confirmation toast
+    // Custom confirmation toast (RTL)
     toast((toastInstance) => (
-      <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow-lg">
+      <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow-lg rtl text-right" dir="rtl">
         <p className="font-semibold mb-3">{t('are_you_sure_delete_event')}</p>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-row-reverse">
           <button
             className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
             onClick={async () => {
@@ -324,13 +324,25 @@ function EventDashboard() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Add the Toaster component here. It renders all the toasts. */}
-      <Toaster 
-        position="top-center" 
+      <Toaster
+        position="top-center"
         reverseOrder={false}
         toastOptions={{
-          className: 'text-sm sm:text-base',
+          className: 'rtl text-right text-sm sm:text-base',
+          style: { direction: 'rtl' },
         }}
-      />
+      >
+        {(t) => (
+          <ToastBar toast={t}>
+            {({ icon, message }) => (
+              <div className="flex items-center gap-2 flex-row-reverse" dir="rtl">
+                <span className="shrink-0">{icon}</span>
+                <span>{message}</span>
+              </div>
+            )}
+          </ToastBar>
+        )}
+      </Toaster>
       <div className="flex flex-col min-h-screen pb-16">
         <Header
           user={user}
