@@ -176,6 +176,11 @@ const translations = {
   error_unregistering_from_event: "שגיאה בביטול הרשמה מהאירוע. אנא נסו שוב.",
   failed_to_log_out: "ההתנתקות נכשלה. אנא נסו שוב.",
   end_time_before_start: "שעת הסיום חייבת להיות אחרי שעת ההתחלה",
+  
+  // Greetings
+  greeting_morning: "בוקר טוב",
+  greeting_afternoon: "צהריים טובים",
+  greeting_evening: "ערב טוב",
 };
 
 export default translations;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import {
   Cog6ToothIcon,
@@ -17,6 +17,12 @@ function DashboardHeader({
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { t } = useLanguage();
+  const greeting = useMemo(() => {
+    const name = (userData?.fullName || user?.email || t("user"))?.split("@")[0] || "";
+    const hour = new Date().getHours();
+    const base = hour < 12 ? t("greeting_morning") : hour < 18 ? t("greeting_afternoon") : t("greeting_evening");
+    return `${base}, ${name}!`;
+  }, [user, userData, t]);
 
   return (
     <nav className="bg-white shadow-lg border-b border-gray-100">
@@ -41,7 +47,7 @@ function DashboardHeader({
                 />
               </svg>
               <h1 className="ml-2 text-xl font-bold text-gray-800">
-                {t("dashboard")}
+                {greeting}
               </h1>
             </div>
           </div>
@@ -125,7 +131,7 @@ function DashboardHeader({
               </div>
             )}
 
-            {/* User badge + Sign out */}
+            {/* User badge (no name) + Sign out */}
             <div className={`flex items-center ${"space-x-reverse space-x-4"}`}>
               <div className="flex items-center">
                 {userData?.profilePicture ? (
@@ -152,13 +158,8 @@ function DashboardHeader({
                     </svg>
                   </div>
                 )}
-                <span className="ml-2 text-sm font-medium text-gray-700 flex items-center">
-                  {userData?.fullName || user?.email}
-                  <span
-                    className={`${"mr-1"} px-2 py-0.5 text-xs rounded-full bg-purple-100 text-purple-800 ml-2`}
-                  >
-                    {isAdmin ? t("admin") : t("user")}
-                  </span>
+                <span className="ml-2 text-xs font-medium text-purple-800 bg-purple-100 rounded-full px-2 py-0.5">
+                  {isAdmin ? t("admin") : t("user")}
                 </span>
               </div>
 
@@ -222,16 +223,9 @@ function DashboardHeader({
                     </svg>
                   </div>
                 )}
-                <div>
-                  <div className="text-sm font-medium text-gray-700">
-                    {userData?.fullName || user?.email}
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800">
-                      {isAdmin ? t("admin") : t("user")}
-                    </span>
-                  </div>
-                </div>
+                <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 text-xs">
+                  {isAdmin ? t("admin") : t("user")}
+                </span>
               </div>
 
               <div
