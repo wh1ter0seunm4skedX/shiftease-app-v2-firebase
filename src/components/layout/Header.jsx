@@ -6,7 +6,7 @@ import {
   ArchiveBoxIcon,
 } from "@heroicons/react/24/outline";
 
-function DashboardHeader({
+function Header({
   user,
   userData,
   isAdmin,
@@ -345,4 +345,4 @@ const greeting = useMemo(() => {
   );
 }
 
-export default DashboardHeader;
+export default Header;
