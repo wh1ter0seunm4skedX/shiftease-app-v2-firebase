@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { displayName, getUserInitials } from "../../utils/user";
 import {
   Cog6ToothIcon,
   PlusIcon,
@@ -18,8 +19,7 @@ function Header({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { t } = useLanguage();
 const greeting = useMemo(() => {
-  const name =
-    (userData?.fullName || t("user")) || "";
+  const name = displayName(userData, user?.email) || t("user");
   const jerusalemHour = Number(
     new Intl.DateTimeFormat("en-IL", {
       hour: "numeric",
@@ -43,18 +43,7 @@ const greeting = useMemo(() => {
   return `${base}, ${name} ${wave}`;
 }, [user, userData, t]);
 
-const getInitials = (fullName, email) => {
-  const name = (fullName || '').trim();
-  const source = name || (email || '').split('@')[0] || '';
-  if (!source) return '👤';
-  const parts = source
-    .replace(/[_\-.]+/g, ' ')
-    .split(' ')
-    .filter(Boolean);
-  const first = parts[0]?.[0] || '';
-  const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
-  return (first + last).toUpperCase();
-};
+const getInitials = () => getUserInitials(userData, user?.email);
 
 
 
@@ -172,7 +161,7 @@ const getInitials = (fullName, email) => {
                   className="inline-flex h-8 w-8 rounded-full text-white text-[11px] font-semibold items-center justify-center"
                   style={{ backgroundColor: userData?.avatarColor || '#7c3aed' }}
                 >
-                  {getInitials(userData?.fullName, user?.email)}
+                  {getInitials()}
                 </span>
                 <span className="ml-2 text-xs font-medium text-purple-800 bg-purple-100 rounded-full px-2 py-0.5">
                   {isAdmin ? t("admin") : t("user")}
@@ -219,7 +208,7 @@ const getInitials = (fullName, email) => {
                   className="inline-flex h-8 w-8 rounded-full text-white text-[11px] font-semibold items-center justify-center"
                   style={{ backgroundColor: userData?.avatarColor || '#7c3aed' }}
                 >
-                  {getInitials(userData?.fullName, user?.email)}
+                  {getInitials()}
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 text-xs">
                   {isAdmin ? t("admin") : t("user")}

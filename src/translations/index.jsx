@@ -8,6 +8,8 @@ const translations = {
   sign_in: "התחברות",
   create_new_account: "צרו חשבון חדש",
   sign_up: "הרשמה",
+  first_name: "שם פרטי",
+  last_name: "שם משפחה",
   confirm_password: "אימות סיסמה",
   already_have_account: "כבר יש לך חשבון?",
   sign_in_here: "התחברו כאן",
@@ -28,6 +30,9 @@ const translations = {
   network_error: "שגיאת רשת. אנא בדקו את החיבור.",
   unknown_error: "אירעה שגיאה לא ידועה. אנא נסו שוב.",
   full_name_hebrew_only: "השם חייב להכיל אותיות בעברית בלבד",
+  migrated_fullname_success: "שמות הוסבו בהצלחה",
+  migrated_fullname_error: "שגיאה בהמרת שמות",
+  migrate_fullname_button: "הסב שם מלא לשם פרטי/משפחה",
 
   // Dashboard
   dashboard: "לוח אירועים",

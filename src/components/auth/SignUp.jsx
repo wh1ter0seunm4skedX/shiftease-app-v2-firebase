@@ -11,7 +11,8 @@ function SignUp() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [role] = useState('user');
   // Avatars are initials with a chosen color
   const avatarPalette = ['#7c3aed', '#2563eb', '#059669', '#d97706', '#dc2626', '#0ea5e9', '#14b8a6', '#f59e0b'];
@@ -32,7 +33,7 @@ function SignUp() {
 
     // Enforce Hebrew-only full name (letters and spaces)
     const hebrewNameRegex = /^[\u0590-\u05FF][\u0590-\u05FF\s'-]*$/;
-    if (!hebrewNameRegex.test((fullName || '').trim())) {
+    if (!hebrewNameRegex.test((firstName || '').trim()) || (lastName && !hebrewNameRegex.test((lastName || '').trim()))) {
       toast.error(t('full_name_hebrew_only') || 'השם חייב להכיל אותיות בעברית בלבד');
       return;
     }
@@ -47,7 +48,9 @@ function SignUp() {
       // Create a user document in Firestore
       await setDoc(doc(db, 'users', user.uid), {
         email: user.email,
-        fullName: fullName,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        fullName: `${firstName || ''} ${lastName || ''}`.trim(),
         role: role,
         phoneNumber: phoneNumber,
         avatarColor,
@@ -104,20 +107,36 @@ function SignUp() {
           {/* Errors are presented via toast notifications */}
 
           <form onSubmit={handleSubmit} className="space-y-4 mt-8">
-            <div>
-              <input
-                id="fullName"
-                name="fullName"
-                type="text"
-                required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
-                placeholder={t('full_name')}
-                dir={language === 'he' ? 'rtl' : 'ltr'}
-                pattern="[\u0590-\u05FF][\u0590-\u05FF\s'-]*"
-                title={t('full_name_hebrew_only') || 'השם חייב להכיל אותיות בעברית בלבד'}
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  required
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
+                  placeholder={t('first_name') || 'שם פרטי'}
+                  dir={language === 'he' ? 'rtl' : 'ltr'}
+                  pattern="[\u0590-\u05FF][\u0590-\u05FF\s'-]*"
+                  title={t('full_name_hebrew_only') || 'השם חייב להכיל אותיות בעברית בלבד'}
+                />
+              </div>
+              <div>
+                <input
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
+                  placeholder={t('last_name') || 'שם משפחה'}
+                  dir={language === 'he' ? 'rtl' : 'ltr'}
+                  pattern="[\u0590-\u05FF][\u0590-\u05FF\s'-]*"
+                  title={t('full_name_hebrew_only') || 'השם חייב להכיל אותיות בעברית בלבד'}
+                />
+              </div>
             </div>
 
             <div>

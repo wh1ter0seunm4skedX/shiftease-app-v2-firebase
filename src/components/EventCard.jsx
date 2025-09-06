@@ -4,6 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { displayName, getUserInitials, getAvatarColor } from '../utils/user';
 
 function EventCard({ 
   event, 
@@ -23,28 +24,7 @@ function EventCard({
   const { /* isAdmin */ } = useAuth();
   const isRtl = language === 'he';
 
-  // Deterministic avatar color fallback (when user.avatarColor missing)
-  const palette = ['#7c3aed', '#2563eb', '#059669', '#d97706', '#dc2626', '#0ea5e9', '#14b8a6', '#f59e0b'];
-  const getAvatarColor = (u) => {
-    if (u?.avatarColor) return u.avatarColor;
-    const key = (u?.id || u?.email || u?.fullName || '').toString();
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
-    return palette[hash % palette.length];
-  };
-
-  const getInitials = (u) => {
-    const name = (u?.fullName || '').trim();
-    const hebrewOnly = name.replace(/[^\u0590-\u05FF\s]/g, ' ').trim();
-    const parts = hebrewOnly.split(/\s+/).filter(Boolean);
-    if (parts.length === 0) {
-      // As a last resort, derive from id but filter to Hebrew-like fallback
-      const s = (u?.id || '').toString().trim();
-      return (s.slice(0, 2) || '??').toUpperCase();
-    }
-    if (parts.length === 1) return parts[0].slice(0, 2);
-    return `${parts[0][0]}${parts[parts.length - 1][0]}`;
-  };
+  const initialsOf = (u) => getUserInitials(u);
 
   // Registrations preview (avatars)
   const registrationIds = useMemo(() =>
@@ -214,7 +194,7 @@ function EventCard({
                   style={{ backgroundColor: getAvatarColor(u) }}
                 >
                   <span className="h-full w-full text-white text-[11px] leading-none flex items-center justify-center font-semibold">
-                    {getInitials(u)}
+                    {initialsOf(u)}
                   </span>
                 </span>
               ))}
@@ -346,10 +326,10 @@ function EventCard({
                         className="inline-flex h-9 w-9 rounded-full overflow-hidden items-center justify-center text-white ring-2 ring-white shadow-sm flex-shrink-0"
                         style={{ backgroundColor: getAvatarColor(u) }}
                       >
-                        <span className="text-xs font-semibold leading-none">{getInitials(u)}</span>
+                        <span className="text-xs font-semibold leading-none">{initialsOf(u)}</span>
                       </span>
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-gray-900 truncate">{u.fullName || '—'}</div>
+                        <div className="text-sm font-medium text-gray-900 truncate">{displayName(u) || '—'}</div>
                         {u.email && <div className="text-xs text-gray-500 truncate">{u.email}</div>}
                       </div>
                     </li>

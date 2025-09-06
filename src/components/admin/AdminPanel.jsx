@@ -155,6 +155,34 @@ function AdminPanel({ onClose }) {
     }
   };
 
+  // Migrate users: fullName -> firstName/lastName (Hebrew-safe)
+  const migrateUsersFullName = async () => {
+    try {
+      setLoading(true);
+      const qs = await getDocs(collection(db, 'users'));
+      const updates = [];
+      for (const d of qs.docs) {
+        const data = d.data();
+        const hasFirst = !!(data.firstName && data.firstName.trim());
+        const hasLast = typeof data.lastName === 'string';
+        if (hasFirst && hasLast) continue;
+        const full = (data.fullName || '').toString();
+        const { splitHebrewName } = await import('../../utils/user.js');
+        const { firstName, lastName } = splitHebrewName(full);
+        const payload = {};
+        if (!hasFirst) payload.firstName = firstName || '';
+        if (!hasLast) payload.lastName = lastName || '';
+        if (Object.keys(payload).length) updates.push(updateDoc(doc(db, 'users', d.id), payload));
+      }
+      await Promise.all(updates);
+      toast.success(t('migrated_fullname_success') || 'שמות הוסבו בהצלחה');
+    } catch (e) {
+      toast.error(t('migrated_fullname_error') || 'שגיאה בהמרת שמות');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Fill selected event with real users (role: 'user')
   const handleFillSelectedEvent = async () => {
     if (!selectedEventId) {
@@ -320,13 +348,22 @@ function AdminPanel({ onClose }) {
                 <h3 className="text-sm font-bold text-slate-300 mb-2">{t('category_users') || 'משתמשים'}</h3>
                 <div className="space-y-3">
                   <button
-                onClick={removeProfilePicturesFromUsers}
+                    onClick={removeProfilePicturesFromUsers}
                 disabled={loading}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-slate-700 rounded-md hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 🧹 {t('remove_profile_pictures') || 'הסר שדה תמונת פרופיל מכל המשתמשים'}
               </button>
                 </div>
+              </div>
+              <div>
+                <button
+                  onClick={migrateUsersFullName}
+                  disabled={loading}
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  🧭 {t('migrate_fullname_button') || 'הסב שם מלא לשם פרטי/משפחה'}
+                </button>
               </div>
 
               {/* Testing / Data seeding */}
