@@ -20,7 +20,7 @@ const HeaderButton = ({ onClick, children, className = "" }) => (
     whileHover={{ scale: 1.02, y: -1 }}
     whileTap={{ scale: 0.98, y: 0 }}
     transition={{ type: "spring", stiffness: 400, damping: 25 }}
-    className={`flex h-10 items-center justify-center rounded-lg border px-4 text-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 ${className}`}
+    className={`flex h-10 items-center justify-center rounded-lg border px-4 text-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white ${className}`}
   >
     {children}
   </motion.button>
@@ -87,7 +87,7 @@ function Header({
         initial={prefersReducedMotion ? false : { opacity: 0, y: -8 }}
         animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="animate-gradient border-b border-gray-700/50 bg-gradient-to-r from-gray-900 via-slate-800 to-gray-900 text-white"
+        className="sticky top-0 z-40 border-b border-gray-200 bg-white/80 text-gray-900 backdrop-blur-md supports-[backdrop-filter]:bg-white/60 shadow-[0_10px_30px_-10px_rgba(139,92,246,0.25)]"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-20 items-center justify-between">
@@ -96,7 +96,7 @@ function Header({
               <div className="flex flex-shrink-0 items-center">
                 <span className="sr-only">{t("dashboard")}</span>
                 <svg
-                  className="h-8 w-8 text-purple-400"
+                  className="h-8 w-8 text-purple-600"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -109,7 +109,7 @@ function Header({
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                   />
                 </svg>
-                <h1 className="ms-3 text-lg font-bold text-gray-200">
+                <h1 className="ms-3 text-lg font-bold text-gray-800">
                   {greeting}
                 </h1>
               </div>
@@ -119,7 +119,7 @@ function Header({
             <div className="flex items-center sm:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                className="inline-flex items-center justify-center rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500"
                 aria-controls="mobile-menu"
                 aria-expanded={isMobileMenuOpen}
                 aria-label="Toggle menu"
@@ -138,14 +138,14 @@ function Header({
                 <div className="flex items-center space-x-3 space-x-reverse">
                   <HeaderButton
                     onClick={onAddEvent}
-                    className="border-green-500/50 bg-green-500/10 text-green-300 hover:bg-green-500/20 hover:text-green-200 focus:ring-green-400"
+                    className="border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 focus:ring-emerald-400"
                   >
                     <span>{t("add_event")}</span>
                     <PlusIcon className="ms-2 h-5 w-5" aria-hidden="true" />
                   </HeaderButton>
                   <HeaderButton
                     onClick={onOpenArchive}
-                    className="border-slate-500/50 bg-slate-500/10 text-slate-300 hover:bg-slate-500/20 hover:text-slate-200 focus:ring-slate-400"
+                    className="border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 focus:ring-slate-400"
                   >
                     <span>{t("events_archive")}</span>
                     <ArchiveBoxIcon className="ms-2 h-5 w-5" aria-hidden="true" />
@@ -163,14 +163,16 @@ function Header({
                   <motion.span
                     whileHover={prefersReducedMotion ? {} : { scale: 1.08 }}
                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold text-white"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold text-white shadow"
                     style={{ backgroundColor: userData?.avatarColor || "#7c3aed" }}
                   >
                     {getInitials()}
                   </motion.span>
-                  <span className="ms-2 rounded-full bg-purple-500/20 px-2.5 py-1 text-xs font-medium text-purple-300">
-                    {isAdmin ? t("admin") : t("user")}
-                  </span>
+                  {isAdmin ? (
+                    <span className="ms-2 chip-admin">{t("admin")}</span>
+                  ) : (
+                    <span className="ms-2 chip-user">{t("user")}</span>
+                  )}
                 </button>
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
@@ -178,7 +180,7 @@ function Header({
                   side="bottom"
                   align="end"
                   sideOffset={8}
-                  className="z-50 min-w-[220px] rounded-lg border border-gray-700/60 bg-gray-900/95 p-1.5 text-sm text-gray-200 shadow-xl backdrop-blur-md data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"
+                  className="dropdown-surface data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"
                 >
                   {isAdmin ? (
                     <>
@@ -187,18 +189,18 @@ function Header({
                           setUserMenuOpen(false);
                           setTimeout(() => onOpenAdminPanel(), 0);
                         }}
-                        className="flex cursor-pointer items-center rounded-md px-2 py-2 outline-none hover:bg-gray-800/80 focus:bg-gray-800/80"
+                        className="dropdown-item"
                       >
-                        <Cog6ToothIcon className="me-2 h-5 w-5 text-amber-300" />
+                        <Cog6ToothIcon className="me-2 h-5 w-5 text-amber-600" />
                         {t("system_admin_panel")}
                       </DropdownMenu.Item>
-                      <DropdownMenu.Separator className="my-1 h-px bg-gray-700/60" />
+                      <DropdownMenu.Separator className="my-1 h-px bg-gray-200" />
                       <DropdownMenu.Item
                         onSelect={() => {
                           setUserMenuOpen(false);
                           setTimeout(() => onLogout(), 0);
                         }}
-                        className="flex cursor-pointer items-center rounded-md px-2 py-2 text-red-400 outline-none hover:bg-red-500/10 focus:bg-red-500/10"
+                        className="dropdown-item dropdown-danger"
                       >
                         <ArrowRightOnRectangleIcon className="me-2 h-5 w-5" />
                         {t("sign_out")}
@@ -206,16 +208,16 @@ function Header({
                     </>
                   ) : (
                     <>
-                      <DropdownMenu.Label className="px-2 py-1.5 text-xs tracking-wide text-gray-400">
+                      <DropdownMenu.Label className="px-2 py-1.5 text-xs tracking-wide text-gray-500">
                         {t("dropdown_user_welcome")}
                       </DropdownMenu.Label>
-                      <DropdownMenu.Separator className="my-1 h-px bg-gray-700/60" />
+                      <DropdownMenu.Separator className="my-1 h-px bg-gray-200" />
                       <DropdownMenu.Item
                         onSelect={() => {
                           setUserMenuOpen(false);
                           setTimeout(() => onLogout(), 0);
                         }}
-                        className="flex cursor-pointer items-center rounded-md px-2 py-2 text-red-400 outline-none hover:bg-red-500/10 focus:bg-red-500/10"
+                        className="dropdown-item dropdown-danger"
                       >
                         <ArrowRightOnRectangleIcon className="me-2 h-5 w-5" />
                         {t("sign_out")}
@@ -234,7 +236,7 @@ function Header({
         {isMobileMenuOpen && (
           <motion.div
             id="mobile-menu"
-            className="sm:hidden"
+            className="sm:hidden bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-md"
             initial={prefersReducedMotion ? false : { opacity: 0, y: -8 }}
             animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
             exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
@@ -256,23 +258,25 @@ function Header({
                 >
                   {getInitials()}
                 </motion.span>
-                <span className="rounded-full bg-purple-500/20 px-3 py-1 text-xs font-medium text-purple-300">
-                  {isAdmin ? t("admin") : t("user")}
-                </span>
+                {isAdmin ? (
+                  <span className="chip-admin">{t("admin")}</span>
+                ) : (
+                  <span className="chip-user">{t("user")}</span>
+                )}
               </div>
 
               {isAdmin && (
                 <div className="flex flex-col space-y-3">
                   <HeaderButton
                     onClick={() => { onAddEvent(); setIsMobileMenuOpen(false); }}
-                    className="w-full border-green-500/50 bg-green-500/10 text-green-300 hover:bg-green-500/20 hover:text-green-200 focus:ring-green-400"
+                    className="w-full border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 focus:ring-emerald-400"
                   >
                     <span>{t("add_event")}</span>
                     <PlusIcon className="ms-2 h-5 w-5" />
                   </HeaderButton>
                   <HeaderButton
                     onClick={() => { onOpenArchive(); setIsMobileMenuOpen(false); }}
-                    className="w-full border-slate-500/50 bg-slate-500/10 text-slate-300 hover:bg-slate-500/20 hover:text-slate-200 focus:ring-slate-400"
+                    className="w-full border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 focus:ring-slate-400"
                   >
                     <span>{t("events_archive")}</span>
                     <ArchiveBoxIcon className="ms-2 h-5 w-5" />
@@ -282,7 +286,7 @@ function Header({
               
               <HeaderButton
                 onClick={() => { onLogout(); setIsMobileMenuOpen(false); }}
-                className="w-full border-red-500/50 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 focus:ring-red-400"
+                className="w-full border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 hover:text-rose-800 focus:ring-rose-400"
               >
                 <span>{t("sign_out")}</span>
                 <ArrowRightOnRectangleIcon className="ms-2 h-5 w-5" />
