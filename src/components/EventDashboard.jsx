@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+// Import the toast library
+import toast, { Toaster } from 'react-hot-toast';
 import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, updateDoc, arrayUnion, arrayRemove, getDoc, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
@@ -42,7 +44,6 @@ function EventDashboard() {
   useEffect(() => {
     if (!user?.uid) return;
 
-    // Get current date in ISO format (YYYY-MM-DD)
     const today = new Date().toISOString().split('T')[0];
     
     const eventsQuery = query(
@@ -63,9 +64,7 @@ function EventDashboard() {
           });
         });
         
-        // Sort events: first by date (ascending), then by start time (ascending)
         const sortedEvents = eventsData.sort((a, b) => {
-          // First compare dates
           const dateA = new Date(a.date);
           const dateB = new Date(b.date);
           
@@ -73,7 +72,6 @@ function EventDashboard() {
             return dateA - dateB;
           }
           
-          // If dates are the same, compare start times
           return a.startTime.localeCompare(b.startTime);
         });
         
@@ -81,17 +79,20 @@ function EventDashboard() {
       },
       (error) => {
         console.error("Error fetching events: ", error);
+        toast.error(t('error_fetching_events')); // Toast for error
       }
     );
 
     return () => unsubscribe();
-  }, [user?.uid]);
+  }, [user?.uid, t]);
 
   const handleAddEvent = async (newEvent) => {
     if (!isAdmin) {
-      alert(t('only_administrators_can_create_events'));
+      toast.error(t('only_administrators_can_create_events'));
       return;
     }
+
+    const toastId = toast.loading(t('adding_event')); // Loading toast
 
     try {
       let imageUrl = newEvent.imageUrl;
@@ -114,69 +115,97 @@ function EventDashboard() {
       };
       await addDoc(collection(db, 'events'), eventData);
       setIsFormOpen(false);
+      toast.success(t('event_added_successfully'), { id: toastId }); // Success toast
     } catch (error) {
       console.error('Error adding event: ', error);
-      alert(t('error_adding_event'));
+      toast.error(t('error_adding_event'), { id: toastId }); // Error toast
     }
   };
 
   const handleEditEvent = async (eventData) => {
     if (!isAdmin) {
-      alert(t('only_administrators_can_edit_events'));
+      toast.error(t('only_administrators_can_edit_events'));
       return;
     }
 
+    const toastId = toast.loading(t('updating_event')); // Loading toast
+
     try {
       const eventRef = doc(db, 'events', eventData.id);
-      // Only remove id and createdAt, keep other fields for update
       const { id, createdAt, ...updateData } = eventData;
       
-      // Ensure capacity fields are numbers
       updateData.capacity = parseInt(updateData.capacity);
       updateData.standbyCapacity = parseInt(updateData.standbyCapacity);
       
-      console.log('Updating event with data:', updateData);
       await updateDoc(eventRef, updateData);
       setEditingEvent(null);
+      toast.success(t('event_updated_successfully'), { id: toastId }); // Success toast
     } catch (error) {
       console.error('Error updating event: ', error);
-      alert(t('error_updating_event'));
+      toast.error(t('error_updating_event'), { id: toastId }); // Error toast
     }
   };
 
   const handleDeleteEvent = async (eventId) => {
     if (!isAdmin) {
-      alert(t('only_administrators_can_delete_events'));
+      toast.error(t('only_administrators_can_delete_events'));
       return;
     }
 
-    if (window.confirm('Are you sure you want to delete this event?')) {
-      try {
-        await deleteDoc(doc(db, 'events', eventId));
-      } catch (error) {
-        console.error('Error deleting event: ', error);
-        alert(t('error_deleting_event'));
-      }
-    }
+    // Custom confirmation toast
+    toast((toastInstance) => (
+      <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow-lg">
+        <p className="font-semibold mb-3">{t('are_you_sure_delete_event')}</p>
+        <div className="flex gap-2">
+          <button
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+            onClick={async () => {
+              toast.dismiss(toastInstance.id);
+              const deletingToastId = toast.loading(t('deleting_event'));
+              try {
+                await deleteDoc(doc(db, 'events', eventId));
+                toast.success(t('event_deleted_successfully'), { id: deletingToastId });
+              } catch (error) {
+                console.error('Error deleting event: ', error);
+                toast.error(t('error_deleting_event'), { id: deletingToastId });
+              }
+            }}
+          >
+            {t('delete')}
+          </button>
+          <button
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            onClick={() => toast.dismiss(toastInstance.id)}
+          >
+            {t('cancel')}
+          </button>
+        </div>
+      </div>
+    ), {
+      duration: Infinity, // Keep open until user interacts
+      position: 'top-center',
+    });
   };
 
   const handleRegisterForEvent = async (eventId) => {
     if (!user) {
-      alert(t('please_log_in_to_register'));
+      toast.error(t('please_log_in_to_register'));
       return;
     }
 
     if (isAdmin) {
-      alert(t('administrators_cannot_register'));
+      toast.error(t('administrators_cannot_register'));
       return;
     }
+    
+    const toastId = toast.loading(t('registering'));
 
     try {
       const eventRef = doc(db, 'events', eventId);
       const eventDoc = await getDoc(eventRef);
       
       if (!eventDoc.exists()) {
-        alert(t('event_not_found'));
+        toast.error(t('event_not_found'), { id: toastId });
         return;
       }
 
@@ -190,60 +219,56 @@ function EventDashboard() {
       const isUserStandby = eventData.standbyRegistrations?.some(reg => reg.userId === user.uid);
 
       if (isUserRegistered || isUserStandby) {
-        alert(t('already_registered_for_event'));
+        toast.error(t('already_registered_for_event'), { id: toastId });
         return;
       }
 
-      // Check if regular capacity is available
       if (eventData.registrations?.length < eventData.capacity) {
         await updateDoc(eventRef, {
           registrations: arrayUnion(registrationData)
         });
         
-        // Send email notification for regular registration
         try {
           await sendRegistrationNotification(eventData, userData, 'regular');
         } catch (error) {
           console.error('Failed to send email notification:', error);
-          // Don't block the registration process if email fails
         }
         
-        alert(t('successfully_registered'));
+        toast.success(t('successfully_registered'), { id: toastId });
       } 
-      // Check if standby capacity is available
       else if (eventData.standbyRegistrations?.length < eventData.standbyCapacity) {
         await updateDoc(eventRef, {
           standbyRegistrations: arrayUnion(registrationData)
         });
         
-        // Send email notification for standby registration
         try {
           await sendRegistrationNotification(eventData, userData, 'standby');
         } catch (error) {
           console.error('Failed to send email notification:', error);
-          // Don't block the registration process if email fails
         }
         
-        alert(t('added_to_standby_list'));
+        toast.success(t('added_to_standby_list'), { id: toastId });
       } 
       else {
-        alert(t('event_is_full'));
+        toast.error(t('event_is_full'), { id: toastId });
       }
     } catch (error) {
       console.error('Error registering for event: ', error);
-      alert(t('error_registering_for_event'));
+      toast.error(t('error_registering_for_event'), { id: toastId });
     }
   };
 
   const handleUnregisterFromEvent = async (eventId) => {
     if (!user) return;
+    
+    const toastId = toast.loading(t('unregistering'));
 
     try {
       const eventRef = doc(db, 'events', eventId);
       const eventDoc = await getDoc(eventRef);
       
       if (!eventDoc.exists()) {
-        alert(t('event_not_found'));
+        toast.error(t('event_not_found'), { id: toastId });
         return;
       }
 
@@ -256,7 +281,6 @@ function EventDashboard() {
           registrations: arrayRemove(userRegistration)
         });
 
-        // If there are people in standby, move the first one to regular registration
         if (eventData.standbyRegistrations?.length > 0) {
           const firstStandbyUser = eventData.standbyRegistrations[0];
           await updateDoc(eventRef, {
@@ -265,17 +289,17 @@ function EventDashboard() {
           });
         }
 
-        alert(t('successfully_unregistered'));
+        toast.success(t('successfully_unregistered'), { id: toastId });
       } 
       else if (userStandby) {
         await updateDoc(eventRef, {
           standbyRegistrations: arrayRemove(userStandby)
         });
-        alert(t('successfully_removed_from_standby'));
+        toast.success(t('successfully_removed_from_standby'), { id: toastId });
       }
     } catch (error) {
       console.error('Error unregistering from event: ', error);
-      alert(t('error_unregistering_from_event'));
+      toast.error(t('error_unregistering_from_event'), { id: toastId });
     }
   };
 
@@ -293,12 +317,20 @@ function EventDashboard() {
       navigate('/signin');
     } catch (error) {
       console.error('Failed to log out', error);
-      alert(t('failed_to_log_out'));
+      toast.error(t('failed_to_log_out'));
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-100">
+      {/* Add the Toaster component here. It renders all the toasts. */}
+      <Toaster 
+        position="top-center" 
+        reverseOrder={false}
+        toastOptions={{
+          className: 'text-sm sm:text-base',
+        }}
+      />
       <div className="flex flex-col min-h-screen pb-16">
         <Header
           user={user}
@@ -309,7 +341,6 @@ function EventDashboard() {
           onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
           onLogout={handleLogout}
         />
-        {/* Legacy inline header removed; using <Header /> */}
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
@@ -357,7 +388,6 @@ function EventDashboard() {
               onSubmit={editingEvent ? handleEditEvent : handleAddEvent}
               initialData={editingEvent}
             />
-            {/* Registrations Modal */}
             <RegistrationsModal
               isOpen={isRegistrationsModalOpen}
               onClose={() => {
@@ -369,30 +399,23 @@ function EventDashboard() {
           </main>
         </div>
 
-        {/* Admin Panel Modal */}
-{isAdmin && isAdminPanelOpen && (
-  <div className={`fixed inset-0 z-50 overflow-y-auto transition-opacity duration-200 ease-out ${isAdminPanelClosing ? 'opacity-0' : 'opacity-100'}`}>
-    <div className="flex items-center justify-center min-h-screen p-4 text-center sm:block sm:p-0">
-      {/* Overlay */}
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-[1px]" aria-hidden="true"></div>
-      <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-      {/* Panel with scale/opacity */}
-      <div className={`inline-block align-bottom transform transition-all duration-200 ease-out sm:my-8 sm:align-middle ${isAdminPanelClosing ? 'opacity-0 scale-95 translate-y-2' : 'opacity-100 scale-100 translate-y-0'}`}>
-        <AdminPanel onClose={() => {
-          setIsAdminPanelClosing(true);
-          setTimeout(() => {
-            setIsAdminPanelClosing(false);
-            setIsAdminPanelOpen(false);
-          }, 180);
-        }} />
-      </div>
-    </div>
-  </div>
-)}
-
-
-
+        {isAdmin && isAdminPanelOpen && (
+          <div className={`fixed inset-0 z-50 overflow-y-auto transition-opacity duration-200 ease-out ${isAdminPanelClosing ? 'opacity-0' : 'opacity-100'}`}>
+            <div className="flex items-center justify-center min-h-screen p-4 text-center sm:block sm:p-0">
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-[1px]" aria-hidden="true"></div>
+              <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+              <div className={`inline-block align-bottom transform transition-all duration-200 ease-out sm:my-8 sm:align-middle ${isAdminPanelClosing ? 'opacity-0 scale-95 translate-y-2' : 'opacity-100 scale-100 translate-y-0'}`}>
+                <AdminPanel onClose={() => {
+                  setIsAdminPanelClosing(true);
+                  setTimeout(() => {
+                    setIsAdminPanelClosing(false);
+                    setIsAdminPanelOpen(false);
+                  }, 180);
+                }} />
+              </div>
+            </div>
+          </div>
+        )}
         <Footer />
       </div>
     </div>

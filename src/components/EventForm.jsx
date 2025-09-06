@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { EVENT_IMAGES } from "../constants";
+// Using API images now; no local EVENT_IMAGES
 import { useLanguage } from "../contexts/LanguageContext";
 import { searchEventImages } from "../services/imageService";
 
@@ -37,7 +37,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
     startTime: "",
     endTime: "",
     description: "",
-    imageUrl: EVENT_IMAGES[0].url,
+    imageUrl: '',
     timeError: "",
     capacity: "",
     standbyCapacity: "",
@@ -63,7 +63,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
         startTime: initialData.startTime || "",
         endTime: initialData.endTime || "",
         description: initialData.description || "",
-        imageUrl: initialData.imageUrl || EVENT_IMAGES[0].url,
+        imageUrl: initialData.imageUrl || '',
         timeError: "",
         capacity: initialData.capacity || "",
         standbyCapacity: initialData.standbyCapacity || "",
@@ -77,7 +77,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
         startTime: "",
         endTime: "",
         description: "",
-        imageUrl: EVENT_IMAGES[0].url,
+        imageUrl: '',
         timeError: "",
         capacity: "",
         standbyCapacity: "",
@@ -521,33 +521,7 @@ className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border
                 )}
               </div>
 
-              {showImages && (
-                <div className="grid grid-cols-5 gap-2 mb-2">
-                  {EVENT_IMAGES.map((image) => (
-                    <button
-                      key={image.id}
-                      type="button"
-                      className={`relative aspect-square overflow-hidden rounded-lg border-2 ${
-                        formData.imageUrl === image.url
-                          ? "border-blue-500"
-                          : "border-transparent"
-                      }`}
-                      onClick={() =>
-                        handleChange({
-                          target: { name: "imageUrl", value: image.url },
-                        })
-                      }
-                    >
-                      <img
-                        src={image.url}
-                        alt={image.alt}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
+              {/* Local image grid removed (using API search) */}
             </div>
 
             <div>

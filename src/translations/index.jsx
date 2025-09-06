@@ -158,6 +158,16 @@ const translations = {
   prev: "הקודם",
 
   // Alert messages
+  error_fetching_events: "שגיאה בשליפת אירועים.",
+  adding_event: "מוסיף אירוע…",
+  event_added_successfully: "האירוע נוסף בהצלחה",
+  updating_event: "מעדכן אירוע…",
+  event_updated_successfully: "האירוע עודכן בהצלחה",
+  deleting_event: "מוחק אירוע…",
+  event_deleted_successfully: "האירוע נמחק בהצלחה",
+  registering: "נרשם לאירוע…",
+  unregistering: "מבצע ביטול הרשמה…",
+  are_you_sure_delete_event: "האם אתם בטוחים שברצונכם למחוק את האירוע?",
   only_administrators_can_create_events: "רק מנהלים יכולים ליצור אירועים",
   error_adding_event: "שגיאה בהוספת אירוע. אנא נסו שוב.",
   only_administrators_can_edit_events: "רק מנהלים יכולים לערוך אירועים",
@@ -182,7 +192,6 @@ const translations = {
   greeting_morning: "בוקר טוב",
   greeting_afternoon: "צהריים טובים",
   greeting_evening: "ערב טוב",
-  greeting_night: "לילה טוב",
   greeting_night: "לילה טוב",
 };
 

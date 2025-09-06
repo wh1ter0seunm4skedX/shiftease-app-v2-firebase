@@ -16,69 +16,7 @@ import avatar15 from './assets/profile_pictures/uifaces-cartoon-image (15).jpg';
 import avatar16 from './assets/profile_pictures/uifaces-cartoon-image.jpg';
 
 // Import event pictures from local directory
-import eventPic1 from './assets/events_pictures/event_pic_1.jpg';
-import eventPic2 from './assets/events_pictures/event_pic_2.jpg';
-import eventPic3 from './assets/events_pictures/event_pic_3.jpg';
-import eventPic4 from './assets/events_pictures/event_pic_4.jpg';
-import eventPic5 from './assets/events_pictures/event_pic_5.jpg';
-import eventPic6 from './assets/events_pictures/event_pic_6.jpg';
-import eventPic7 from './assets/events_pictures/event_pic_7.jpg';
-import eventPic8 from './assets/events_pictures/event_pic_8.jpg';
-import eventPic9 from './assets/events_pictures/event_pic_9.jpg';
-import eventPic10 from './assets/events_pictures/event_pic_10.jpg';
-
-export const EVENT_IMAGES = [
-  {
-    id: 1,
-    url: eventPic1,
-    alt: "Event picture 1"
-  },
-  {
-    id: 2,
-    url: eventPic2,
-    alt: "Event picture 2"
-  },
-  {
-    id: 3,
-    url: eventPic3,
-    alt: "Event picture 3"
-  },
-  {
-    id: 4,
-    url: eventPic4,
-    alt: "Event picture 4"
-  },
-  {
-    id: 5,
-    url: eventPic5,
-    alt: "Event picture 5"
-  },
-  {
-    id: 6,
-    url: eventPic6,
-    alt: "Event picture 6"
-  },
-  {
-    id: 7,
-    url: eventPic7,
-    alt: "Event picture 7"
-  },
-  {
-    id: 8,
-    url: eventPic8,
-    alt: "Event picture 8"
-  },
-  {
-    id: 9,
-    url: eventPic9,
-    alt: "Event picture 9"
-  },
-  {
-    id: 10,
-    url: eventPic10,
-    alt: "Event picture 10"
-  }
-];
+// Removed hardcoded event images; we use the image API now.
 
 export const PROFILE_PICTURES = [
   {
@@ -261,7 +199,7 @@ export const generateRandomEvent = () => {
     startTime: randomStartTime,
     endTime: randomEndTime,
     description: randomEvent.description,
-    imageUrl: EVENT_IMAGES[Math.floor(Math.random() * EVENT_IMAGES.length)].url,
+    imageUrl: '',
     capacity: randomCapacity,
     standbyCapacity: randomStandbyCapacity
   };
