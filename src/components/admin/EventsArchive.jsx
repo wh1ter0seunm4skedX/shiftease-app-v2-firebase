@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { collection, query, orderBy, where, onSnapshot } from 'firebase/firestore';
+import React, { useState, useEffect, useMemo } from 'react';
+import { collection, query, orderBy, where, getDocs, startAfter, limit } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -13,37 +13,53 @@ import Footer from '../layout/Footer';
 function EventsArchive() {
   const [pastEvents, setPastEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pageSize] = useState(9);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [cursors, setCursors] = useState([]); // array of lastVisible docs per page
+  const [hasNext, setHasNext] = useState(false);
   const { currentUser: user, isAdmin } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
 
+  const today = useMemo(() => new Date().toISOString().split('T')[0], []);
+
+  const fetchPage = async (afterDoc = null, page = 0) => {
+    setLoading(true);
+    try {
+      const baseQuery = query(
+        collection(db, 'events'),
+        where('date', '<', today),
+        orderBy('date', 'desc'),
+        limit(pageSize)
+      );
+      const q = afterDoc ? query(baseQuery, startAfter(afterDoc)) : baseQuery;
+      const snap = await getDocs(q);
+      const eventsData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      setPastEvents(eventsData);
+      // determine next availability
+      setHasNext(snap.docs.length === pageSize);
+      setPageIndex(page);
+      // store cursor for this page (last visible doc)
+      const newCursors = [...cursors];
+      newCursors[page] = snap.docs[snap.docs.length - 1] || null;
+      setCursors(newCursors);
+    } catch (e) {
+      console.error('Error fetching archive page:', e);
+      setPastEvents([]);
+      setHasNext(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    // Redirect non-admin users
     if (!isAdmin) {
       navigate('/');
       return;
     }
-
-    // Get current date in ISO format (YYYY-MM-DD)
-    const today = new Date().toISOString().split('T')[0];
-    
-    const pastEventsQuery = query(
-      collection(db, 'events'),
-      where('date', '<', today),
-      orderBy('date', 'desc') // Show most recent past events first
-    );
-    
-    const unsubscribe = onSnapshot(pastEventsQuery, (snapshot) => {
-      const eventsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setPastEvents(eventsData);
-      setLoading(false);
-    });
-    
-    return () => unsubscribe();
-  }, [user, isAdmin, navigate]);
+    fetchPage(null, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin]);
 
   const handleBackToDashboard = () => {
     navigate('/');
@@ -182,6 +198,34 @@ function EventsArchive() {
                   />
                 );
               })}
+            </div>
+          )}
+          {/* Pagination controls */}
+          {!loading && pastEvents.length > 0 && (
+            <div className="mt-6 flex items-center justify-between">
+              <button
+                onClick={() => {
+                  if (pageIndex <= 0) return;
+                  const prevCursor = pageIndex - 2 >= 0 ? cursors[pageIndex - 2] : null;
+                  fetchPage(prevCursor || null, Math.max(0, pageIndex - 1));
+                }}
+                disabled={pageIndex === 0}
+                className="px-4 py-2 rounded-md border text-sm disabled:opacity-50"
+              >
+                {t('prev')}
+              </button>
+              <div className="text-sm text-gray-600">{t('page') || 'עמוד'} {pageIndex + 1}</div>
+              <button
+                onClick={() => {
+                  if (!hasNext) return;
+                  const curCursor = cursors[pageIndex];
+                  fetchPage(curCursor || null, pageIndex + 1);
+                }}
+                disabled={!hasNext}
+                className="px-4 py-2 rounded-md border text-sm disabled:opacity-50"
+              >
+                {t('next')}
+              </button>
             </div>
           )}
         </main>

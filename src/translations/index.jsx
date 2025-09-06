@@ -60,7 +60,7 @@ const translations = {
   failed_to_delete: "מחיקת האירוע נכשלה",
   failed_to_update: "עדכון האירוע נכשל",
   failed_to_create: "יצירת האירוע נכשלה",
-
+  page: "עמוד",
   // Event Details
   event_title: "כותרת האירוע",
   event_description: "תיאור האירוע",
