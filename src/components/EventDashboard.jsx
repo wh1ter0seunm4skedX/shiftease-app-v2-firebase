@@ -156,41 +156,48 @@ function EventDashboard() {
       toast.error(t('only_administrators_can_delete_events'));
       return;
     }
-
-    // Custom confirmation toast (RTL)
-    toast((toastInstance) => (
-      <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow-lg rtl text-right" dir="rtl">
-        <p className="font-semibold mb-3">{t('are_you_sure_delete_event')}</p>
-        <div className="flex gap-2 flex-row-reverse">
-          <button
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
-            onClick={async () => {
-              toast.dismiss(toastInstance.id);
-              const deletingToastId = toast.loading(t('deleting_event'));
-              try {
-                await deleteDoc(doc(db, 'events', eventId));
-                toast.success(t('event_deleted_successfully'), { id: deletingToastId });
-              } catch (error) {
-                console.error('Error deleting event: ', error);
-                toast.error(t('error_deleting_event'), { id: deletingToastId });
-              }
-            }}
-          >
-            {t('delete')}
-          </button>
-          <button
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-            onClick={() => toast.dismiss(toastInstance.id)}
-          >
-            {t('cancel')}
-          </button>
-        </div>
+  toast((toastInstance) => (
+    <div className="flex flex-col items-center p-1" dir="rtl">
+      <p className="mb-3 text-center text-lg font-semibold text-gray-800">
+        {t('are_you_sure_delete_event')}
+      </p>
+      <div className="flex w-full gap-3">
+        {/* Delete Button */}
+        <button
+          className="flex-1 rounded-md bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+          onClick={async () => {
+            toast.dismiss(toastInstance.id);
+            const deletingToastId = toast.loading(t('deleting_event'));
+            try {
+              await deleteDoc(doc(db, 'events', eventId));
+              toast.success(t('event_deleted_successfully'), { id: deletingToastId });
+            } catch (error) {
+              console.error('Error deleting event: ', error);
+              toast.error(t('error_deleting_event'), { id: deletingToastId });
+            }
+          }}
+        >
+          {t('delete')}
+        </button>
+        {/* Cancel Button */}
+        <button
+          className="flex-1 rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition-colors hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+          onClick={() => toast.dismiss(toastInstance.id)}
+        >
+          {t('cancel')}
+        </button>
       </div>
-    ), {
-      duration: Infinity, // Keep open until user interacts
-      position: 'top-center',
-    });
-  };
+    </div>
+  ), {
+    duration: Infinity, // Keep open until user interacts
+    position: 'top-center',
+    // You can optionally add styles to the toast container itself here
+    style: {
+      minWidth: '320px', // Ensure it has a nice width
+      boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2)',
+    },
+  });
+};
 
   const handleRegisterForEvent = async (eventId) => {
     if (!user) {
