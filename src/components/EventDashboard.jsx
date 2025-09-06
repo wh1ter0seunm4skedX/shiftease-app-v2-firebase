@@ -10,6 +10,7 @@ import EventForm from './EventForm';
 import EventCard from './EventCard';
 import AdminPanel from './admin/AdminPanel';
 import RegistrationsModal from './admin/RegistrationsModal';
+import UserRegistrationsModal from './UserRegistrationsModal';
 import Footer from './layout/Footer';
 import { SkeletonGrid } from './common/Skeleton';
 import Header from './layout/Header';
@@ -387,14 +388,27 @@ function EventDashboard() {
               onSubmit={editingEvent ? handleEditEvent : handleAddEvent}
               initialData={editingEvent}
             />
-            <RegistrationsModal
-              isOpen={isRegistrationsModalOpen}
-              onClose={() => {
-                setIsRegistrationsModalOpen(false);
-                setSelectedEvent(null);
-              }}
-              event={selectedEvent}
-            />
+            {isRegistrationsModalOpen && (
+              isAdmin ? (
+                <RegistrationsModal
+                  isOpen={isRegistrationsModalOpen}
+                  onClose={() => {
+                    setIsRegistrationsModalOpen(false);
+                    setSelectedEvent(null);
+                  }}
+                  event={selectedEvent}
+                />
+              ) : (
+                <UserRegistrationsModal
+                  isOpen={isRegistrationsModalOpen}
+                  onClose={() => {
+                    setIsRegistrationsModalOpen(false);
+                    setSelectedEvent(null);
+                  }}
+                  event={selectedEvent}
+                />
+              )
+            )}
           </main>
         </div>
 

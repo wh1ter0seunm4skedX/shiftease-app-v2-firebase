@@ -32,20 +32,9 @@ function EventCard({
   [event?.registrations]);
 
   const [previewUsers, setPreviewUsers] = useState([]); // up to 8
-  const [allUsers, setAllUsers] = useState([]);
-  const [isUsersOpen, setIsUsersOpen] = useState(false);
-  const [isUsersClosing, setIsUsersClosing] = useState(false);
+  // User modal moved to EventDashboard
 
-  // Names summary for quick view under avatars
-  const nameSummary = useMemo(() => {
-    const names = (previewUsers || []).map((u) => displayName(u)).filter(Boolean);
-    const shown = names.slice(0, 3).join(' • ');
-    const more = names.length > 3 ? ` +${names.length - 3}` : '';
-    return {
-      text: shown + more,
-      title: names.join(', '),
-    };
-  }, [previewUsers]);
+  // No inline names for user cards per requirement
 
   useEffect(() => {
     let alive = true;
@@ -94,52 +83,7 @@ function EventCard({
     return () => { alive = false; };
   }, [registrationIds]);
 
-  const openUsersModal = async () => {
-    setIsUsersOpen(true);
-    // Fetch full list lazily
-    try {
-      const docs = await Promise.all(
-        registrationIds.map(async (id) => {
-          try {
-            const d = await getDoc(doc(db, 'users', id));
-            return d.exists() ? { id, ...d.data() } : { id };
-          } catch {
-            return { id };
-          }
-        })
-      );
-      // Debug: all users fetched for modal
-      try {
-        const withComputed = docs.map((u) => ({
-          id: u.id,
-          firstName: u.firstName,
-          lastName: u.lastName,
-          initials: (typeof u === 'object' && u) ? (require('../utils/user').getUserInitials ? require('../utils/user').getUserInitials(u) : '') : '',
-          color: (typeof u === 'object' && u) ? (require('../utils/user').getAvatarColor ? require('../utils/user').getAvatarColor(u) : '') : ''
-        }));
-        const missingNames = docs.filter((u) => !(u.firstName || u.lastName)).map((u) => u.id);
-        // eslint-disable-next-line no-console
-        console.log('[EventCard] modalUsers', {
-          eventId: event?.id,
-          registrationIds,
-          users: docs,
-          computed: withComputed,
-          missingNames,
-        });
-      } catch (_) {}
-      setAllUsers(docs);
-    } catch (_) {
-      setAllUsers([]);
-    }
-  };
-
-  const closeUsersModal = () => {
-    setIsUsersClosing(true);
-    setTimeout(() => {
-      setIsUsersClosing(false);
-      setIsUsersOpen(false);
-    }, 180);
-  };
+  // Open handled by parent via onViewRegistrations
 
   return (
     <div className={`bg-white rounded-lg shadow-md overflow-hidden mb-6 transform transition-all duration-300 hover:shadow-lg hover:scale-105 ${isPastEvent ? 'border-l-4 border-gray-400' : ''}`}>
@@ -233,7 +177,7 @@ function EventCard({
             <div className="flex items-center gap-2 min-w-0">
               <button
                 type="button"
-                onClick={openUsersModal}
+                onClick={() => onViewRegistrations(event)}
                 className="relative flex items-center -space-x-2 rtl:space-x-reverse hover:opacity-90 transition-opacity"
                 title={t('view_registrations')}
               >
@@ -258,14 +202,7 @@ function EventCard({
                   ) : null;
                 })()}
               </button>
-              {nameSummary.text && (
-                <div
-                  className="text-xs text-gray-600 truncate max-w-[160px] sm:max-w-[220px]"
-                  title={nameSummary.title}
-                >
-                  {nameSummary.text}
-                </div>
-              )}
+              {/* No names inline */}
             </div>
           )}
         </div>
@@ -350,55 +287,7 @@ function EventCard({
         )}
       </div>
 
-      {/* Registered users modal (user view) */}
-      {!isAdmin && isUsersOpen && (
-        <div className={`fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/50 transition-opacity duration-200 ease-out ${isUsersClosing ? 'opacity-0' : 'opacity-100'}`}>
-          <div className={`relative bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden transform transition-all duration-200 ease-out ${isUsersClosing ? 'opacity-0 scale-95 translate-y-2' : 'opacity-100 scale-100 translate-y-0'}`} dir={isRtl ? 'rtl' : 'ltr'}>
-            <div className="flex items-center justify-between px-4 py-3 border-b">
-              <h3 className="text-base font-semibold text-gray-800 truncate">
-                {t('event_registrations')}: {event.title}
-              </h3>
-              <button
-                type="button"
-                onClick={closeUsersModal}
-                className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                aria-label={t('close')}
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            <div className="px-4 py-2 text-xs text-gray-500 border-b" dir="rtl">
-              {registrationIds.length} {t('total_registrations')}
-            </div>
-
-            <div className="p-3 overflow-y-auto max-h-[70vh]">
-              {allUsers.length === 0 ? (
-                <div className="text-center text-gray-500 py-10">{t('no_registrations')}</div>
-              ) : (
-                <ul className="grid grid-cols-1 divide-y divide-gray-100">
-                  {allUsers.map((u) => (
-                    <li key={u.id} className="flex items-center gap-3 py-3">
-                      <span
-                        className="inline-flex h-9 w-9 rounded-full overflow-hidden items-center justify-center text-white ring-2 ring-white shadow-sm flex-shrink-0"
-                        style={{ backgroundColor: getAvatarColor(u) }}
-                      >
-                        <span className="text-xs font-semibold leading-none">{initialsOf(u)}</span>
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-gray-900 truncate">{displayName(u) || '—'}</div>
-                        {u.email && <div className="text-xs text-gray-500 truncate">{u.email}</div>}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* User registrations modal handled by parent */}
     </div>
   );
 }

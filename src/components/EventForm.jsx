@@ -201,7 +201,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
     const nextErrors = {
       title: title.length === 0 ? (t('name_required') || 'Title is required') : '',
       description: description.length === 0 ? (t('description_required') || 'Description is required') : '',
-      imageUrl: imageUrl.length === 0 ? (t('image_required') || 'Image is required') : '',
+      imageUrl: !initialData && imageUrl.length === 0 ? (t('image_required') || 'Image is required') : '',
     };
     setErrors(nextErrors);
     if (nextErrors.title || nextErrors.description || nextErrors.imageUrl) {
