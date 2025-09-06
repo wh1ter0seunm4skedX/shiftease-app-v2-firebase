@@ -253,9 +253,9 @@ function AdminPanel({ onClose }) {
         }
       }
 
-      toast.success(`${t('filled_registrations_success') || 'הרשמות מולאו בהצלחה'} (${addedReg} רגילות, ${addedStandby} ממתינים)`);
+      toast.success(`${t('filled_registrations_success')} (${addedReg} רגילות, ${addedStandby} ממתינים)`);
     } catch (e) {
-      toast.error(t('error_filling_registrations') || 'שגיאה במילוי הרשמות');
+      toast.error(t('error_filling_registrations'));
     } finally {
       setLoading(false);
     }
@@ -323,7 +323,6 @@ function AdminPanel({ onClose }) {
                 disabled={loading}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-amber-300 rounded-md hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                <PlusIcon className="h-4 w-4" aria-hidden="true" />
                 {loading ? t('creating_ellipsis') : t('create_test_event')}
               </button>
                   <button
@@ -331,14 +330,13 @@ function AdminPanel({ onClose }) {
                 disabled={loading}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-amber-200 rounded-md hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                🎨 {t('assign_avatar_colors')}
+                {t('assign_avatar_colors')}
               </button>
                   <button
                 onClick={deleteAllEvents}
                 disabled={loading}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-rose-600 rounded-md hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                <TrashIcon className="h-4 w-4" aria-hidden="true" />
                 {loading ? t('deleting_ellipsis') : t('delete_all_events')}
               </button>
                 </div>
@@ -399,7 +397,7 @@ function AdminPanel({ onClose }) {
                       disabled={loading || !duplicateEventId}
                       className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-indigo-300 rounded-md hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                      📄 {t('duplicate_and_delete_old') }
+                      {t('duplicate_and_delete_old') }
                     </button>
                   </div>
                 </div>
@@ -414,7 +412,7 @@ function AdminPanel({ onClose }) {
                 disabled={loading}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-slate-700 rounded-md hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                🧹 {t('remove_profile_pictures')}
+                {t('remove_profile_pictures')}
               </button>
                 </div>
               </div>
@@ -424,7 +422,7 @@ function AdminPanel({ onClose }) {
                   disabled={loading}
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  🧭 {t('migrate_fullname_button') || 'הסב שם מלא לשם פרטי/משפחה'}
+                  {t('migrate_fullname_button') || 'הסב שם מלא לשם פרטי/משפחה'}
                 </button>
               </div>
 
@@ -478,7 +476,7 @@ function AdminPanel({ onClose }) {
                     disabled={loading || !selectedEventId}
                     className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-amber-300 rounded-md hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    ⚙️ {loading ? (t('filling_registrations_ellipsis') || 'ממלא הרשמות…') : (t('fill_registrations') || 'מלא הרשמות')}
+                    {loading ? (t('filling_registrations_ellipsis') || 'ממלא הרשמות…') : (t('fill_registrations') || 'מלא הרשמות')}
                   </button>
                 </div>
                 </div>

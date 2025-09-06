@@ -204,8 +204,8 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
     if (formData.timeError) return;
 
     // Basic required validation + length limits
-    const title = (formData.title || '').trim();
-    const description = (formData.description || '').trim();
+    let title = (formData.title || '').trim();
+    let description = (formData.description || '').trim();
     const imageUrl = (formData.imageUrl || '').trim();
 
     const nextErrors = {
@@ -218,10 +218,9 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
       return;
     }
 
-    if (title.length > 25 || description.length > 50) {
-      // Extra guard, though inputs enforce maxLength
-      return;
-    }
+    // Normalize legacy/long values silently to fit limits
+    if (title.length > 25) title = title.slice(0, 25);
+    if (description.length > 50) description = description.slice(0, 50);
 
     const submissionData = {
       ...formData,
