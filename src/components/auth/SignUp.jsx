@@ -30,6 +30,13 @@ function SignUp() {
       return;
     }
 
+    // Enforce Hebrew-only full name (letters and spaces)
+    const hebrewNameRegex = /^[\u0590-\u05FF][\u0590-\u05FF\s'-]*$/;
+    if (!hebrewNameRegex.test((fullName || '').trim())) {
+      toast.error(t('full_name_hebrew_only') || 'השם חייב להכיל אותיות בעברית בלבד');
+      return;
+    }
+
     // No profile picture selection required
 
     try {
@@ -108,6 +115,8 @@ function SignUp() {
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
                 placeholder={t('full_name')}
                 dir={language === 'he' ? 'rtl' : 'ltr'}
+                pattern="[\u0590-\u05FF][\u0590-\u05FF\s'-]*"
+                title={t('full_name_hebrew_only') || 'השם חייב להכיל אותיות בעברית בלבד'}
               />
             </div>
 

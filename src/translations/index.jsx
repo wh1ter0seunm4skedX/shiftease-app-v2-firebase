@@ -27,6 +27,7 @@ const translations = {
   too_many_requests: "יותר מדי ניסיונות כושלים. אנא נסו שוב מאוחר יותר.",
   network_error: "שגיאת רשת. אנא בדקו את החיבור.",
   unknown_error: "אירעה שגיאה לא ידועה. אנא נסו שוב.",
+  full_name_hebrew_only: "השם חייב להכיל אותיות בעברית בלבד",
 
   // Dashboard
   dashboard: "לוח אירועים",

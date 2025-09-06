@@ -23,17 +23,27 @@ function EventCard({
   const { /* isAdmin */ } = useAuth();
   const isRtl = language === 'he';
 
+  // Deterministic avatar color fallback (when user.avatarColor missing)
+  const palette = ['#7c3aed', '#2563eb', '#059669', '#d97706', '#dc2626', '#0ea5e9', '#14b8a6', '#f59e0b'];
+  const getAvatarColor = (u) => {
+    if (u?.avatarColor) return u.avatarColor;
+    const key = (u?.id || u?.email || u?.fullName || '').toString();
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
+    return palette[hash % palette.length];
+  };
+
   const getInitials = (u) => {
-    const name = (u?.fullName || u?.name || '').trim();
-    const source = name || (u?.email || '').split('@')[0] || '';
-    if (!source) return '👤';
-    const parts = source
-      .replace(/[_\-.]+/g, ' ')
-      .split(' ')
-      .filter(Boolean);
-    const first = parts[0]?.[0] || '';
-    const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
-    return (first + last).toUpperCase();
+    const name = (u?.fullName || '').trim();
+    const hebrewOnly = name.replace(/[^\u0590-\u05FF\s]/g, ' ').trim();
+    const parts = hebrewOnly.split(/\s+/).filter(Boolean);
+    if (parts.length === 0) {
+      // As a last resort, derive from id but filter to Hebrew-like fallback
+      const s = (u?.id || '').toString().trim();
+      return (s.slice(0, 2) || '??').toUpperCase();
+    }
+    if (parts.length === 1) return parts[0].slice(0, 2);
+    return `${parts[0][0]}${parts[parts.length - 1][0]}`;
   };
 
   // Registrations preview (avatars)
@@ -198,7 +208,11 @@ function EventCard({
               title={t('view_registrations')}
             >
               {previewUsers.slice(0, 5).map((u, idx) => (
-                <span key={u.id || idx} className={`inline-flex h-8 w-8 rounded-full ring-2 ring-white overflow-hidden ${idx === 0 ? '' : (isRtl ? '-mr-2' : '-ml-2')}`} style={{ backgroundColor: u.avatarColor || '#7c3aed' }}>
+                <span
+                  key={u.id || idx}
+                  className={`inline-flex h-8 w-8 rounded-full ring-2 ring-white overflow-hidden ${idx === 0 ? '' : (isRtl ? '-mr-2' : '-ml-2')}`}
+                  style={{ backgroundColor: getAvatarColor(u) }}
+                >
                   <span className="h-full w-full text-white text-[11px] leading-none flex items-center justify-center font-semibold">
                     {getInitials(u)}
                   </span>
@@ -299,37 +313,44 @@ function EventCard({
 
       {/* Registered users modal (user view) */}
       {!isAdmin && isUsersOpen && (
-        <div className={`fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 transition-opacity duration-200 ease-out ${isUsersClosing ? 'opacity-0' : 'opacity-100'}`}>
-          <div className={`relative bg-white w-full sm:max-w-md sm:rounded-xl shadow-xl max-h-[85vh] overflow-hidden transform transition-all duration-200 ease-out ${isUsersClosing ? 'opacity-0 scale-95 translate-y-2' : 'opacity-100 scale-100 translate-y-0'}`} dir={isRtl ? 'rtl' : 'ltr'}>
-            <button
-              type="button"
-              onClick={closeUsersModal}
-              className="absolute top-3 left-3 text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              aria-label={t('close')}
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            <div className="p-4 pr-4 border-b">
-              <h3 className="text-lg font-semibold text-gray-800">
+        <div className={`fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/50 transition-opacity duration-200 ease-out ${isUsersClosing ? 'opacity-0' : 'opacity-100'}`}>
+          <div className={`relative bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden transform transition-all duration-200 ease-out ${isUsersClosing ? 'opacity-0 scale-95 translate-y-2' : 'opacity-100 scale-100 translate-y-0'}`} dir={isRtl ? 'rtl' : 'ltr'}>
+            <div className="flex items-center justify-between px-4 py-3 border-b">
+              <h3 className="text-base font-semibold text-gray-800 truncate">
                 {t('event_registrations')}: {event.title}
               </h3>
-              <p className="text-sm text-gray-500 mt-1">{registrationIds.length} {t('total_registrations')}</p>
+              <button
+                type="button"
+                onClick={closeUsersModal}
+                className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                aria-label={t('close')}
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
-            <div className="p-4 overflow-y-auto max-h-[70vh]">
+
+            <div className="px-4 py-2 text-xs text-gray-500 border-b" dir="rtl">
+              {registrationIds.length} {t('total_registrations')}
+            </div>
+
+            <div className="p-3 overflow-y-auto max-h-[70vh]">
               {allUsers.length === 0 ? (
-                <div className="text-center text-gray-500 py-8">{t('no_registrations')}</div>
+                <div className="text-center text-gray-500 py-10">{t('no_registrations')}</div>
               ) : (
-                <ul className="divide-y divide-gray-100">
+                <ul className="grid grid-cols-1 divide-y divide-gray-100">
                   {allUsers.map((u) => (
-                    <li key={u.id} className="flex items-center gap-3 py-2">
-                      <span className="inline-flex h-9 w-9 rounded-full ring-2 ring-white overflow-hidden items-center justify-center text-white" style={{ backgroundColor: u.avatarColor || '#7c3aed' }}>
+                    <li key={u.id} className="flex items-center gap-3 py-3">
+                      <span
+                        className="inline-flex h-9 w-9 rounded-full overflow-hidden items-center justify-center text-white ring-2 ring-white shadow-sm flex-shrink-0"
+                        style={{ backgroundColor: getAvatarColor(u) }}
+                      >
                         <span className="text-xs font-semibold leading-none">{getInitials(u)}</span>
                       </span>
-                      <div className="flex-1">
-                        <div className="text-sm text-gray-900">{u.fullName || '—'}</div>
-                        {u.email && <div className="text-xs text-gray-500">{u.email}</div>}
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-gray-900 truncate">{u.fullName || '—'}</div>
+                        {u.email && <div className="text-xs text-gray-500 truncate">{u.email}</div>}
                       </div>
                     </li>
                   ))}
