@@ -174,46 +174,66 @@ function EventCard({
             </span>
           </div>
           {!isAdmin && (
-            <div className="hidden sm:flex items-center gap-2 min-w-0">
-              {registrationIds.length > 0 ? (
-                <button
-                  type="button"
-                  onClick={() => onViewRegistrations(event)}
-                  className="relative flex items-center -space-x-2 rtl:space-x-reverse hover:opacity-90 transition-opacity"
-                  title={t('view_registrations')}
-                >
-                  {previewUsers.slice(0, 5).map((u, idx) => (
-                    <span
-                      key={u.id || idx}
-                      className={`inline-flex h-8 w-8 rounded-full ring-2 ring-white overflow-hidden ${idx === 0 ? '' : (isRtl ? '-mr-2' : '-ml-2')}`}
-                      style={{ backgroundColor: getAvatarColor(u) }}
-                    >
-                      <span className="h-full w-full text-white text-[11px] leading-none flex items-center justify-center font-semibold">
-                        {initialsOf(u)}
-                      </span>
-                    </span>
-                  ))}
-                  {(() => {
-                    const visible = Math.min(previewUsers.length, 5);
-                    const remaining = Math.max(0, registrationIds.length - visible);
-                    return remaining > 0 ? (
-                      <span className={`inline-flex h-8 w-8 rounded-full ring-2 ring-white bg-gray-100 text-gray-700 text-[11px] items-center justify-center font-medium ${isRtl ? '-mr-2' : '-ml-2'}`}>
-                        +{remaining}
-                      </span>
-                    ) : null;
-                  })()}
-                </button>
-              ) : (
-                // Placeholder avatar row on desktop when there are no registrations yet
-                <div className="flex items-center -space-x-2 rtl:space-x-reverse opacity-70">
-                  {Array.from({ length: 5 }).map((_, idx) => (
-                    <span
-                      key={idx}
-                      className={`inline-flex h-8 w-8 rounded-full ring-2 ring-white bg-gray-200 ${idx === 0 ? '' : (isRtl ? '-mr-2' : '-ml-2')}`}
-                    />
-                  ))}
-                </div>
-              )}
+            <div className="flex items-center min-w-0">
+              {(() => {
+                const totalSlots = Math.max(1, parseInt(event?.capacity) || 0);
+                const total = registrationIds.length;
+                const showPlus = total > totalSlots;
+                const avatarSlotsCount = showPlus ? Math.max(0, totalSlots - 1) : Math.min(previewUsers.length, totalSlots);
+                const remaining = Math.max(0, total - avatarSlotsCount);
+
+                const Slots = (
+                  <>
+                    {Array.from({ length: totalSlots }).map((_, i) => {
+                      if (i < avatarSlotsCount) {
+                        const u = previewUsers[i];
+                        return (
+                          <span
+                            key={u?.id || `avatar-${i}`}
+                            className={`inline-flex h-6 w-6 sm:h-8 sm:w-8 rounded-full ring-2 ring-white overflow-hidden ${i === 0 ? '' : (isRtl ? '-mr-2' : '-ml-2')}`}
+                            style={{ backgroundColor: getAvatarColor(u) }}
+                          >
+                            <span className="h-full w-full text-white text-[10px] sm:text-[11px] leading-none flex items-center justify-center font-semibold">
+                              {initialsOf(u)}
+                            </span>
+                          </span>
+                        );
+                      }
+                      if (showPlus && i === totalSlots - 1) {
+                        return (
+                          <span
+                            key={`more-${i}`}
+                            className={`inline-flex h-6 w-6 sm:h-8 sm:w-8 rounded-full ring-2 ring-white bg-gray-100 text-gray-700 text-[10px] sm:text-[11px] items-center justify-center font-medium ${i === 0 ? '' : (isRtl ? '-mr-2' : '-ml-2')}`}
+                          >
+                            +{remaining}
+                          </span>
+                        );
+                      }
+                      return (
+                        <span
+                          key={`ph-${i}`}
+                          className={`inline-flex h-6 w-6 sm:h-8 sm:w-8 rounded-full ring-2 ring-white bg-gray-200 ${i === 0 ? '' : (isRtl ? '-mr-2' : '-ml-2')}`}
+                        />
+                      );
+                    })}
+                  </>
+                );
+
+                return total > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => onViewRegistrations(event)}
+                    className="relative flex items-center -space-x-2 rtl:space-x-reverse hover:opacity-90 transition-opacity"
+                    title={t('view_registrations')}
+                  >
+                    {Slots}
+                  </button>
+                ) : (
+                  <div className="relative flex items-center -space-x-2 rtl:space-x-reverse opacity-70">
+                    {Slots}
+                  </div>
+                );
+              })()}
               {/* No names inline */}
             </div>
           )}
