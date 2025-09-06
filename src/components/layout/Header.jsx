@@ -36,6 +36,7 @@ function Header({
   onLogout,
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const [mobileMenuParent] = useAutoAnimate();
   const { t } = useLanguage();
@@ -149,21 +150,11 @@ function Header({
                     <span>{t("events_archive")}</span>
                     <ArchiveBoxIcon className="ms-2 h-5 w-5" aria-hidden="true" />
                   </HeaderButton>
-                  <motion.button
-                    onClick={onOpenAdminPanel}
-                    whileHover={prefersReducedMotion ? {} : { rotate: 30 }}
-                    whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-400/10 text-amber-300 transition-colors hover:bg-amber-400/20 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-gray-900"
-                    aria-label={t("system_admin_panel")}
-                    title={t("system_admin_panel")}
-                  >
-                    <Cog6ToothIcon className="h-6 w-6" aria-hidden="true" />
-                  </motion.button>
                 </div>
               )}
 
             {/* User dropdown */}
-            <DropdownMenu.Root>
+            <DropdownMenu.Root open={userMenuOpen} onOpenChange={setUserMenuOpen}>
               <DropdownMenu.Trigger asChild>
                 <button
                   className="group relative flex cursor-pointer items-center focus:outline-none"
@@ -189,44 +180,48 @@ function Header({
                   sideOffset={8}
                   className="z-50 min-w-[220px] rounded-lg border border-gray-700/60 bg-gray-900/95 p-1.5 text-sm text-gray-200 shadow-xl backdrop-blur-md data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"
                 >
-                  <DropdownMenu.Label className="px-2 py-1.5 text-xs uppercase tracking-wide text-gray-400">
-                    {greeting}
-                  </DropdownMenu.Label>
-
-                  {isAdmin && (
+                  {isAdmin ? (
                     <>
                       <DropdownMenu.Item
-                        onSelect={(e) => { e.preventDefault(); onOpenAdminPanel(); }}
+                        onSelect={() => {
+                          setUserMenuOpen(false);
+                          setTimeout(() => onOpenAdminPanel(), 0);
+                        }}
                         className="flex cursor-pointer items-center rounded-md px-2 py-2 outline-none hover:bg-gray-800/80 focus:bg-gray-800/80"
                       >
                         <Cog6ToothIcon className="me-2 h-5 w-5 text-amber-300" />
                         {t("system_admin_panel")}
                       </DropdownMenu.Item>
-                      <DropdownMenu.Item
-                        onSelect={(e) => { e.preventDefault(); onAddEvent(); }}
-                        className="flex cursor-pointer items-center rounded-md px-2 py-2 outline-none hover:bg-gray-800/80 focus:bg-gray-800/80"
-                      >
-                        <PlusIcon className="me-2 h-5 w-5 text-green-300" />
-                        {t("add_event")}
-                      </DropdownMenu.Item>
-                      <DropdownMenu.Item
-                        onSelect={(e) => { e.preventDefault(); onOpenArchive(); }}
-                        className="flex cursor-pointer items-center rounded-md px-2 py-2 outline-none hover:bg-gray-800/80 focus:bg-gray-800/80"
-                      >
-                        <ArchiveBoxIcon className="me-2 h-5 w-5 text-slate-300" />
-                        {t("events_archive")}
-                      </DropdownMenu.Item>
                       <DropdownMenu.Separator className="my-1 h-px bg-gray-700/60" />
+                      <DropdownMenu.Item
+                        onSelect={() => {
+                          setUserMenuOpen(false);
+                          setTimeout(() => onLogout(), 0);
+                        }}
+                        className="flex cursor-pointer items-center rounded-md px-2 py-2 text-red-400 outline-none hover:bg-red-500/10 focus:bg-red-500/10"
+                      >
+                        <ArrowRightOnRectangleIcon className="me-2 h-5 w-5" />
+                        {t("sign_out")}
+                      </DropdownMenu.Item>
+                    </>
+                  ) : (
+                    <>
+                      <DropdownMenu.Label className="px-2 py-1.5 text-xs tracking-wide text-gray-400">
+                        {t("dropdown_user_welcome")}
+                      </DropdownMenu.Label>
+                      <DropdownMenu.Separator className="my-1 h-px bg-gray-700/60" />
+                      <DropdownMenu.Item
+                        onSelect={() => {
+                          setUserMenuOpen(false);
+                          setTimeout(() => onLogout(), 0);
+                        }}
+                        className="flex cursor-pointer items-center rounded-md px-2 py-2 text-red-400 outline-none hover:bg-red-500/10 focus:bg-red-500/10"
+                      >
+                        <ArrowRightOnRectangleIcon className="me-2 h-5 w-5" />
+                        {t("sign_out")}
+                      </DropdownMenu.Item>
                     </>
                   )}
-
-                  <DropdownMenu.Item
-                    onSelect={(e) => { e.preventDefault(); onLogout(); }}
-                    className="flex cursor-pointer items-center rounded-md px-2 py-2 text-red-400 outline-none hover:bg-red-500/10 focus:bg-red-500/10"
-                  >
-                    <ArrowRightOnRectangleIcon className="me-2 h-5 w-5" />
-                    {t("sign_out")}
-                  </DropdownMenu.Item>
                 </DropdownMenu.Content>
               </DropdownMenu.Portal>
             </DropdownMenu.Root>

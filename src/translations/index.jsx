@@ -240,6 +240,9 @@ const translations = {
   greeting_afternoon: "צהריים טובים",
   greeting_evening: "ערב טוב",
   greeting_night: "לילה טוב",
+  
+  // Header dropdown
+  dropdown_user_welcome: "😊 שמחים לראות אותך כאן! שיהיה יום נעים ",
 };
 
 export default translations;
