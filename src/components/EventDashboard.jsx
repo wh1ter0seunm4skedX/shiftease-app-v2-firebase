@@ -22,6 +22,7 @@ function EventDashboard() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isRegistrationsModalOpen, setIsRegistrationsModalOpen] = useState(false);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
+  const [isAdminPanelClosing, setIsAdminPanelClosing] = useState(false);
   const { user, isAdmin, logout } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
@@ -582,15 +583,21 @@ function EventDashboard() {
 
         {/* Admin Panel Modal */}
 {isAdmin && isAdminPanelOpen && (
-  <div className="fixed inset-0 z-50 overflow-y-auto">
+  <div className={`fixed inset-0 z-50 overflow-y-auto transition-opacity duration-200 ease-out ${isAdminPanelClosing ? 'opacity-0' : 'opacity-100'}`}>
     <div className="flex items-center justify-center min-h-screen p-4 text-center sm:block sm:p-0">
       {/* Overlay */}
-      <div className="fixed inset-0 bg-gray-500 opacity-75" aria-hidden="true"></div>
+      <div className="fixed inset-0 bg-gray-500/75" aria-hidden="true"></div>
       <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-      {/* Directly render AdminPanel without white box */}
-      <div className="inline-block align-bottom transform transition-all sm:my-8 sm:align-middle">
-        <AdminPanel onClose={() => setIsAdminPanelOpen(false)} />
+      {/* Panel with scale/opacity */}
+      <div className={`inline-block align-bottom transform transition-all duration-200 ease-out sm:my-8 sm:align-middle ${isAdminPanelClosing ? 'opacity-0 scale-95 translate-y-2' : 'opacity-100 scale-100 translate-y-0'}`}>
+        <AdminPanel onClose={() => {
+          setIsAdminPanelClosing(true);
+          setTimeout(() => {
+            setIsAdminPanelClosing(false);
+            setIsAdminPanelOpen(false);
+          }, 180);
+        }} />
       </div>
     </div>
   </div>

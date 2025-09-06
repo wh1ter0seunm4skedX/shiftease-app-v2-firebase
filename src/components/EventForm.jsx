@@ -12,6 +12,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
 
   // Search modal state
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearchClosing, setIsSearchClosing] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchPage, setSearchPage] = useState(1);
@@ -20,6 +21,14 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
   const [searchError, setSearchError] = useState("");
 
   const perPage = 24;
+  const [isClosing, setIsClosing] = useState(false);
+  const requestClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      onClose();
+    }, 180);
+  };
   const aliveRef = useRef(true);
 
   const [formData, setFormData] = useState({
@@ -188,23 +197,25 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
     }
 
     onSubmit(submissionData);
-    onClose();
+    requestClose();
   };
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div
+      className={`fixed inset-0 flex items-center justify-center p-4 z-50 transition-opacity duration-200 ease-out ${isClosing ? 'opacity-0' : 'opacity-100'} bg-black/50`}
+    >
       <div
-        className={`relative bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all ${
-          isRtl ? "rtl" : "ltr"
-        } max-h-[90vh] overflow-y-auto`}
+        className={`relative bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all duration-200 ease-out ${
+          isClosing ? 'opacity-0 scale-95 translate-y-2' : 'opacity-100 scale-100 translate-y-0'
+        } ${isRtl ? "rtl" : "ltr"} max-h-[90vh] overflow-y-auto`}
         role="dialog"
         aria-modal="true"
       >
         <button
           type="button"
-          onClick={onClose}
+          onClick={requestClose}
           className="absolute top-3 left-3 text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
           aria-label={t("close")}
         >
@@ -363,9 +374,15 @@ className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border
                 {/* SEARCH MODAL */}
                 {isSearchOpen && (
                   <div
-                    className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50"
+                    className={`fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 transition-opacity duration-200 ease-out ${isSearchClosing ? 'opacity-0' : 'opacity-100'}`}
                     onKeyDown={(e) => {
-                      if (e.key === "Escape") setIsSearchOpen(false);
+                      if (e.key === "Escape") {
+                        setIsSearchClosing(true);
+                        setTimeout(() => {
+                          setIsSearchClosing(false);
+                          setIsSearchOpen(false);
+                        }, 180);
+                      }
                       if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();
                         runSearch(1, searchQuery);
@@ -373,12 +390,18 @@ className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border
                     }}
                   >
                     <div
-                      className="relative bg-white w-full sm:max-w-4xl sm:rounded-xl shadow-xl max-h-[95vh] overflow-hidden"
+                      className={`relative bg-white w-full sm:max-w-4xl sm:rounded-xl shadow-xl max-h-[95vh] overflow-hidden transform transition-all duration-200 ease-out ${isSearchClosing ? 'opacity-0 scale-95 translate-y-2' : 'opacity-100 scale-100 translate-y-0'}`}
                       dir={isRtl ? "rtl" : "ltr"}
                     >
                       <button
                         type="button"
-                        onClick={() => setIsSearchOpen(false)}
+                        onClick={() => {
+                          setIsSearchClosing(true);
+                          setTimeout(() => {
+                            setIsSearchClosing(false);
+                            setIsSearchOpen(false);
+                          }, 180);
+                        }}
                         className="absolute top-3 left-3 text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
                         aria-label={t("close")}
                       >

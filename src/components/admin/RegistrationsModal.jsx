@@ -9,6 +9,14 @@ function RegistrationsModal({ isOpen, onClose, event }) {
   const [standbyUsers, setStandbyUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
+  const [isClosing, setIsClosing] = useState(false);
+  const requestClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      onClose?.();
+    }, 180);
+  };
   const closeBtnRef = useRef(null);
   const overlayRef = useRef(null);
   const { t, language } = useLanguage();
@@ -136,9 +144,9 @@ function RegistrationsModal({ isOpen, onClose, event }) {
     <div
       ref={overlayRef}
       onMouseDown={(e) => {
-        if (e.target === overlayRef.current) onClose?.();
+        if (e.target === overlayRef.current) requestClose();
       }}
-      className="fixed inset-0 bg-black/50 backdrop-blur-[1px] flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
+      className={`fixed inset-0 bg-black/50 backdrop-blur-[1px] flex items-end sm:items-center justify-center p-0 sm:p-4 z-50 transition-opacity duration-200 ease-out ${isClosing ? 'opacity-0' : 'opacity-100'}`}
       aria-hidden={false}
     >
       <div
@@ -146,12 +154,12 @@ function RegistrationsModal({ isOpen, onClose, event }) {
         aria-modal="true"
         aria-labelledby="registrations-title"
         dir={isRtl ? 'rtl' : 'ltr'}
-        className={`relative bg-white w-full sm:max-w-4xl sm:rounded-xl shadow-xl transform transition-all max-h-[95vh] sm:max-h-[90vh] overflow-hidden ${isRtl ? 'rtl' : 'ltr'}`}
+        className={`relative bg-white w-full sm:max-w-4xl sm:rounded-xl shadow-xl transform transition-all duration-200 ease-out ${isClosing ? 'opacity-0 scale-95 translate-y-2' : 'opacity-100 scale-100 translate-y-0'} max-h-[95vh] sm:max-h-[90vh] overflow-hidden ${isRtl ? 'rtl' : 'ltr'}`}
       >
         {/* Top-right X close */}
         <button
           ref={closeBtnRef}
-          onClick={onClose}
+          onClick={requestClose}
           className="absolute top-3 left-3 z-20 text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           aria-label={t('close')}
         >
