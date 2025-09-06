@@ -50,7 +50,6 @@ function SignUp() {
         email: user.email,
         firstName: firstName.trim(),
         lastName: lastName.trim(),
-        fullName: `${firstName || ''} ${lastName || ''}`.trim(),
         role: role,
         phoneNumber: phoneNumber,
         avatarColor,

@@ -55,6 +55,25 @@ function EventCard({
             }
           })
         );
+        // Debug: preview users fetched for card row
+        try {
+          const withComputed = docs.map((u) => ({
+            id: u.id,
+            firstName: u.firstName,
+            lastName: u.lastName,
+            initials: (typeof u === 'object' && u) ? (require('../utils/user').getUserInitials ? require('../utils/user').getUserInitials(u) : '') : '',
+            color: (typeof u === 'object' && u) ? (require('../utils/user').getAvatarColor ? require('../utils/user').getAvatarColor(u) : '') : ''
+          }));
+          const missingNames = docs.filter((u) => !(u.firstName || u.lastName)).map((u) => u.id);
+          // eslint-disable-next-line no-console
+          console.log('[EventCard] previewUsers', {
+            eventId: event?.id,
+            registrationIds,
+            users: docs,
+            computed: withComputed,
+            missingNames,
+          });
+        } catch (_) {}
         if (alive) setPreviewUsers(docs);
       } catch (e) {
         if (alive) setPreviewUsers([]);
@@ -78,6 +97,25 @@ function EventCard({
           }
         })
       );
+      // Debug: all users fetched for modal
+      try {
+        const withComputed = docs.map((u) => ({
+          id: u.id,
+          firstName: u.firstName,
+          lastName: u.lastName,
+          initials: (typeof u === 'object' && u) ? (require('../utils/user').getUserInitials ? require('../utils/user').getUserInitials(u) : '') : '',
+          color: (typeof u === 'object' && u) ? (require('../utils/user').getAvatarColor ? require('../utils/user').getAvatarColor(u) : '') : ''
+        }));
+        const missingNames = docs.filter((u) => !(u.firstName || u.lastName)).map((u) => u.id);
+        // eslint-disable-next-line no-console
+        console.log('[EventCard] modalUsers', {
+          eventId: event?.id,
+          registrationIds,
+          users: docs,
+          computed: withComputed,
+          missingNames,
+        });
+      } catch (_) {}
       setAllUsers(docs);
     } catch (_) {
       setAllUsers([]);

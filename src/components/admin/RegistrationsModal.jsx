@@ -330,11 +330,11 @@ function RegistrationsModal({ isOpen, onClose, event }) {
                   <div className="divide-y divide-gray-100 sm:hidden">
                     {filteredStandby.map((reg) => (
                       <div key={reg.userId} className="p-4 flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-semibold">
-                          {(reg.userDetails?.fullName || 'N/A').slice(0, 2).toUpperCase()}
+                        <div className="h-9 w-9 rounded-full flex items-center justify-center text-white font-semibold ring-2 ring-white" style={{ backgroundColor: getAvatarColor(reg.userDetails) }}>
+                          {getUserInitials(reg.userDetails)}
                         </div>
                         <div className="min-w-0 flex-1">
-                    <div className="text-sm font-medium text-gray-900 truncate">{displayName(reg.userDetails) || 'N/A'}</div>
+                          <div className="text-sm font-medium text-gray-900 truncate">{displayName(reg.userDetails) || 'N/A'}</div>
                           <div className="text-xs text-gray-500">{format(new Date(reg.registeredAt), 'dd/MM/yyyy HH:mm')}</div>
                         </div>
                       </div>
