@@ -198,8 +198,8 @@ function EventCard({
               title={t('view_registrations')}
             >
               {previewUsers.slice(0, 5).map((u, idx) => (
-                <span key={u.id || idx} className={`inline-flex h-8 w-8 rounded-full ring-2 ring-white overflow-hidden ${idx === 0 ? '' : (isRtl ? '-mr-2' : '-ml-2')}`}>
-                  <span className="h-full w-full bg-purple-600 text-white text-[11px] leading-none flex items-center justify-center font-semibold">
+                <span key={u.id || idx} className={`inline-flex h-8 w-8 rounded-full ring-2 ring-white overflow-hidden ${idx === 0 ? '' : (isRtl ? '-mr-2' : '-ml-2')}`} style={{ backgroundColor: u.avatarColor || '#7c3aed' }}>
+                  <span className="h-full w-full text-white text-[11px] leading-none flex items-center justify-center font-semibold">
                     {getInitials(u)}
                   </span>
                 </span>
@@ -324,7 +324,7 @@ function EventCard({
                 <ul className="divide-y divide-gray-100">
                   {allUsers.map((u) => (
                     <li key={u.id} className="flex items-center gap-3 py-2">
-                      <span className="inline-flex h-9 w-9 rounded-full ring-2 ring-white overflow-hidden items-center justify-center bg-purple-600 text-white">
+                      <span className="inline-flex h-9 w-9 rounded-full ring-2 ring-white overflow-hidden items-center justify-center text-white" style={{ backgroundColor: u.avatarColor || '#7c3aed' }}>
                         <span className="text-xs font-semibold leading-none">{getInitials(u)}</span>
                       </span>
                       <div className="flex-1">

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { PlusIcon, TrashIcon, CommandLineIcon, ShieldExclamationIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { db } from '../../firebase';
-import { collection, addDoc, deleteDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, deleteDoc, getDocs, updateDoc, doc, deleteField } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { generateRandomEvent } from '../../constants';
@@ -91,6 +91,47 @@ function AdminPanel({ onClose }) {
     ), { duration: Infinity, position: 'top-center' });
   };
 
+  // Assign random avatarColor to all users missing it
+  const assignAvatarColorsToUsers = async () => {
+    const palette = ['#7c3aed', '#2563eb', '#059669', '#d97706', '#dc2626', '#0ea5e9', '#14b8a6', '#f59e0b'];
+    toast((ti) => (
+      <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow-lg rtl text-right" dir="rtl">
+        <p className="font-semibold mb-3">{t('assigning_avatar_colors') || 'מקצה צבעי אבטר למשתמשים...'}</p>
+      </div>
+    ), { duration: 1500 });
+    try {
+      setLoading(true);
+      const qs = await getDocs(collection(db, 'users'));
+      const updates = qs.docs.map(async (d, idx) => {
+        const color = palette[idx % palette.length];
+        await updateDoc(doc(db, 'users', d.id), { avatarColor: color });
+      });
+      await Promise.all(updates);
+      toast.success(t('avatar_colors_assigned_success') || 'צבעי אבטר הוקצו בהצלחה');
+    } catch (e) {
+      toast.error(t('error_assigning_avatar_colors') || 'שגיאה בהקצאת צבעי אבטר');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Remove profilePicture field from all users
+  const removeProfilePicturesFromUsers = async () => {
+    try {
+      setLoading(true);
+      const qs = await getDocs(collection(db, 'users'));
+      const updates = qs.docs.map(async (d) => {
+        await updateDoc(doc(db, 'users', d.id), { profilePicture: deleteField() });
+      });
+      await Promise.all(updates);
+      toast.success(t('removed_profile_pictures_success') || 'שדה תמונת פרופיל הוסר מכל המשתמשים');
+    } catch (e) {
+      toast.error(t('error_removing_profile_pictures') || 'שגיאה בהסרת שדה תמונת פרופיל');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="w-full" dir="rtl">
       <div className="max-w-md mx-auto">
@@ -153,12 +194,28 @@ function AdminPanel({ onClose }) {
               </button>
 
               <button
+                onClick={assignAvatarColorsToUsers}
+                disabled={loading}
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-amber-200 rounded-md hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                🎨 {t('assign_avatar_colors') || 'הקצה צבעי אבטר לכל המשתמשים'}
+              </button>
+
+              <button
                 onClick={deleteAllEvents}
                 disabled={loading}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-rose-600 rounded-md hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <TrashIcon className="h-4 w-4" aria-hidden="true" />
                 {loading ? t('deleting_ellipsis') : t('delete_all_events')}
+              </button>
+
+              <button
+                onClick={removeProfilePicturesFromUsers}
+                disabled={loading}
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-slate-700 rounded-md hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                🧹 {t('remove_profile_pictures') || 'הסר שדה תמונת פרופיל מכל המשתמשים'}
               </button>
             </div>
 

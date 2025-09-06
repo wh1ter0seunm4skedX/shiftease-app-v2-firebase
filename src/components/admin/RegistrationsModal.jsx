@@ -109,6 +109,15 @@ function RegistrationsModal({ isOpen, onClose, event }) {
 
   const occupancyPct = capacity ? Math.min(100, Math.round((registeredUsers.length / capacity) * 100)) : 0;
   const standbyPct = standbyCapacity ? Math.min(100, Math.round((standbyUsers.length / standbyCapacity) * 100)) : 0;
+  const getInitials = (u) => {
+    const name = (u?.fullName || '').trim();
+    const source = name || (u?.email || '').split('@')[0] || '';
+    if (!source) return '👤';
+    const parts = source.replace(/[_\-.]+/g, ' ').split(' ').filter(Boolean);
+    const first = parts[0]?.[0] || '';
+    const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+    return (first + last).toUpperCase();
+  };
 
   const exportCSV = () => {
     const header = ['Type', 'Name', 'Registered At'];

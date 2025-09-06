@@ -13,7 +13,9 @@ function SignUp() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [fullName, setFullName] = useState('');
   const [role] = useState('user');
-  // Avatars are generated from initials; no profile picture selection
+  // Avatars are initials with a chosen color
+  const avatarPalette = ['#7c3aed', '#2563eb', '#059669', '#d97706', '#dc2626', '#0ea5e9', '#14b8a6', '#f59e0b'];
+  const [avatarColor, setAvatarColor] = useState(avatarPalette[0]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
@@ -41,7 +43,7 @@ function SignUp() {
         fullName: fullName,
         role: role,
         phoneNumber: phoneNumber,
-        // profilePicture removed; avatars are initials-based
+        avatarColor,
         language: language, // Save user's language preference
         createdAt: new Date().toISOString()
       });
@@ -174,7 +176,24 @@ function SignUp() {
               />
             </div>
 
-            {/* Profile picture selection removed; avatars are initials-based */}
+            {/* Avatar color selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('choose_avatar_color')}
+              </label>
+              <div className="grid grid-cols-8 gap-2">
+                {avatarPalette.map((c) => (
+                  <button
+                    type="button"
+                    key={c}
+                    onClick={() => setAvatarColor(c)}
+                    className={`h-8 rounded-full border-2 ${avatarColor === c ? 'border-gray-900' : 'border-white'} shadow`}
+                    style={{ backgroundColor: c }}
+                    aria-label={`avatar color ${c}`}
+                  />
+                ))}
+              </div>
+            </div>
 
             <div>
               <button

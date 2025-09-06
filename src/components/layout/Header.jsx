@@ -168,7 +168,10 @@ const getInitials = (fullName, email) => {
             {/* User badge (no name) + Sign out */}
             <div className={`flex items-center ${"space-x-reverse space-x-4"}`}>
               <div className="flex items-center">
-                <span className="inline-flex h-8 w-8 rounded-full bg-purple-600 text-white text-[11px] font-semibold items-center justify-center">
+                <span
+                  className="inline-flex h-8 w-8 rounded-full text-white text-[11px] font-semibold items-center justify-center"
+                  style={{ backgroundColor: userData?.avatarColor || '#7c3aed' }}
+                >
                   {getInitials(userData?.fullName, user?.email)}
                 </span>
                 <span className="ml-2 text-xs font-medium text-purple-800 bg-purple-100 rounded-full px-2 py-0.5">
@@ -212,7 +215,10 @@ const getInitials = (fullName, email) => {
               <div
                 className={`flex items-center ${"space-x-reverse"} space-x-3 py-2`}
               >
-                <span className="inline-flex h-8 w-8 rounded-full bg-purple-600 text-white text-[11px] font-semibold items-center justify-center">
+                <span
+                  className="inline-flex h-8 w-8 rounded-full text-white text-[11px] font-semibold items-center justify-center"
+                  style={{ backgroundColor: userData?.avatarColor || '#7c3aed' }}
+                >
                   {getInitials(userData?.fullName, user?.email)}
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 text-xs">
