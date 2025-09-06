@@ -10,7 +10,7 @@ const translations = {
   sign_up: "הרשמה",
   confirm_password: "אימות סיסמה",
   already_have_account: "כבר יש לך חשבון?",
-  sign_in_here: "התחחברו כאן",
+  sign_in_here: "התחברו כאן",
   failed_to_sign_in: "ההתחברות נכשלה. אנא בדקו את פרטי ההתחברות.",
   passwords_do_not_match: "הסיסמאות אינן תואמות.",
   full_name: "שם מלא",
