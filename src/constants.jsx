@@ -4,74 +4,53 @@
 // Removed hardcoded event images; we use the image API now.
 
 // PROFILE_PICTURES removed
+// EVENT_PICTURES removed
 
 export const generateRandomEvent = () => {
   const events = [
     { 
       title: "ערב אוכל", 
-      englishTitle: "Food Evening",
-      description: "ערב קולינרי מיוחד עם מגוון מטעמים מהמטבח העולמי. בואו לטעום ולהנות!",
-      englishDescription: "Special culinary evening featuring a variety of delicacies from world cuisines. Come taste and enjoy!"
+      description: "ערב טעים עם מטעמים מכל העולם!",
     },
     { 
       title: "ערב אומנות", 
-      englishTitle: "Art Evening",
-      description: "ערב יצירה והשראה עם אומנים מקומיים. הזדמנות לחוות יצירה משותפת ולהתנסות בטכניקות חדשות.",
-      englishDescription: "An evening of creativity and inspiration with local artists. An opportunity to experience collaborative creation and try new techniques."
+      description: "מפגש השראה עם אומנים ויצירה חווייתית.",
     },
     { 
       title: "אירוע ט\"ו בשבט", 
-      englishTitle: "Tu B'Shvat Event",
-      description: "חגיגה לכבוד ראש השנה לאילנות, עם נטיעות, סדר ט\"ו בשבט ופעילויות לכל המשפחה.",
-      englishDescription: "A celebration of the New Year for Trees, featuring planting activities, a Tu B'Shvat Seder, and activities for the whole family."
+      description: "חגיגה ירוקה עם נטיעות ופעילויות משפחתיות.",
     },
     { 
       title: "יריד בשקל", 
-      englishTitle: "Shekel Fair",
-      description: "יריד מיוחד בו כל המוצרים נמכרים בשקל אחד בלבד! הזדמנות מצוינת למציאות ולתרומה לקהילה.",
-      englishDescription: "A special fair where all items are sold for just one shekel! An excellent opportunity for bargains while contributing to the community."
+      description: "הזדמנות לקנות הכל בשקל אחד בלבד!",
     },
     { 
       title: "מסיבת פורים", 
-      englishTitle: "Purim Party",
-      description: "מסיבת תחפושות שמחה וצבעונית לכבוד חג הפורים, עם תחרות תחפושות, משלוחי מנות וקריאת מגילה.",
-      englishDescription: "A joyful and colorful costume party celebrating Purim, featuring a costume contest, gift baskets exchange, and Megillah reading."
+      description: "תחפושות, מוזיקה ותחרות פרסים שווה במיוחד!",
     },
     { 
-      title: "יום העצמאות", 
-      englishTitle: "Independence Day",
-      description: "חגיגה לציון יום העצמאות של מדינת ישראל, עם מופע זיקוקים, מנגלים ופעילויות מיוחדות.",
-      englishDescription: "A celebration marking Israel's Independence Day, featuring fireworks, barbecues, and special activities."
+      title: "חגיגת יום העצמאות", 
+      description: "מופע זיקוקים, מנגלים ופעילויות לכולם.",
     },
     { 
       title: "פעילויות פנאי", 
-      englishTitle: "Leisure Activities",
-      description: "המשך פעילות רגילה - מגוון פעילויות פנאי להנאה ולהפגה, כולל משחקים, סדנאות ומפגשים חברתיים.",
-      englishDescription: "Continuation of regular activities - a variety of leisure activities for enjoyment and relaxation, including games, workshops, and social gatherings."
+      description: "מגוון סדנאות, משחקים ומפגשים מהנים.",
     },
     { 
       title: "יציאת חוץ", 
-      englishTitle: "Outdoor Trip",
-      description: "יציאה מאורגנת לטיול בטבע, עם פעילויות מגבשות ומסלול הליכה מותאם לכל הגילים.",
-      englishDescription: "An organized nature trip with team-building activities and a walking route suitable for all ages."
+      description: "טיול בטבע עם מסלול מותאם לכל גיל.",
     },
     { 
       title: "תפוח בדבש", 
-      englishTitle: "Apple in Honey",
-      description: "אירוע מיוחד לכבוד ראש השנה, עם טעימות דבש מקומי, הכנת ברכות לשנה החדשה וארוחה חגיגית.",
-      englishDescription: "A special Rosh Hashanah event featuring local honey tastings, preparation of New Year greetings, and a festive meal."
+      description: "ראש השנה מתוק עם טעימות דבש וברכות.",
     },
     { 
       title: "מסיבת חנוכה", 
-      englishTitle: "Hanukkah Party",
-      description: "חגיגת חנוכה מסורתית עם הדלקת נרות, סופגניות, סביבונים ופעילויות לכל המשפחה.",
-      englishDescription: "Traditional Hanukkah celebration with candle lighting, sufganiyot (donuts), dreidels, and activities for the whole family."
+      description: "הדלקת נרות, סופגניות וסביבונים לכולם.",
     },
     { 
       title: "מיוחדים בשרון", 
-      englishTitle: "Specials in Sharon",
-      description: "אירוע קהילתי מיוחד המציג כישרונות מקומיים ויוזמות חברתיות באזור השרון.",
-      englishDescription: "A special community event showcasing local talents and social initiatives in the Sharon region."
+      description: "אירוע קהילתי שמציג כישרונות מקומיים.",
     }
   ];
   
@@ -83,19 +62,17 @@ export const generateRandomEvent = () => {
   const randomMinute = [0, 15, 30, 45][Math.floor(Math.random() * 4)]; // Only 00, 15, 30, 45
   randomDate.setHours(randomHour, randomMinute, 0, 0); 
   
-  // Format time properly with leading zeros
   const formattedStartHour = randomHour.toString().padStart(2, '0');
   const formattedStartMinute = randomMinute.toString().padStart(2, '0');
   const randomStartTime = `${formattedStartHour}:${formattedStartMinute}`;
   
-  // Event duration between 1-3 hours
   const duration = Math.floor(Math.random() * 3) + 1;
   const endHour = (randomHour + duration) % 24;
   const formattedEndHour = endHour.toString().padStart(2, '0');
   const randomEndTime = `${formattedEndHour}:${formattedStartMinute}`; 
 
-  const randomCapacity = Math.floor(Math.random() * 8) + 1; // Between 1-9
-  const randomStandbyCapacity = Math.floor(Math.random() * 5) + 1; // Between 1-5
+  const randomCapacity = Math.floor(Math.random() * 8) + 1; 
+  const randomStandbyCapacity = Math.floor(Math.random() * 5) + 1;
 
   return {
     title: randomEvent.title,
