@@ -5,7 +5,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { PROFILE_PICTURES } from '../../constants';
 
 function SignUp() {
   const [email, setEmail] = useState('');
@@ -14,7 +13,7 @@ function SignUp() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [fullName, setFullName] = useState('');
   const [role] = useState('user');
-  const [selectedPicture, setSelectedPicture] = useState(null);
+  // Avatars are generated from initials; no profile picture selection
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
@@ -29,10 +28,7 @@ function SignUp() {
       return;
     }
 
-    if (!selectedPicture) {
-      toast.error(t('select_profile_picture'));
-      return;
-    }
+    // No profile picture selection required
 
     try {
       setError('');
@@ -45,7 +41,7 @@ function SignUp() {
         fullName: fullName,
         role: role,
         phoneNumber: phoneNumber,
-        profilePicture: selectedPicture.url,
+        // profilePicture removed; avatars are initials-based
         language: language, // Save user's language preference
         createdAt: new Date().toISOString()
       });
@@ -178,35 +174,7 @@ function SignUp() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('choose_profile_picture')}
-              </label>
-              <div className="grid grid-cols-3 gap-4">
-                {PROFILE_PICTURES.map((picture) => (
-                  <div
-                    key={picture.id}
-                    className={`relative rounded-lg overflow-hidden cursor-pointer transform transition-transform duration-200 hover:scale-105 ${
-                      selectedPicture?.id === picture.id ? 'ring-2 ring-purple-500 ring-offset-2' : ''
-                    }`}
-                    onClick={() => setSelectedPicture(picture)}
-                  >
-                    <img
-                      src={picture.url}
-                      alt={picture.alt}
-                      className="w-full h-24 object-cover"
-                    />
-                    {selectedPicture?.id === picture.id && (
-                      <div className="absolute inset-0 bg-purple-500 bg-opacity-20 flex items-center justify-center">
-                        <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+            {/* Profile picture selection removed; avatars are initials-based */}
 
             <div>
               <button

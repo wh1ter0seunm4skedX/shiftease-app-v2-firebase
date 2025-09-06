@@ -43,6 +43,19 @@ const greeting = useMemo(() => {
   return `${base}, ${name} ${wave}`;
 }, [user, userData, t]);
 
+const getInitials = (fullName, email) => {
+  const name = (fullName || '').trim();
+  const source = name || (email || '').split('@')[0] || '';
+  if (!source) return '👤';
+  const parts = source
+    .replace(/[_\-.]+/g, ' ')
+    .split(' ')
+    .filter(Boolean);
+  const first = parts[0]?.[0] || '';
+  const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+  return (first + last).toUpperCase();
+};
+
 
 
   return (
@@ -155,30 +168,9 @@ const greeting = useMemo(() => {
             {/* User badge (no name) + Sign out */}
             <div className={`flex items-center ${"space-x-reverse space-x-4"}`}>
               <div className="flex items-center">
-                {userData?.profilePicture ? (
-                  <img
-                    src={userData.profilePicture}
-                    alt="Profile"
-                    className="h-8 w-8 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
-                    <svg
-                      className="h-4 w-4 text-purple-600"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                  </div>
-                )}
+                <span className="inline-flex h-8 w-8 rounded-full bg-purple-600 text-white text-[11px] font-semibold items-center justify-center">
+                  {getInitials(userData?.fullName, user?.email)}
+                </span>
                 <span className="ml-2 text-xs font-medium text-purple-800 bg-purple-100 rounded-full px-2 py-0.5">
                   {isAdmin ? t("admin") : t("user")}
                 </span>
@@ -220,30 +212,9 @@ const greeting = useMemo(() => {
               <div
                 className={`flex items-center ${"space-x-reverse"} space-x-3 py-2`}
               >
-                {userData?.profilePicture ? (
-                  <img
-                    src={userData.profilePicture}
-                    alt="Profile"
-                    className="h-8 w-8 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
-                    <svg
-                      className="h-4 w-4 text-purple-600"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                  </div>
-                )}
+                <span className="inline-flex h-8 w-8 rounded-full bg-purple-600 text-white text-[11px] font-semibold items-center justify-center">
+                  {getInitials(userData?.fullName, user?.email)}
+                </span>
                 <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 text-xs">
                   {isAdmin ? t("admin") : t("user")}
                 </span>

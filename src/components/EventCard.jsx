@@ -199,13 +199,9 @@ function EventCard({
             >
               {previewUsers.slice(0, 5).map((u, idx) => (
                 <span key={u.id || idx} className={`inline-flex h-8 w-8 rounded-full ring-2 ring-white overflow-hidden ${idx === 0 ? '' : (isRtl ? '-mr-2' : '-ml-2')}`}>
-                  {u.profilePicture ? (
-                    <img src={u.profilePicture} alt={u.fullName || 'user'} className="h-full w-full object-cover" />
-                  ) : (
-                    <span className="h-full w-full bg-purple-600 text-white text-[11px] leading-none flex items-center justify-center font-semibold">
-                      {getInitials(u)}
-                    </span>
-                  )}
+                  <span className="h-full w-full bg-purple-600 text-white text-[11px] leading-none flex items-center justify-center font-semibold">
+                    {getInitials(u)}
+                  </span>
                 </span>
               ))}
               {(() => {
@@ -329,11 +325,7 @@ function EventCard({
                   {allUsers.map((u) => (
                     <li key={u.id} className="flex items-center gap-3 py-2">
                       <span className="inline-flex h-9 w-9 rounded-full ring-2 ring-white overflow-hidden items-center justify-center bg-purple-600 text-white">
-                        {u.profilePicture ? (
-                          <img src={u.profilePicture} alt={u.fullName || 'user'} className="h-full w-full object-cover" />
-                        ) : (
-                          <span className="text-xs font-semibold leading-none">{getInitials(u)}</span>
-                        )}
+                        <span className="text-xs font-semibold leading-none">{getInitials(u)}</span>
                       </span>
                       <div className="flex-1">
                         <div className="text-sm text-gray-900">{u.fullName || '—'}</div>
