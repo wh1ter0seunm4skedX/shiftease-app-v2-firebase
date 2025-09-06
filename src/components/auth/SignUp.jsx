@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -24,11 +25,13 @@ function SignUp() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      return setError(t('passwords_do_not_match'));
+      toast.error(t('passwords_do_not_match'));
+      return;
     }
 
     if (!selectedPicture) {
-      return setError(t('select_profile_picture'));
+      toast.error(t('select_profile_picture'));
+      return;
     }
 
     try {
@@ -47,9 +50,10 @@ function SignUp() {
         createdAt: new Date().toISOString()
       });
 
+      toast.success(t('sign_up_success'));
       navigate('/');
     } catch (error) {
-      setError(t('failed_to_create_account') + ' ' + error.message);
+      toast.error(t('failed_to_create_account'));
     }
     setLoading(false);
   }
@@ -92,11 +96,7 @@ function SignUp() {
             <h2 className="text-3xl font-bold text-white mb-2">{t('sign_up')}</h2>
           </div>
 
-          {error && (
-            <div className="mb-4 text-center text-sm text-red-600 bg-red-50 rounded-lg py-2">
-              {error}
-            </div>
-          )}
+          {/* Errors are presented via toast notifications */}
 
           <form onSubmit={handleSubmit} className="space-y-4 mt-8">
             <div>

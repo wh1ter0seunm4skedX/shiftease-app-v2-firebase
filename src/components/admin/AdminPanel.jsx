@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { PlusIcon, TrashIcon, CommandLineIcon, ShieldExclamationIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { db } from '../../firebase';
 import { collection, addDoc, deleteDoc, getDocs } from 'firebase/firestore';
@@ -57,26 +58,37 @@ function AdminPanel({ onClose }) {
   };
 
   const deleteAllEvents = async () => {
-    const ok = window.confirm(t('confirm_delete_all_events'));
-    if (!ok) return;
-
-    try {
-      setLoading(true);
-      setMessage({ text: '', type: '' });
-
-      const querySnapshot = await getDocs(collection(db, 'events'));
-      const deletePromises = querySnapshot.docs.map((d) => deleteDoc(d.ref));
-      await Promise.all(deletePromises);
-
-      setMessage({ text: t('all_events_deleted_success'), type: 'success' });
-    } catch (error) {
-      setMessage({
-        text: `${t('error_deleting_events')}: ${error?.message || ''}`.trim(),
-        type: 'error',
-      });
-    } finally {
-      setLoading(false);
-    }
+    // Toast-based confirmation (RTL)
+    toast((toastInstance) => (
+      <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow-lg rtl text-right" dir="rtl">
+        <p className="font-semibold mb-3">{t('confirm_delete_all_events')}</p>
+        <div className="flex gap-2 flex-row-reverse">
+          <button
+            className="px-4 py-2 bg-rose-600 text-white rounded hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-400"
+            onClick={async () => {
+              toast.dismiss(toastInstance.id);
+              const deletingToastId = toast.loading(t('deleting_ellipsis'));
+              try {
+                const querySnapshot = await getDocs(collection(db, 'events'));
+                const deletePromises = querySnapshot.docs.map((d) => deleteDoc(d.ref));
+                await Promise.all(deletePromises);
+                toast.success(t('all_events_deleted_success'), { id: deletingToastId });
+              } catch (error) {
+                toast.error(t('error_deleting_events'), { id: deletingToastId });
+              }
+            }}
+          >
+            {t('delete')}
+          </button>
+          <button
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            onClick={() => toast.dismiss(toastInstance.id)}
+          >
+            {t('cancel')}
+          </button>
+        </div>
+      </div>
+    ), { duration: Infinity, position: 'top-center' });
   };
 
   return (

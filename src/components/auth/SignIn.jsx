@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -27,7 +28,7 @@ function SignIn() {
         setLoading(false);
       }, 500);
     } catch (error) {
-      setError(t('failed_to_sign_in'));
+      toast.error(t('failed_to_sign_in'));
       setLoading(false);
     }
   }
@@ -236,15 +237,7 @@ function SignIn() {
             </motion.div>
           </motion.div>
 
-          {error && (
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-4 text-center text-sm text-red-600 bg-red-50 rounded-lg py-2"
-            >
-              {error}
-            </motion.div>
-          )}
+          {/* Errors shown via toast notifications */}
 
           <motion.form 
             variants={containerVariants}

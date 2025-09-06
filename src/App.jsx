@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+// Toaster is mounted globally in index.jsx
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
@@ -8,10 +9,8 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import EventDashboard from './components/EventDashboard';
 import EventsArchive from './components/admin/EventsArchive';
 
-// Hebrew-only app with RTL support
 function AppContent() {
   useEffect(() => {
-    // Set RTL for Hebrew
     document.documentElement.dir = 'rtl';
     document.body.dir = 'rtl';
     document.body.classList.add('rtl');
