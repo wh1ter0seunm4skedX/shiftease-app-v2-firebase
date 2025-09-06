@@ -59,6 +59,8 @@ const translations = {
   // Event Details
   event_title: "כותרת האירוע",
   event_description: "תיאור האירוע",
+  event_title_placeholder: "לדוגמה: ערב משחקי קופסה",
+  event_description_placeholder: "לדוגמה: פעילות גיבוש עם פינוקים וכיף",
   event_date: "תאריך האירוע",
   event_time: "שעת האירוע",
   event_location: "מיקום האירוע",
@@ -195,6 +197,12 @@ const translations = {
   error_unregistering_from_event: "שגיאה בביטול הרשמה מהאירוע. אנא נסו שוב.",
   failed_to_log_out: "ההתנתקות נכשלה. אנא נסו שוב.",
   end_time_before_start: "שעת הסיום חייבת להיות אחרי שעת ההתחלה",
+  name_required: "יש להזין כותרת",
+  description_required: "יש להזין תיאור",
+  image_required: "אנא בחרו תמונה",
+  date_placeholder: "בחרו תאריך",
+  start_time_placeholder: "בחרו שעת התחלה",
+  end_time_placeholder: "בחרו שעת סיום",
 
   // Greetings
   greeting_morning: "בוקר טוב",

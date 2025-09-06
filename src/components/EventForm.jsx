@@ -22,16 +22,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
 
   const perPage = 24;
   const [isClosing, setIsClosing] = useState(false);
-  const requestClose = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsClosing(false);
-      onClose();
-    }, 180);
-  };
-  const aliveRef = useRef(true);
-
-  const [formData, setFormData] = useState({
+  const getDefaultFormData = () => ({
     title: "",
     date: new Date().toISOString().split("T")[0],
     startTime: "",
@@ -43,6 +34,29 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
     standbyCapacity: "",
     registrations: [],
     standbyRegistrations: [],
+  });
+  const requestClose = () => {
+    // Clear form and errors when closing via X
+    setFormData(getDefaultFormData());
+    setErrors({ title: "", description: "", imageUrl: "" });
+    setSearchQuery("");
+    setSearchResults([]);
+    setSearchTotal(0);
+    setSearchError("");
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      onClose();
+    }, 180);
+  };
+  const aliveRef = useRef(true);
+
+  const [formData, setFormData] = useState(getDefaultFormData());
+
+  const [errors, setErrors] = useState({
+    title: "",
+    description: "",
+    imageUrl: "",
   });
 
   // keep a ref to avoid setting state after unmount/close
@@ -71,19 +85,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
         standbyRegistrations: initialData.standbyRegistrations || [],
       });
     } else {
-      setFormData({
-        title: "",
-        date: new Date().toISOString().split("T")[0],
-        startTime: "",
-        endTime: "",
-        description: "",
-        imageUrl: '',
-        timeError: "",
-        capacity: "",
-        standbyCapacity: "",
-        registrations: [],
-        standbyRegistrations: [],
-      });
+      setFormData(getDefaultFormData());
     }
   }, [initialData, open]);
 
@@ -176,14 +178,46 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
 
       return updated;
     });
+
+    if (name === 'title') {
+      const v = (value || '').trim();
+      setErrors((p) => ({ ...p, title: v.length === 0 ? t('name_required') || 'Title is required' : '' }));
+    }
+    if (name === 'description') {
+      const v = (value || '').trim();
+      setErrors((p) => ({ ...p, description: v.length === 0 ? t('description_required') || 'Description is required' : '' }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.timeError) return;
 
+    // Basic required validation + length limits
+    const title = (formData.title || '').trim();
+    const description = (formData.description || '').trim();
+    const imageUrl = (formData.imageUrl || '').trim();
+
+    const nextErrors = {
+      title: title.length === 0 ? (t('name_required') || 'Title is required') : '',
+      description: description.length === 0 ? (t('description_required') || 'Description is required') : '',
+      imageUrl: imageUrl.length === 0 ? (t('image_required') || 'Image is required') : '',
+    };
+    setErrors(nextErrors);
+    if (nextErrors.title || nextErrors.description || nextErrors.imageUrl) {
+      return;
+    }
+
+    if (title.length > 25 || description.length > 50) {
+      // Extra guard, though inputs enforce maxLength
+      return;
+    }
+
     const submissionData = {
       ...formData,
+      title,
+      description,
+      imageUrl,
       capacity: parseInt(formData.capacity, 10) || 0,
       standbyCapacity: parseInt(formData.standbyCapacity, 10) || 0,
     };
@@ -249,10 +283,16 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="input-field py-2"
+                className={`input-field py-2 ${errors.title ? 'border-red-400 focus:ring-red-500' : ''}`}
                 required
+                maxLength={25}
+                placeholder={t('event_title_placeholder')}
                 dir={isRtl ? "rtl" : "ltr"}
               />
+              <div className="mt-1 flex items-center justify-between text-xs text-gray-500">
+                <span className={`text-red-600 ${errors.title ? '' : 'invisible'}`}>{errors.title || '.'}</span>
+                <span dir="ltr">{(formData.title || '').length}/25</span>
+              </div>
             </div>
 
             <div>
@@ -270,6 +310,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 onChange={handleChange}
                 className="input-field py-2"
                 required
+                placeholder={t('date_placeholder')}
                 dir={isRtl ? "rtl" : "ltr"}
               />
             </div>
@@ -294,6 +335,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   onChange={handleChange}
                   className="input-field w-full py-2"
                   required
+                  placeholder={t('end_time_placeholder')}
                   dir={isRtl ? "rtl" : "ltr"}
                 />
               </div>
@@ -312,6 +354,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   onChange={handleChange}
                   className="input-field w-full py-2"
                   required
+                  placeholder={t('start_time_placeholder')}
                   dir={isRtl ? "rtl" : "ltr"}
                 />
               </div>
@@ -361,14 +404,25 @@ className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border
 
                 {!showImages && (
                   <div className="ml-2 flex-shrink-0">
-                    <div className="relative w-10 h-10 overflow-hidden rounded-lg border-2 border-blue-500">
-                      <img
-                        src={formData.imageUrl}
-                        alt="Selected event"
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="relative w-10 h-10 overflow-hidden rounded-lg border-2 border-blue-500 bg-gray-100 flex items-center justify-center">
+                      {formData.imageUrl ? (
+                        <img
+                          src={formData.imageUrl}
+                          alt="Selected event"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7a2 2 0 012-2h2l1-2h6l1 2h2a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 13a4 4 0 108 0 4 4 0 00-8 0z" />
+                        </svg>
+                      )}
                     </div>
                   </div>
+                )}
+                
+                {errors.imageUrl && (
+                  <div className="w-full text-xs text-red-600 mt-2">{errors.imageUrl}</div>
                 )}
 
                 {/* SEARCH MODAL */}
@@ -462,6 +516,7 @@ className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border
                                     ...p,
                                     imageUrl: img.url,
                                   }));
+                                  setErrors((p) => ({ ...p, imageUrl: '' }));
                                   setIsSearchOpen(false);
                                 }}
                                 className={`group relative rounded-md overflow-hidden border-2 ${
@@ -537,10 +592,16 @@ className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border
                 value={formData.description}
                 onChange={handleChange}
                 rows="2"
-                className="input-field py-2"
+                className={`input-field py-2 ${errors.description ? 'border-red-400 focus:ring-red-500' : ''}`}
                 required
+                maxLength={50}
+                placeholder={t('event_description_placeholder')}
                 dir={isRtl ? "rtl" : "ltr"}
               />
+              <div className="mt-1 flex items-center justify-between text-xs text-gray-500">
+                <span className={`text-red-600 ${errors.description ? '' : 'invisible'}`}>{errors.description || '.'}</span>
+                <span dir="ltr">{(formData.description || '').length}/50</span>
+              </div>
             </div>
 
             <div

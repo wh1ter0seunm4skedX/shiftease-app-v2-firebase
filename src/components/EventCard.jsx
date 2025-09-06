@@ -125,9 +125,9 @@ function EventCard({
       
       <div className="px-6 py-4 sm:px-6 border-b border-gray-100">
         <div className="flex justify-between items-start">
-          <div>
-            <h3 className="text-lg font-medium text-gray-900 break-words">{event.title}</h3>
-            <p className="mt-1 text-sm text-gray-500">{event.description}</p>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-medium text-gray-900 break-words line-clamp-1">{event.title}</h3>
+            <p className="mt-1 text-sm text-gray-500 break-words line-clamp-2">{event.description}</p>
           </div>
           
           {isAdmin && (
