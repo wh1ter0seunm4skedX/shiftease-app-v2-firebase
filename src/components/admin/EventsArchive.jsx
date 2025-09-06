@@ -5,6 +5,8 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import EventCard from '../EventCard';
+import placeholderImg from '../../assets/welcome.png';
+import { doc, getDoc } from 'firebase/firestore';
 import { SkeletonGrid } from '../common/Skeleton';
 import Footer from '../layout/Footer';
 
@@ -129,16 +131,57 @@ function EventsArchive() {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {pastEvents.map((event) => (
-                <EventCard
-                  key={event.id}
-                  event={event}
-                  isPastEvent={true}
-                  isAdmin={isAdmin}
-                  showRegistrationButton={false}
-                  onViewRegistrations={() => {}} // Past events don't need registration functionality
-                />
-              ))}
+              {pastEvents.map((event) => {
+                const cloned = { ...event, imageUrl: placeholderImg };
+                const handleExport = async (ev) => {
+                  try {
+                    const regs = (ev?.registrations || []).map((r) => ({ ...r, type: 'Regular' }));
+                    const standbys = (ev?.standbyRegistrations || []).map((r) => ({ ...r, type: 'Standby' }));
+                    const all = [...regs, ...standbys];
+                    const users = await Promise.all(
+                      all.map(async (r) => {
+                        try {
+                          const d = await getDoc(doc(db, 'users', r.userId));
+                          return d.exists() ? { id: r.userId, ...d.data(), type: r.type, registeredAt: r.registeredAt } : { id: r.userId, type: r.type, registeredAt: r.registeredAt };
+                        } catch {
+                          return { id: r.userId, type: r.type, registeredAt: r.registeredAt };
+                        }
+                      })
+                    );
+                    const header = ['Type', 'First Name', 'Last Name', 'Email', 'User ID', 'Registered At'];
+                    const rows = users.map((u) => [
+                      u.type || '',
+                      u.firstName || '',
+                      u.lastName || '',
+                      u.email || '',
+                      u.id || '',
+                      (() => { try { return new Date(u.registeredAt).toISOString(); } catch { return ''; } })(),
+                    ]);
+                    const csv = [header, ...rows]
+                      .map((r) => r.map((v) => `"${(v ?? '').toString().replace(/"/g, '""')}"`).join(','))
+                      .join('\n');
+                    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${ev?.title || 'registrations'}.csv`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  } catch (e) {
+                    console.error('Export CSV error:', e);
+                  }
+                };
+                return (
+                  <EventCard
+                    key={event.id}
+                    event={cloned}
+                    isPastEvent={true}
+                    isAdmin={isAdmin}
+                    showRegistrationButton={false}
+                    onViewRegistrations={(ev) => handleExport(ev || cloned)}
+                  />
+                );
+              })}
             </div>
           )}
         </main>

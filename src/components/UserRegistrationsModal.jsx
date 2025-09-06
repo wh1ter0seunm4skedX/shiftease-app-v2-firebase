@@ -24,6 +24,8 @@ export default function UserRegistrationsModal({ isOpen, onClose, event }) {
 
   useEffect(() => {
     if (!isOpen || !event) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     let alive = true;
     const load = async () => {
       setLoading(true);
@@ -45,7 +47,7 @@ export default function UserRegistrationsModal({ isOpen, onClose, event }) {
       }
     };
     load();
-    return () => { alive = false; };
+    return () => { alive = false; document.body.style.overflow = prev; };
   }, [isOpen, event]);
 
   if (!isOpen) return null;

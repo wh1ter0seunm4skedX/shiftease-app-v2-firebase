@@ -94,10 +94,19 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
     if (!open) return;
     const body = document.body;
     const prev = body.style.overflow;
-    if (isSearchOpen) body.style.overflow = "hidden";
+    body.style.overflow = "hidden";
     return () => {
       body.style.overflow = prev;
     };
+  }, [open]);
+
+  // Lock scroll also while search modal is open
+  useEffect(() => {
+    if (!open) return;
+    const body = document.body;
+    const prev = body.style.overflow;
+    if (isSearchOpen) body.style.overflow = "hidden";
+    return () => { body.style.overflow = prev; };
   }, [isSearchOpen, open]);
 
   const runSearch = async (page = 1, qOverride) => {
@@ -191,6 +200,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    try { console.log('[EventForm] submit clicked', { initialData, formData }); } catch (_) {}
     if (formData.timeError) return;
 
     // Basic required validation + length limits
@@ -230,6 +240,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
         initialData.standbyRegistrations || [];
     }
 
+    try { console.log('[EventForm] submitting payload', submissionData); } catch (_) {}
     onSubmit(submissionData);
     requestClose();
   };
