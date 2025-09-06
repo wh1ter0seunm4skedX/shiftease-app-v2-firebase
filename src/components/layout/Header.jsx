@@ -1,5 +1,8 @@
 import React, { useMemo, useState } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useLanguage } from "../../contexts/LanguageContext";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { displayName, getUserInitials } from "../../utils/user";
 import {
   Cog6ToothIcon,
@@ -12,12 +15,15 @@ import {
 
 // A simple container for buttons to reduce repetition
 const HeaderButton = ({ onClick, children, className = "" }) => (
-  <button
+  <motion.button
     onClick={onClick}
+    whileHover={{ scale: 1.02, y: -1 }}
+    whileTap={{ scale: 0.98, y: 0 }}
+    transition={{ type: "spring", stiffness: 400, damping: 25 }}
     className={`flex h-10 items-center justify-center rounded-lg border px-4 text-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 ${className}`}
   >
     {children}
-  </button>
+  </motion.button>
 );
 
 function Header({
@@ -30,6 +36,8 @@ function Header({
   onLogout,
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  const [mobileMenuParent] = useAutoAnimate();
   const { t } = useLanguage();
 
   const greeting = useMemo(() => {
@@ -74,7 +82,12 @@ function Header({
           }
         `}
       </style>
-      <nav className="animate-gradient border-b border-gray-700/50 bg-gradient-to-r from-gray-900 via-slate-800 to-gray-900 text-white">
+      <motion.nav
+        initial={prefersReducedMotion ? false : { opacity: 0, y: -8 }}
+        animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="animate-gradient border-b border-gray-700/50 bg-gradient-to-r from-gray-900 via-slate-800 to-gray-900 text-white"
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-20 items-center justify-between">
             {/* Logo and Greeting */}
@@ -136,61 +149,118 @@ function Header({
                     <span>{t("events_archive")}</span>
                     <ArchiveBoxIcon className="ms-2 h-5 w-5" aria-hidden="true" />
                   </HeaderButton>
-                  <button
+                  <motion.button
                     onClick={onOpenAdminPanel}
+                    whileHover={prefersReducedMotion ? {} : { rotate: 30 }}
+                    whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
                     className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-400/10 text-amber-300 transition-colors hover:bg-amber-400/20 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-gray-900"
                     aria-label={t("system_admin_panel")}
                     title={t("system_admin_panel")}
                   >
                     <Cog6ToothIcon className="h-6 w-6" aria-hidden="true" />
-                  </button>
+                  </motion.button>
                 </div>
               )}
 
-              {/* User badge + Sign out */}
-              <div className="flex items-center space-x-3 space-x-reverse">
-                 <div className="group relative flex cursor-pointer items-center">
-                   <span
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold text-white transition-transform group-hover:scale-110"
-                    style={{
-                      backgroundColor: userData?.avatarColor || "#7c3aed",
-                    }}
+            {/* User dropdown */}
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger asChild>
+                <button
+                  className="group relative flex cursor-pointer items-center focus:outline-none"
+                  aria-label={t("user")}
+                >
+                  <motion.span
+                    whileHover={prefersReducedMotion ? {} : { scale: 1.08 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold text-white"
+                    style={{ backgroundColor: userData?.avatarColor || "#7c3aed" }}
                   >
                     {getInitials()}
-                  </span>
+                  </motion.span>
                   <span className="ms-2 rounded-full bg-purple-500/20 px-2.5 py-1 text-xs font-medium text-purple-300">
                     {isAdmin ? t("admin") : t("user")}
                   </span>
-                 </div>
-
-                <HeaderButton
-                  onClick={onLogout}
-                  className="border-red-500/50 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500 hover:text-red-300 focus:ring-red-400"
+                </button>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content
+                  side="bottom"
+                  align="end"
+                  sideOffset={8}
+                  className="z-50 min-w-[220px] rounded-lg border border-gray-700/60 bg-gray-900/95 p-1.5 text-sm text-gray-200 shadow-xl backdrop-blur-md data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"
                 >
-                  <span>{t("sign_out")}</span>
-                  <ArrowRightOnRectangleIcon
-                    className="ms-2 h-5 w-5"
-                    aria-hidden="true"
-                  />
-                </HeaderButton>
-              </div>
+                  <DropdownMenu.Label className="px-2 py-1.5 text-xs uppercase tracking-wide text-gray-400">
+                    {greeting}
+                  </DropdownMenu.Label>
+
+                  {isAdmin && (
+                    <>
+                      <DropdownMenu.Item
+                        onSelect={(e) => { e.preventDefault(); onOpenAdminPanel(); }}
+                        className="flex cursor-pointer items-center rounded-md px-2 py-2 outline-none hover:bg-gray-800/80 focus:bg-gray-800/80"
+                      >
+                        <Cog6ToothIcon className="me-2 h-5 w-5 text-amber-300" />
+                        {t("system_admin_panel")}
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        onSelect={(e) => { e.preventDefault(); onAddEvent(); }}
+                        className="flex cursor-pointer items-center rounded-md px-2 py-2 outline-none hover:bg-gray-800/80 focus:bg-gray-800/80"
+                      >
+                        <PlusIcon className="me-2 h-5 w-5 text-green-300" />
+                        {t("add_event")}
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        onSelect={(e) => { e.preventDefault(); onOpenArchive(); }}
+                        className="flex cursor-pointer items-center rounded-md px-2 py-2 outline-none hover:bg-gray-800/80 focus:bg-gray-800/80"
+                      >
+                        <ArchiveBoxIcon className="me-2 h-5 w-5 text-slate-300" />
+                        {t("events_archive")}
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Separator className="my-1 h-px bg-gray-700/60" />
+                    </>
+                  )}
+
+                  <DropdownMenu.Item
+                    onSelect={(e) => { e.preventDefault(); onLogout(); }}
+                    className="flex cursor-pointer items-center rounded-md px-2 py-2 text-red-400 outline-none hover:bg-red-500/10 focus:bg-red-500/10"
+                  >
+                    <ArrowRightOnRectangleIcon className="me-2 h-5 w-5" />
+                    {t("sign_out")}
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
             </div>
           </div>
         </div>
 
         {/* Mobile menu */}
+        <AnimatePresence initial={false}>
         {isMobileMenuOpen && (
-          <div id="mobile-menu" className="sm:hidden">
-            <div className="space-y-4 px-2 pb-4 pt-2">
+          <motion.div
+            id="mobile-menu"
+            className="sm:hidden"
+            initial={prefersReducedMotion ? false : { opacity: 0, y: -8 }}
+            animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+            exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+            transition={{ duration: 0.25 }}
+          >
+            <div
+              ref={mobileMenuParent}
+              className="space-y-4 px-2 pb-4 pt-2 animate-in fade-in slide-in-from-top-1"
+            >
               <div className="flex items-center space-x-3 space-x-reverse border-b border-gray-700 pb-4">
-                 <span
+                 <motion.span
+                  initial={prefersReducedMotion ? false : { scale: 0.9, opacity: 0 }}
+                  animate={prefersReducedMotion ? {} : { scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.2 }}
                   className="inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold text-white"
                   style={{
                     backgroundColor: userData?.avatarColor || "#7c3aed",
                   }}
                 >
                   {getInitials()}
-                </span>
+                </motion.span>
                 <span className="rounded-full bg-purple-500/20 px-3 py-1 text-xs font-medium text-purple-300">
                   {isAdmin ? t("admin") : t("user")}
                 </span>
@@ -223,9 +293,10 @@ function Header({
                 <ArrowRightOnRectangleIcon className="ms-2 h-5 w-5" />
               </HeaderButton>
             </div>
-          </div>
+          </motion.div>
         )}
-      </nav>
+        </AnimatePresence>
+      </motion.nav>
     </>
   );
 }

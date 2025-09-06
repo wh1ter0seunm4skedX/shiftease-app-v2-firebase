@@ -47,7 +47,7 @@ const translations = {
   delete_event: "מחיקת אירוע",
   events_archive: "ארכיון אירועים",
   system_admin_panel: "לוח ניהול מערכת",
-  admin: "מנהל",
+  admin: "מנהלת",
   user: "משתמש",
   sign_out: "התנתקות",
   no_events_yet: "אין אירועים עדיין",
