@@ -36,6 +36,17 @@ function EventCard({
   const [isUsersOpen, setIsUsersOpen] = useState(false);
   const [isUsersClosing, setIsUsersClosing] = useState(false);
 
+  // Names summary for quick view under avatars
+  const nameSummary = useMemo(() => {
+    const names = (previewUsers || []).map((u) => displayName(u)).filter(Boolean);
+    const shown = names.slice(0, 3).join(' • ');
+    const more = names.length > 3 ? ` +${names.length - 3}` : '';
+    return {
+      text: shown + more,
+      title: names.join(', '),
+    };
+  }, [previewUsers]);
+
   useEffect(() => {
     let alive = true;
     const load = async () => {
@@ -219,33 +230,43 @@ function EventCard({
             </span>
           </div>
           {!isAdmin && registrationIds.length > 0 && (
-            <button
-              type="button"
-              onClick={openUsersModal}
-              className="relative flex items-center -space-x-2 rtl:space-x-reverse hover:opacity-90 transition-opacity"
-              title={t('view_registrations')}
-            >
-              {previewUsers.slice(0, 5).map((u, idx) => (
-                <span
-                  key={u.id || idx}
-                  className={`inline-flex h-8 w-8 rounded-full ring-2 ring-white overflow-hidden ${idx === 0 ? '' : (isRtl ? '-mr-2' : '-ml-2')}`}
-                  style={{ backgroundColor: getAvatarColor(u) }}
+            <div className="flex items-center gap-2 min-w-0">
+              <button
+                type="button"
+                onClick={openUsersModal}
+                className="relative flex items-center -space-x-2 rtl:space-x-reverse hover:opacity-90 transition-opacity"
+                title={t('view_registrations')}
+              >
+                {previewUsers.slice(0, 5).map((u, idx) => (
+                  <span
+                    key={u.id || idx}
+                    className={`inline-flex h-8 w-8 rounded-full ring-2 ring-white overflow-hidden ${idx === 0 ? '' : (isRtl ? '-mr-2' : '-ml-2')}`}
+                    style={{ backgroundColor: getAvatarColor(u) }}
+                  >
+                    <span className="h-full w-full text-white text-[11px] leading-none flex items-center justify-center font-semibold">
+                      {initialsOf(u)}
+                    </span>
+                  </span>
+                ))}
+                {(() => {
+                  const visible = Math.min(previewUsers.length, 5);
+                  const remaining = Math.max(0, registrationIds.length - visible);
+                  return remaining > 0 ? (
+                    <span className={`inline-flex h-8 w-8 rounded-full ring-2 ring-white bg-gray-100 text-gray-700 text-[11px] items-center justify-center font-medium ${isRtl ? '-mr-2' : '-ml-2'}`}>
+                      +{remaining}
+                    </span>
+                  ) : null;
+                })()}
+              </button>
+              {nameSummary.text && (
+                <div
+                  className="text-xs text-gray-600 truncate max-w-[160px] sm:max-w-[220px]"
+                  title={nameSummary.title}
                 >
-                  <span className="h-full w-full text-white text-[11px] leading-none flex items-center justify-center font-semibold">
-                    {initialsOf(u)}
-                  </span>
-                </span>
-              ))}
-              {(() => {
-                const visible = Math.min(previewUsers.length, 5);
-                const remaining = Math.max(0, registrationIds.length - visible);
-                return remaining > 0 ? (
-                  <span className={`inline-flex h-8 w-8 rounded-full ring-2 ring-white bg-gray-100 text-gray-700 text-[11px] items-center justify-center font-medium ${isRtl ? '-mr-2' : '-ml-2'}`}>
-                    +{remaining}
-                  </span>
-                ) : null;
-              })()}
-            </button>
+                  {nameSummary.text}
+                </div>
+              )}
+            </div>
           )}
         </div>
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { PlusIcon, TrashIcon, CommandLineIcon, ShieldExclamationIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { db } from '../../firebase';
-import { collection, addDoc, deleteDoc, getDocs, updateDoc, doc, deleteField, onSnapshot, query, where, orderBy, arrayUnion } from 'firebase/firestore';
+import { collection, addDoc, deleteDoc, getDocs, updateDoc, doc, deleteField, onSnapshot, query, where, orderBy, arrayUnion, getDoc } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { generateRandomEvent } from '../../constants';
@@ -19,6 +19,7 @@ function AdminPanel({ onClose }) {
   const [selectedEventId, setSelectedEventId] = useState('');
   const [regFillCount, setRegFillCount] = useState('');
   const [standbyFillCount, setStandbyFillCount] = useState('');
+  const [duplicateEventId, setDuplicateEventId] = useState('');
 
   // Auto-dismiss success after 3s (errors stay until next action)
   useEffect(() => {
@@ -315,7 +316,7 @@ function AdminPanel({ onClose }) {
             <div className="space-y-6">
               {/* Events (CRUD) */}
               <div>
-                <h3 className="text-sm font-bold text-slate-300 mb-2">{t('category_events') || 'אירועים (CRUD)'}</h3>
+                <h3 className="text-sm font-bold text-slate-300 mb-2">{t('category_events')}</h3>
                 <div className="space-y-3">
                   <button
                 onClick={handleCreateTestEvent}
@@ -330,7 +331,7 @@ function AdminPanel({ onClose }) {
                 disabled={loading}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-amber-200 rounded-md hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                🎨 {t('assign_avatar_colors') || 'הקצה צבעי אבטר לכל המשתמשים'}
+                🎨 {t('assign_avatar_colors')}
               </button>
                   <button
                 onClick={deleteAllEvents}
@@ -340,6 +341,67 @@ function AdminPanel({ onClose }) {
                 <TrashIcon className="h-4 w-4" aria-hidden="true" />
                 {loading ? t('deleting_ellipsis') : t('delete_all_events')}
               </button>
+                </div>
+                {/* Duplicate + Delete old */}
+                <div className="mt-4 p-4 rounded-md bg-slate-800/40 ring-1 ring-slate-700/40">
+                  <div className="text-sm font-semibold text-slate-200 mb-3">{t('duplicate_event_title')}</div>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs text-slate-300 mb-1">{t('select_event_to_duplicate')}</label>
+                      <select
+                        value={duplicateEventId}
+                        onChange={(e) => setDuplicateEventId(e.target.value)}
+                        className="w-full bg-slate-900/50 text-slate-200 border border-slate-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                      >
+                        <option value="" disabled>{loadingEvents ? (t('loading_events') ): (t('choose_event'))}</option>
+                        {activeEvents.map((ev) => (
+                          <option key={ev.id} value={ev.id}>
+                            {`${ev.title || '—'} — ${ev.date || ''}`}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <button
+                      onClick={async () => {
+                        if (!duplicateEventId) {
+                          toast.error(t('please_select_event'));
+                          return;
+                        }
+                        try {
+                          setLoading(true);
+                          const loadingId = toast.loading(t('duplicating_event'));
+                          const ref = doc(db, 'events', duplicateEventId);
+                          const snap = await getDoc(ref);
+                          if (!snap.exists()) {
+                            toast.error(t('event_not_found'), { id: loadingId });
+                            setLoading(false);
+                            return;
+                          }
+                          const data = snap.data();
+                          const { id, ...rest } = { id: duplicateEventId, ...data };
+                          // Ensure registrations are preserved; update createdAt timestamp
+                          const newData = {
+                            ...rest,
+                            createdAt: new Date().toISOString(),
+                          };
+                          const col = collection(db, 'events');
+                          const newDocRef = await addDoc(col, newData);
+                          await deleteDoc(ref);
+                          setDuplicateEventId('');
+                          toast.success(t('event_duplicated_successfully'), { id: loadingId });
+                        } catch (e) {
+                          console.error('Duplicate event error:', e);
+                          toast.error(t('error_duplicating_event'), { id: undefined });
+                        } finally {
+                          setLoading(false);
+                        }
+                      }}
+                      disabled={loading || !duplicateEventId}
+                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-indigo-300 rounded-md hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      📄 {t('duplicate_and_delete_old') }
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -352,7 +414,7 @@ function AdminPanel({ onClose }) {
                 disabled={loading}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-slate-700 rounded-md hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                🧹 {t('remove_profile_pictures') || 'הסר שדה תמונת פרופיל מכל המשתמשים'}
+                🧹 {t('remove_profile_pictures')}
               </button>
                 </div>
               </div>

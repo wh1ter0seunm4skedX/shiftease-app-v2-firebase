@@ -113,6 +113,12 @@ const translations = {
   category_events: "אירועים (CRUD)",
   category_users: "משתמשים",
   category_testing: "בדיקות / נתוני דמה",
+  duplicate_event_title: "שכפול אירוע ומחיקת הישן",
+  select_event_to_duplicate: "בחרו אירוע לשכפול",
+  duplicate_and_delete_old: "שכפל ומחק ישן",
+  duplicating_event: "משכפל אירוע…",
+  event_duplicated_successfully: "האירוע שוכפל ונמחק הישן",
+  error_duplicating_event: "שגיאה בשכפול אירוע",
   // Admin test tools
   fill_event_registrations: "מילוי הרשמות לאירוע (בדיקות)",
   select_event_to_fill: "בחרו אירוע למילוי",
