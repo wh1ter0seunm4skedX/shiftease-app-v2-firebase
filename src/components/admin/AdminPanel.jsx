@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { PlusIcon, TrashIcon, CommandLineIcon, ShieldExclamationIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { db } from '../../firebase';
+import { db } from '../../lib/firebase';
 import { collection, addDoc, deleteDoc, getDocs, updateDoc, doc, deleteField, onSnapshot, query, where, orderBy, arrayUnion, getDoc } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';

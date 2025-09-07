@@ -1,7 +1,7 @@
 import React from 'react';
 import { Toaster, ToastBar } from 'react-hot-toast';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import './styles/index.css';
 import App from './App.jsx';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

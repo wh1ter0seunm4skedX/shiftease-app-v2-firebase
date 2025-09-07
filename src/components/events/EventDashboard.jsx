@@ -2,21 +2,21 @@ import React, { useState, useEffect } from 'react';
 // Import the toast library
 import toast from 'react-hot-toast';
 import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, updateDoc, arrayUnion, arrayRemove, getDoc, where } from 'firebase/firestore';
-import { db } from '../firebase';
-import { useAuth } from '../contexts/AuthContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { db } from '../../lib/firebase';
+import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import EventForm from './EventForm';
 import EventCard from './EventCard';
-import AdminPanel from './admin/AdminPanel';
-import RegistrationsModal from './admin/RegistrationsModal';
+import AdminPanel from '../admin/AdminPanel';
+import RegistrationsModal from '../admin/RegistrationsModal';
 import UserRegistrationsModal from './UserRegistrationsModal';
-import Footer from './layout/Footer';
-import { SkeletonGrid } from './common/Skeleton';
-import Header from './layout/Header';
+import Footer from '../layout/Footer';
+import { SkeletonGrid } from '../common/Skeleton';
+import Header from '../layout/Header';
 import { format } from 'date-fns';
-import { sendRegistrationNotification } from '../services/emailService';
-import { fetchEventImage } from '../services/imageService';
+import { sendRegistrationNotification } from '../../services/emailService';
+import { fetchEventImage } from '../../services/imageService';
 
 function EventDashboard() {
   const [events, setEvents] = useState([]);

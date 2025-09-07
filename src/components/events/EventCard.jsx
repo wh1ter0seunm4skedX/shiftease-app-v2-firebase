@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useAuth } from '../contexts/AuthContext';
-import { db } from '../firebase';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { db } from '../../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { displayName, getUserInitials, getAvatarColor } from '../utils/user';
+import { displayName, getUserInitials, getAvatarColor } from '../../utils/user';
 
 function EventCard({ 
   event, 

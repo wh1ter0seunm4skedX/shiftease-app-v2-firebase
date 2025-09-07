@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { db } from '../../lib/firebase';
 import { format } from 'date-fns';
 import { displayName, getUserInitials, getAvatarColor } from '../../utils/user';
 import { useLanguage } from '../../contexts/LanguageContext';

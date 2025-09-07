@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import toast from 'react-hot-toast';
 // Using API images now; no local EVENT_IMAGES
-import { useLanguage } from "../contexts/LanguageContext";
-import { searchEventImages } from "../services/imageService";
+import { useLanguage } from "../../contexts/LanguageContext";
+import { searchEventImages } from "../../services/imageService";
 
 function EventForm({ open, onClose, onSubmit, initialData = null }) {
   const { t, language } = useLanguage();

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { collection, query, orderBy, where, getDocs, startAfter, limit } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { db } from '../../lib/firebase';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import EventCard from '../EventCard';
+import EventCard from '../events/EventCard';
 import placeholderImg from '../../assets/welcome.png';
 import { doc, getDoc } from 'firebase/firestore';
 import { SkeletonGrid } from '../common/Skeleton';

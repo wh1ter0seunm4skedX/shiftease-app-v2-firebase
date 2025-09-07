@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
-import { useLanguage } from '../contexts/LanguageContext';
-import { getUserInitials, getAvatarColor, displayName } from '../utils/user';
-import Spinner from './common/Spinner';
+import { db } from '../../lib/firebase';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { getUserInitials, getAvatarColor, displayName } from '../../utils/user';
+import Spinner from '../common/Spinner';
 
 export default function UserRegistrationsModal({ isOpen, onClose, event }) {
   const { t, language } = useLanguage();
