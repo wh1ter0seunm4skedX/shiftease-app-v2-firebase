@@ -1,3 +1,4 @@
+/*
 import emailjs from '@emailjs/browser';
 
 emailjs.init("CaYNOAiNaenBRf6ga");
@@ -37,3 +38,4 @@ export const sendRegistrationNotification = async (eventData, userData, registra
     throw error;
   }
 };
+*/

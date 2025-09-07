@@ -15,7 +15,7 @@ import Footer from '../layout/Footer';
 import { SkeletonGrid } from '../common/Skeleton';
 import Header from '../layout/Header';
 import { format } from 'date-fns';
-import { sendRegistrationNotification } from '../../services/emailService';
+// import { sendRegistrationNotification } from '../../services/emailService'; // Disabled email notifications
 import { fetchEventImage } from '../../services/imageService';
 
 function EventDashboard() {
@@ -229,11 +229,11 @@ function EventDashboard() {
           registrations: arrayUnion(registrationData)
         });
         
-        try {
-          await sendRegistrationNotification(eventData, userData, 'regular');
-        } catch (error) {
-          console.error('Failed to send email notification:', error);
-        }
+        // try {
+        //   await sendRegistrationNotification(eventData, userData, 'regular');
+        // } catch (error) {
+        //   console.error('Failed to send email notification:', error);
+        // }
         
         toast.success(t('successfully_registered'), { id: toastId });
       } 
@@ -242,11 +242,11 @@ function EventDashboard() {
           standbyRegistrations: arrayUnion(registrationData)
         });
         
-        try {
-          await sendRegistrationNotification(eventData, userData, 'standby');
-        } catch (error) {
-          console.error('Failed to send email notification:', error);
-        }
+        // try {
+        //   await sendRegistrationNotification(eventData, userData, 'standby');
+        // } catch (error) {
+        //   console.error('Failed to send email notification:', error);
+        // }
         
         toast.success(t('added_to_standby_list'), { id: toastId });
       } 
