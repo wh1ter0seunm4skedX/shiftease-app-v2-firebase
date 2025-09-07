@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-export default function Modal({ isOpen, onClose, title, children, dir = 'rtl', maxWidth = 'sm:max-w-lg' }) {
+export default function Modal({ isOpen, onClose, title, children, dir = 'rtl', maxWidth = 'sm:max-w-lg', variant = 'light' }) {
   const overlayRef = useRef(null);
   const closeBtnRef = useRef(null);
 
@@ -28,15 +28,15 @@ export default function Modal({ isOpen, onClose, title, children, dir = 'rtl', m
     >
       <div
         dir={dir}
-        className={`relative bg-white w-full ${maxWidth} sm:rounded-xl shadow-xl max-h-[90vh] overflow-hidden transform transition-all duration-200 ease-out`}
+        className={`relative w-full ${maxWidth} sm:rounded-xl shadow-xl max-h-[90vh] overflow-hidden transform transition-all duration-200 ease-out ${variant === 'dark' ? 'bg-slate-900 text-slate-100 border border-slate-700' : 'bg-white text-gray-900'}`}
       >
-        <div className="flex items-center justify-between px-4 py-3 border-b">
-          <h3 className="text-base font-semibold text-gray-800 truncate">{title}</h3>
+        <div className={`flex items-center justify-between px-4 py-3 border-b ${variant === 'dark' ? 'border-slate-700' : ''}`}>
+          <h3 className={`text-base font-semibold truncate ${variant === 'dark' ? 'text-slate-100' : 'text-gray-800'}`}>{title}</h3>
           <button
             ref={closeBtnRef}
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className={`${variant === 'dark' ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800 focus:ring-slate-500' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:ring-purple-500'} p-1 rounded-full focus:outline-none focus:ring-2`}
             aria-label="Close"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -44,11 +44,10 @@ export default function Modal({ isOpen, onClose, title, children, dir = 'rtl', m
             </svg>
           </button>
         </div>
-        <div className="p-4 overflow-y-auto max-h-[calc(90vh-3.25rem)]">
+        <div className={`p-4 overflow-y-auto max-h-[calc(90vh-3.25rem)] ${variant === 'dark' ? 'bg-slate-900' : ''}`}>
           {children}
         </div>
       </div>
     </div>
   );
 }
-

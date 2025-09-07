@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import toast from 'react-hot-toast';
 // Using API images now; no local EVENT_IMAGES
 import { useLanguage } from "../contexts/LanguageContext";
 import { searchEventImages } from "../services/imageService";
@@ -146,6 +147,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
         setSearchTotal(0);
         setSearchPage(1);
         setSearchError(msg);
+        try { toast.error(msg); } catch(_) {}
         return;
       }
 
@@ -157,6 +159,7 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
       setSearchTotal(0);
       setSearchPage(1);
       setSearchError("Unexpected error. Check console.");
+      try { toast.error('Unexpected error. Check console.'); } catch(_) {}
     } finally {
       setSearchLoading(false);
     }
@@ -201,12 +204,20 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     try { console.log('[EventForm] submit clicked', { initialData, formData }); } catch (_) {}
-    if (formData.timeError) return;
+    if (formData.timeError) {
+      try { toast.error(formData.timeError); } catch(_) {}
+      return;
+    }
 
     // Basic required validation + length limits
     let title = (formData.title || '').trim();
     let description = (formData.description || '').trim();
     const imageUrl = (formData.imageUrl || '').trim();
+    const date = (formData.date || '').trim();
+    const startTime = (formData.startTime || '').trim();
+    const endTime = (formData.endTime || '').trim();
+    const capacity = parseInt(formData.capacity, 10);
+    const standbyCapacity = parseInt(formData.standbyCapacity, 10);
 
     const nextErrors = {
       title: title.length === 0 ? (t('name_required') || 'Title is required') : '',
@@ -215,8 +226,16 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
     };
     setErrors(nextErrors);
     if (nextErrors.title || nextErrors.description || nextErrors.imageUrl) {
+      const first = nextErrors.title || nextErrors.description || nextErrors.imageUrl;
+      try { toast.error(first); } catch(_) {}
       return;
     }
+
+    if (!date) { try { toast.error(t('date_placeholder') || 'Please choose a date'); } catch(_) {} return; }
+    if (!startTime) { try { toast.error(t('start_time_placeholder') || 'Please choose a start time'); } catch(_) {} return; }
+    if (!endTime) { try { toast.error(t('end_time_placeholder') || 'Please choose an end time'); } catch(_) {} return; }
+    if (Number.isNaN(capacity) || capacity < 1) { try { toast.error(t('worker_capacity') || 'Capacity is required'); } catch(_) {} return; }
+    if (Number.isNaN(standbyCapacity) || standbyCapacity < 0) { try { toast.error(t('standby_capacity') || 'Standby capacity is required'); } catch(_) {} return; }
 
     // Normalize legacy/long values silently to fit limits
     if (title.length > 25) title = title.slice(0, 25);
@@ -227,8 +246,8 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
       title,
       description,
       imageUrl,
-      capacity: parseInt(formData.capacity, 10) || 0,
-      standbyCapacity: parseInt(formData.standbyCapacity, 10) || 0,
+      capacity: capacity || 0,
+      standbyCapacity: standbyCapacity || 0,
     };
     delete submissionData.timeError;
 
@@ -294,7 +313,6 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 value={formData.title}
                 onChange={handleChange}
                 className={`input-field py-2 ${errors.title ? 'border-red-400 focus:ring-red-500' : ''}`}
-                required
                 maxLength={25}
                 placeholder={t('event_title_placeholder')}
                 dir={isRtl ? "rtl" : "ltr"}
@@ -319,7 +337,6 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                 value={formData.date}
                 onChange={handleChange}
                 className="input-field py-2"
-                required
                 placeholder={t('date_placeholder')}
                 dir={isRtl ? "rtl" : "ltr"}
               />
@@ -344,7 +361,6 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   value={formData.endTime}
                   onChange={handleChange}
                   className="input-field w-full py-2"
-                  required
                   placeholder={t('end_time_placeholder')}
                   dir={isRtl ? "rtl" : "ltr"}
                 />
@@ -363,7 +379,6 @@ function EventForm({ open, onClose, onSubmit, initialData = null }) {
                   value={formData.startTime}
                   onChange={handleChange}
                   className="input-field w-full py-2"
-                  required
                   placeholder={t('start_time_placeholder')}
                   dir={isRtl ? "rtl" : "ltr"}
                 />
@@ -431,9 +446,7 @@ className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border
                   </div>
                 )}
                 
-                {errors.imageUrl && (
-                  <div className="w-full text-xs text-red-600 mt-2">{errors.imageUrl}</div>
-                )}
+                {/* Inline image error removed; errors shown via toast only */}
 
                 {/* SEARCH MODAL */}
                 {isSearchOpen && (
@@ -603,7 +616,6 @@ className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border
                 onChange={handleChange}
                 rows="2"
                 className={`input-field py-2 ${errors.description ? 'border-red-400 focus:ring-red-500' : ''}`}
-                required
                 maxLength={50}
                 placeholder={t('event_description_placeholder')}
                 dir={isRtl ? "rtl" : "ltr"}
@@ -634,7 +646,6 @@ className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border
                   value={formData.capacity}
                   onChange={handleChange}
                   className="input-field py-2"
-                  required
                   placeholder={t("number_of_workers_needed")}
                   dir={isRtl ? "rtl" : "ltr"}
                 />
@@ -655,7 +666,6 @@ className="flex-grow px-4 py-2 text-sm font-medium text-white bg-blue-600 border
                   value={formData.standbyCapacity}
                   onChange={handleChange}
                   className="input-field py-2"
-                  required
                   placeholder={t("number_of_standby_workers")}
                   dir={isRtl ? "rtl" : "ltr"}
                 />

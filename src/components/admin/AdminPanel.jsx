@@ -539,14 +539,14 @@ function AdminPanel({ onClose }) {
       </div>
       {/* Section Modals */}
       {openSection === 'events' && (
-        <Modal isOpen onClose={() => setOpenSection(null)} title={t('category_events')} dir="rtl">
+        <Modal isOpen onClose={() => setOpenSection(null)} title={t('category_events')} dir="rtl" variant="dark">
           <div className="space-y-4">
             <button onClick={handleCreateTestEvent} disabled={loading} className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-amber-300 rounded-md hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">{loading ? t('creating_ellipsis') : t('create_test_event')}</button>
             <button onClick={deleteAllEvents} disabled={loading} className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-rose-600 rounded-md hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">{loading ? t('deleting_ellipsis') : t('delete_all_events')}</button>
-            <div className="p-4 rounded-md bg-slate-800/40 ring-1 ring-slate-700/40">
+            <div className="p-4 rounded-md bg-slate-800/60 ring-1 ring-slate-700/60">
               <div className="text-sm font-semibold text-slate-200 mb-3">{t('duplicate_event_title')}</div>
               <label className="block text-xs text-slate-300 mb-1">{t('select_event_to_duplicate')}</label>
-              <select value={duplicateEventId} onChange={(e) => setDuplicateEventId(e.target.value)} className="w-full bg-slate-900/50 text-slate-200 border border-slate-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400">
+              <select value={duplicateEventId} onChange={(e) => setDuplicateEventId(e.target.value)} className="w-full bg-slate-900/60 text-slate-200 border border-slate-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400">
                 <option value="" disabled>{loadingEvents ? (t('loading_events') || 'טוען אירועים...') : (t('choose_event') || 'בחרו אירוע')}</option>
                 {activeEvents.map((ev) => (<option key={ev.id} value={ev.id}>{`${ev.title || '—'} — ${ev.date || ''}`}</option>))}
               </select>
@@ -572,9 +572,9 @@ function AdminPanel({ onClose }) {
       )}
 
       {openSection === 'users' && (
-        <Modal isOpen onClose={() => setOpenSection(null)} title={t('category_users')} dir="rtl">
+        <Modal isOpen onClose={() => setOpenSection(null)} title={t('category_users')} dir="rtl" variant="dark">
           <div className="space-y-3">
-            <button onClick={assignAvatarColorsToUsers} disabled={loading} className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-amber-200 rounded-md hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">{t('assign_avatar_colors')}</button>
+            <button onClick={assignAvatarColorsToUsers} disabled={loading} className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-amber-300 rounded-md hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">{t('assign_avatar_colors')}</button>
             <button onClick={removeProfilePicturesFromUsers} disabled={loading} className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-slate-700 rounded-md hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">{t('remove_profile_pictures')}</button>
             <button onClick={migrateUsersFullName} disabled={loading} className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">{t('migrate_fullname_button')}</button>
           </div>
@@ -582,23 +582,23 @@ function AdminPanel({ onClose }) {
       )}
 
       {openSection === 'testing' && (
-        <Modal isOpen onClose={() => setOpenSection(null)} title={t('category_testing')} dir="rtl" maxWidth="sm:max-w-xl">
+        <Modal isOpen onClose={() => setOpenSection(null)} title={t('category_testing')} dir="rtl" maxWidth="sm:max-w-xl" variant="dark">
           <div className="space-y-3">
             <div>
-              <label className="block text-xs text-slate-600 mb-1">{t('select_event_to_fill')}</label>
-              <select value={selectedEventId} onChange={(e) => setSelectedEventId(e.target.value)} className="w-full bg-slate-100 text-slate-900 border border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400">
+              <label className="block text-xs text-slate-300 mb-1">{t('select_event_to_fill')}</label>
+              <select value={selectedEventId} onChange={(e) => setSelectedEventId(e.target.value)} className="w-full bg-slate-900/60 text-slate-200 border border-slate-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400">
                 <option value="" disabled>{loadingEvents ? (t('loading_events') || 'טוען אירועים...') : (t('choose_event') || 'בחרו אירוע')}</option>
                 {activeEvents.map((ev) => (<option key={ev.id} value={ev.id}>{`${ev.title || '—'} — ${ev.date || ''} (${(ev.registrations?.length || 0)}/${ev.capacity || 0} • ${(ev.standbyRegistrations?.length || 0)}/${ev.standbyCapacity || 0})`}</option>))}
               </select>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs text-slate-600 mb-1">{t('regular_fill_count')}</label>
-                <input type="number" min="0" value={regFillCount} onChange={(e) => setRegFillCount(e.target.value)} placeholder={t('regular_fill_count_placeholder')} className="w-full bg-white text-slate-900 border border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+                <label className="block text-xs text-slate-300 mb-1">{t('regular_fill_count')}</label>
+                <input type="number" min="0" value={regFillCount} onChange={(e) => setRegFillCount(e.target.value)} placeholder={t('regular_fill_count_placeholder')} className="w-full bg-slate-900/60 text-slate-200 border border-slate-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400" />
               </div>
               <div>
-                <label className="block text-xs text-slate-600 mb-1">{t('standby_fill_count')}</label>
-                <input type="number" min="0" value={standbyFillCount} onChange={(e) => setStandbyFillCount(e.target.value)} placeholder={t('standby_fill_count_placeholder')} className="w-full bg-white text-slate-900 border border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+                <label className="block text-xs text-slate-300 mb-1">{t('standby_fill_count')}</label>
+                <input type="number" min="0" value={standbyFillCount} onChange={(e) => setStandbyFillCount(e.target.value)} placeholder={t('standby_fill_count_placeholder')} className="w-full bg-slate-900/60 text-slate-200 border border-slate-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400" />
               </div>
             </div>
             <button onClick={handleFillSelectedEvent} disabled={loading || !selectedEventId} className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-slate-900 bg-amber-300 rounded-md hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">{loading ? (t('filling_registrations_ellipsis') || 'ממלא הרשמות…') : (t('fill_registrations') || 'מלא הרשמות')}</button>
